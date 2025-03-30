@@ -8,7 +8,7 @@ import java.sql.*;
 public class LibraryAuthAppGUI {
     private static final String DB_URL = "jdbc:mysql://localhost:3306/mydb";
     private static final String DB_USER = "root";
-    private static final String DB_PASSWORD = "root";
+    private static final String DB_PASSWORD = "simone";
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(LibraryAuthAppGUI::new);
