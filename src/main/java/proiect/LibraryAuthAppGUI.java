@@ -126,4 +126,31 @@ public class LibraryAuthAppGUI {
             return false;
         }
     }
-}
+//    int id_user;
+//    private boolean add_prefference(int id_user)
+//    {
+//        String query = "INSERT INTO preferinte (iduser, classics, fantasy, fiction, history, horror, economy, mystery, poetry, psychology, SF, romance, science) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+//        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+//             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+//            preparedStatement.setInt(1, id_user);
+//            preparedStatement.setBoolean(2,);
+//            preparedStatement.setBoolean(3,);
+//            preparedStatement.setBoolean(4,);
+//            preparedStatement.setBoolean(5,);
+//            preparedStatement.setBoolean(6,);
+//            preparedStatement.setBoolean(7,);
+//            preparedStatement.setBoolean(8,);
+//            preparedStatement.setBoolean(9,);
+//            preparedStatement.setBoolean(10,);
+//            preparedStatement.setBoolean(11,);
+//            preparedStatement.setBoolean(12,);
+//            preparedStatement.setBoolean(13,);
+//            preparedStatement.executeUpdate();
+//            return true;
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//            return false;
+//    }
+
+//}
+    }
