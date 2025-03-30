@@ -5,10 +5,13 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.sql.*;
 
-public class LibraryAuthAppGUI {
+public class LibraryAuthAppGUI { /*
+    Aici va rog sa scrieti in campul DB_PASSWPORD 
+    parola pe care ati pus-o la baza voastra de date
+    */
     private static final String DB_URL = "jdbc:mysql://localhost:3306/mydb";
     private static final String DB_USER = "root";
-    private static final String DB_PASSWORD = "root";
+    private static final String DB_PASSWORD = "root"; 
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(LibraryAuthAppGUI::new);
