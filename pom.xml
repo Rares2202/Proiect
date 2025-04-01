@@ -7,12 +7,45 @@
     <groupId>proiect</groupId>
     <artifactId>Biblioteca</artifactId>
     <version>1.0-SNAPSHOT</version>
+
     <dependencies>
-    <dependency>
-        <groupId>mysql</groupId>
-        <artifactId>mysql-connector-java</artifactId>
-        <version>8.0.31</version> <!-- Sau cea mai recentă versiune disponibilă -->
-    </dependency>
+        <!-- MySQL -->
+            <dependency>
+                <groupId>mysql</groupId>
+                <artifactId>mysql-connector-java</artifactId>
+                <version>8.0.31</version> <!-- Sau cea mai recentă versiune disponibilă -->
+            </dependency>
+        <!-- JavaFX -->
+                <!-- controls -->
+                    <dependency>
+                        <groupId>org.openjfx</groupId>
+                        <artifactId>javafx-controls</artifactId>
+                        <version>17.0.6</version>
+                    </dependency>
+                <!-- fxml -->
+                    <dependency>
+                        <groupId>org.openjfx</groupId>
+                        <artifactId>javafx-fxml</artifactId>
+                        <version>17.0.6</version>
+                    </dependency>
+                <!-- web -->
+                    <dependency>
+                        <groupId>org.openjfx</groupId>
+                        <artifactId>javafx-web</artifactId>
+                        <version>17.0.6</version>
+                    </dependency>
+                <!-- swing -->
+                    <dependency>
+                        <groupId>org.openjfx</groupId>
+                        <artifactId>javafx-swing</artifactId>
+                        <version>17.0.6</version>
+                    </dependency>
+                <!-- media -->
+                    <dependency>
+                        <groupId>org.openjfx</groupId>
+                        <artifactId>javafx-media</artifactId>
+                        <version>17.0.6</version>
+                    </dependency>
     </dependencies>
 
     <properties>
@@ -20,5 +53,30 @@
         <maven.compiler.target>24</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.openjfx</groupId>
+                <artifactId>javafx-maven-plugin</artifactId>
+                <version>0.0.8</version>
+                <executions>
+                    <execution>
+                        <!-- Default configuration for running with: mvn clean javafx:run -->
+                        <id>default-cli</id>
+                        <configuration>
+                            <mainClass>proiect.LibrarianGUI</mainClass>
+                            <launcher>app</launcher>
+                            <jlinkZipName>app</jlinkZipName>
+                            <jlinkImageName>app</jlinkImageName>
+                            <noManPages>true</noManPages>
+                            <stripDebug>true</stripDebug>
+                            <noHeaderFiles>true</noHeaderFiles>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>
