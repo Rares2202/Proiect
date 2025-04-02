@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.effect.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane prefHeight="600.0" prefWidth="1000.0" style="-fx-background-color: 3213;" xmlns="http://javafx.com/javafx/11.0.14-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="proiect.ControllerLibrarianMainGUI">
+   <children>
+      <Button id="depozit_btn" layoutX="402.0" layoutY="160.0" mnemonicParsing="false" prefHeight="48.0" prefWidth="197.0" text="DEPOZIT" textAlignment="CENTER" textOverrun="CLIP">
+         <font>
+            <Font name="System Bold" size="18.0" />
+         </font>
+         <effect>
+            <Blend />
+         </effect>
+      </Button>
+      <Button id="tranzactie_btn" layoutX="402.0" layoutY="252.0" mnemonicParsing="false" prefHeight="48.0" prefWidth="197.0" text="TRANZACTIE" textAlignment="CENTER">
+         <font>
+            <Font name="System Bold" size="18.0" />
+         </font>
+      </Button>
+   </children>
+</AnchorPane>
