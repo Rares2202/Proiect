@@ -1,6 +1,5 @@
 package proiect;
 
-import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -10,27 +9,26 @@ import javafx.stage.StageStyle;
 
 import java.io.IOException;
 
-public class LibrarianMainGUI extends Application {
+public class LibrarianMain extends Application {
     private double xOffset = 0;
     private double yOffset = 0;
 
     @Override
     public void start(Stage mainStage) throws IOException {
-
         //load fxml file
-        Parent window = FXMLLoader.load(getClass().getResource("fxml/LibrarianMain.fxml"));
+        Parent mainAPP = FXMLLoader.load(getClass().getResource("fxml/idk.fxml"));
 
         //create GUI
-        Scene scene = new Scene(window);
+        Scene scene = new Scene(mainAPP );
         scene.getStylesheets().add(this.getClass().getResource("css/style.css").toExternalForm());
 
         //enable window moveing on screen
-        window.setOnMousePressed(event -> {
+        mainAPP .setOnMousePressed(event -> {
             xOffset = event.getSceneX();
             yOffset = event.getSceneY();
         });
 
-        window.setOnMouseDragged(event -> {
+        mainAPP .setOnMouseDragged(event -> {
 
             mainStage.setX(event.getScreenX() - xOffset);
             mainStage.setY(event.getScreenY() - yOffset);
@@ -40,10 +38,12 @@ public class LibrarianMainGUI extends Application {
         mainStage.initStyle(StageStyle.UNDECORATED);
         mainStage.setScene(scene);
         mainStage.show();
+
+
+
     }
 
     public static void main(String[] args) {
         launch();
     }
-
 }
