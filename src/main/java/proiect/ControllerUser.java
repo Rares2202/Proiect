@@ -8,7 +8,7 @@ import java.util.List;
 
 
 public class ControllerUser {
-    List<String> genres = getSelectedGenres();
+
     @FXML
     private CheckBox actionCheckBox;
     @FXML private CheckBox adventureCheckBox;
@@ -63,7 +63,8 @@ public class ControllerUser {
     }
     @FXML
     public void handleSubmitGenres() {
-       genres = getSelectedGenres();
+        List<String> genres  = getSelectedGenres();
+
         System.out.println("Selected Genres: " + genres);
     }
 
