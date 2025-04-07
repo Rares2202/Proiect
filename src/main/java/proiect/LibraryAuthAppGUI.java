@@ -9,6 +9,12 @@ public class LibraryAuthAppGUI {
     private static final String DB_URL = "jdbc:mysql://localhost:3306/mydb";
     private static final String DB_USER = "root";
     private static final String DB_PASSWORD = "simone";
+    int empNo;
+    Connection con;
+    Statement stmt;
+    ResultSet rs;
+
+
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(LibraryAuthAppGUI::new);
@@ -89,6 +95,41 @@ public class LibraryAuthAppGUI {
             boolean isLibrarian = librarianCheckBox.isSelected();
             if (registerUser(username, password, isLibrarian)) {
                 JOptionPane.showMessageDialog(registerFrame, "Registration successful!");
+
+                try {
+                    stmt = con.createStatement();     // Create a Statement object           1
+                } catch (SQLException ex) {
+                    throw new RuntimeException(ex);
+                }
+                try {
+                    rs = stmt.executeQuery("Select idUser FROM user where userName =username");
+                } catch (SQLException ex) {
+                    throw new RuntimeException(ex);
+                }
+
+                // Get the result table from the query
+//                while (rs.next()) {               // Position the cursor                 3
+//                    empNo = rs.getString(1);             // Retrieve only the first column value
+//                    System.out.println("Employee number = " + empNo);
+//                    // Print the column value
+//                }
+                try {
+                    empNo = rs.getInt(1);             // Retrieve only the first column value
+                } catch (SQLException ex) {
+                    throw new RuntimeException(ex);
+                }
+                System.out.println("Employee number = " + empNo);
+                try {
+                    rs.close();                       // Close the ResultSet                 4
+                } catch (SQLException ex) {
+                    throw new RuntimeException(ex);
+                }
+                try {
+                    stmt.close();
+                } catch (SQLException ex) {
+                    throw new RuntimeException(ex);
+                }
+
             } else {
                 JOptionPane.showMessageDialog(registerFrame, "Registration failed. Username might already exist.");
             }
@@ -121,6 +162,7 @@ public class LibraryAuthAppGUI {
             preparedStatement.setBoolean(3, isLibrarian);
             preparedStatement.executeUpdate();
             return true;
+
         } catch (SQLException e) {
             e.printStackTrace();
             return false;
