@@ -9,7 +9,7 @@ public class LibraryAuthAppGUI {
     private static final String DB_URL = "jdbc:mysql://localhost:3306/mydb";
     private static final String DB_USER = "root";
     private static final String DB_PASSWORD = "simone";
-    int empNo;
+    int usrId;
     Connection con;
     Statement stmt;
     ResultSet rs;
@@ -93,46 +93,15 @@ public class LibraryAuthAppGUI {
             String username = userField.getText();
             String password = String.valueOf(passField.getPassword());
             boolean isLibrarian = librarianCheckBox.isSelected();
-            if (registerUser(username, password, isLibrarian)) {
+            int newUserId = registerUser(username, password, isLibrarian);
+            if (newUserId != -1) {
+                usrId = newUserId;
                 JOptionPane.showMessageDialog(registerFrame, "Registration successful!");
-
-                try {
-                    stmt = con.createStatement();     // Create a Statement object           1
-                } catch (SQLException ex) {
-                    throw new RuntimeException(ex);
-                }
-                try {
-                    rs = stmt.executeQuery("Select idUser FROM user where userName =username");
-                } catch (SQLException ex) {
-                    throw new RuntimeException(ex);
-                }
-
-                // Get the result table from the query
-//                while (rs.next()) {               // Position the cursor                 3
-//                    empNo = rs.getString(1);             // Retrieve only the first column value
-//                    System.out.println("Employee number = " + empNo);
-//                    // Print the column value
-//                }
-                try {
-                    empNo = rs.getInt(1);             // Retrieve only the first column value
-                } catch (SQLException ex) {
-                    throw new RuntimeException(ex);
-                }
-                System.out.println("Employee number = " + empNo);
-                try {
-                    rs.close();                       // Close the ResultSet                 4
-                } catch (SQLException ex) {
-                    throw new RuntimeException(ex);
-                }
-                try {
-                    stmt.close();
-                } catch (SQLException ex) {
-                    throw new RuntimeException(ex);
-                }
-
+                System.out.println("User id = " + usrId);
             } else {
                 JOptionPane.showMessageDialog(registerFrame, "Registration failed. Username might already exist.");
             }
+
         });
 
         registerFrame.setVisible(true);
@@ -153,46 +122,42 @@ public class LibraryAuthAppGUI {
         }
     }
 
-    private boolean registerUser(String username, String password, boolean isLibrarian) {
-        String query = "INSERT INTO User (userName, password, librarian) VALUES (?, ?, ?)";
-        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
-             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
-            preparedStatement.setString(1, username);
-            preparedStatement.setString(2, password);
-            preparedStatement.setBoolean(3, isLibrarian);
-            preparedStatement.executeUpdate();
-            return true;
+    private int registerUser(String username, String password, boolean isLibrarian) {
+        int userId = -1;
+
+        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
+            String checkQuery = "SELECT idUser FROM User WHERE userName = ?";
+            try (PreparedStatement checkStmt = connection.prepareStatement(checkQuery)) {
+                checkStmt.setString(1, username);
+                ResultSet rs = checkStmt.executeQuery();
+                if (rs.next()) {
+                    return -1;
+                }
+            }
+            String insertQuery = "INSERT INTO User (userName, password, librarian) VALUES (?, ?, ?)";
+            try (PreparedStatement insertStmt = connection.prepareStatement(insertQuery, Statement.RETURN_GENERATED_KEYS)) {
+                insertStmt.setString(1, username);
+                insertStmt.setString(2, password);
+                insertStmt.setBoolean(3, isLibrarian);
+                int affectedRows = insertStmt.executeUpdate();
+
+                if (affectedRows == 0) {
+                    return -1;
+                }
+
+                try (ResultSet generatedKeys = insertStmt.getGeneratedKeys()) {
+                    if (generatedKeys.next()) {
+                        userId = generatedKeys.getInt(1);
+                    }
+                }
+            }
 
         } catch (SQLException e) {
             e.printStackTrace();
-            return false;
         }
-    }
-//    int id_user;
-//    private boolean add_prefference(int id_user)
-//    {
-//        String query = "INSERT INTO preferinte (iduser, classics, fantasy, fiction, history, horror, economy, mystery, poetry, psychology, SF, romance, science) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-//        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
-//             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
-//            preparedStatement.setInt(1, id_user);
-//            preparedStatement.setBoolean(2,);
-//            preparedStatement.setBoolean(3,);
-//            preparedStatement.setBoolean(4,);
-//            preparedStatement.setBoolean(5,);
-//            preparedStatement.setBoolean(6,);
-//            preparedStatement.setBoolean(7,);
-//            preparedStatement.setBoolean(8,);
-//            preparedStatement.setBoolean(9,);
-//            preparedStatement.setBoolean(10,);
-//            preparedStatement.setBoolean(11,);
-//            preparedStatement.setBoolean(12,);
-//            preparedStatement.setBoolean(13,);
-//            preparedStatement.executeUpdate();
-//            return true;
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//            return false;
-//    }
 
-//}
+        return userId;
     }
+
+
+}
