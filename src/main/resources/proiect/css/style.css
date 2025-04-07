@@ -1,5 +1,6 @@
 #background{
     -fx-background-color: linear-gradient(to bottom, #36f257, #015d20);
+
 }
 
 .exit {
@@ -10,7 +11,7 @@
 
 
 .exit:hover{
-    -fx-background-color: rgba(0, 0, 0, 0.5);
+    -fx-background-color: rgba(255, 0, 0, 0.5);
     -fx-font-style: bold;
 
 }
