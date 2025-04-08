@@ -18,7 +18,7 @@ public class LibrarianMainGUI extends Application {
     public void start(Stage mainStage) throws IOException {
 
         //load fxml file
-        Parent window = FXMLLoader.load(getClass().getResource("fxml/LibrarianMain.fxml"));
+        Parent window = FXMLLoader.load(getClass().getResource("fxml/librarian/LibrarianMain.fxml"));
 
         //create GUI
         Scene scene = new Scene(window);

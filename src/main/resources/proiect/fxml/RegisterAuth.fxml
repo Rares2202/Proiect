@@ -3,9 +3,26 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
+<?import javafx.scene.Cursor?>
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon?>
+<?import javafx.scene.text.Font?>
 <Pane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-
+       <Button fx:id="inchide"  layoutX="964.0" mnemonicParsing="false"  prefHeight="27.0" prefWidth="66.0" styleClass="exit" textFill="WHITE">
+           <font>
+               <Font name="Arial" size="11.0" />
+           </font>
+           <cursor>
+               <Cursor fx:constant="HAND" />
+           </cursor>
+           <graphic>
+               <FontAwesomeIcon fill="WHITE" glyphName="CLOSE" size="15">
+                   <font>
+                       <Font size="5.0" />
+                   </font>
+               </FontAwesomeIcon>
+           </graphic>
+       </Button>
       <TextField fx:id="username_reg"   layoutY="100" layoutX="200"/>
        <Label layoutY="100" layoutX="100" text="Username:" />
        <PasswordField fx:id="password_reg" layoutY="200" layoutX="200"/>
