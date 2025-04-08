@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<Pane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+
+            prefHeight="400.0" prefWidth="600.0">
+    <children>
+
+        <TextField fx:id="username_log" layoutY="100" layoutX="200"/>
+        <Label layoutY="100" layoutX="100" text="Username:" />
+        <PasswordField fx:id="password_log" layoutY="200" layoutX="200"/>
+        <Label text="Password:" layoutX="100" layoutY="200"/>
+        <CheckBox  fx:id="librarian1"  layoutY="300" layoutX="200" mnemonicParsing="false" text="CheckBox" />
+        <Label text="Librarian?" layoutY="300" layoutX="100"/>
+        <Button fx:id="register1" text="Register" layoutY="350" layoutX="200"/>
+        <Button fx:id="login" text="Login" layoutY="350" layoutX="300"/>
+    </children>
+
+</Pane>
