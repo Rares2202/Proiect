@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane id="background" prefHeight="589.0" prefWidth="1030.0" xmlns="http://javafx.com/javafx/11.0.14-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="proiect.ControllerLibrarian">
+<AnchorPane id="background" prefHeight="589.0" prefWidth="1030.0" xmlns="http://javafx.com/javafx/11.0.14-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="proiect.controller.ControllerLibrarian">
    <children>
       <Button layoutX="964.0" mnemonicParsing="false" onMouseClicked="#quit_app" prefHeight="27.0" prefWidth="66.0" styleClass="exit" textFill="WHITE">
          <font>

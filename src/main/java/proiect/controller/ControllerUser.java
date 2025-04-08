@@ -1,4 +1,4 @@
-package proiect;
+package proiect.controller;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.CheckBox;
