@@ -6,12 +6,15 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
+<?import javafx.scene.text.Font?>
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon?>
+<?import javafx.scene.text.Text?>
 <Pane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            prefHeight="400.0" prefWidth="600.0">
+      xmlns:fx="http://javafx.com/fxml"
+      prefHeight="400.0" prefWidth="600.0">
     <children>
         <Button fx:id="inchide" layoutX="940.0"
-                mnemonicParsing="false" onMouseClicked="#quit_app" prefHeight="40.0" prefWidth="90.0" styleClass="exit" textFill="WHITE">
+                mnemonicParsing="false"  prefHeight="40.0" prefWidth="90.0" styleClass="exit" textFill="WHITE">
             <font>
                 <Font name="Arial" size="15.0" />
             </font>
@@ -26,7 +29,7 @@
                 </FontAwesomeIcon>
             </graphic>
         </Button>
-        <Text layoutY="40.0" layoutX="355.0"  strokeType="OUTSIDE" strokeWidth="0.0" text="Choose which genres you prefer to read" >
+        <Text layoutY="40.0" layoutX="355.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Choose which genres you prefer to read" >
             <font>
                 <Font size="20.0" />
             </font>
@@ -75,7 +78,7 @@
         </GridPane>
 
         <Button fx:id="submit" layoutX="935.0" layoutY="550"
-                 mnemonicParsing="false" onAction="#handleSubmitGenres" prefHeight="30.0" prefWidth="90.0" styleClass="exit" text="Submit">
+                 mnemonicParsing="false"  prefHeight="30.0" prefWidth="90.0" styleClass="exit" text="Submit">
             <font>
                 <Font name="Arial" size="15.0" />
             </font>

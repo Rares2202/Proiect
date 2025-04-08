@@ -59,7 +59,7 @@ public class ControllerUser {
     @FXML
     public void quit_app(MouseEvent mouseEvent) {
         System.exit(0);
-        System.out.println("Quit app");
+
     }
     @FXML
     public void handleSubmitGenres() {

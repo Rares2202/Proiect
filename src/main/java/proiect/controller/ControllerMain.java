@@ -2,10 +2,12 @@ package proiect.controller;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.*;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 
 import javax.swing.*;
+import java.awt.event.ActionEvent;
 import java.io.IOException;
 import java.sql.*;
 import java.util.ArrayList;
@@ -23,6 +25,7 @@ public class ControllerMain {
     private  Pane RegisterAuth;
     private  Pane Review;
     private  Pane Search;
+
     int usrId;
     private static final String DB_URL = "jdbc:mysql://localhost:3306/mydb";
     private static final String DB_USER = "root";
@@ -71,9 +74,10 @@ public class ControllerMain {
                         button.setOnAction(e ->register());
                                 break;
                     case "inchide":
+                        button.setOnAction(e->quit_app());
 
-                        System.exit(0);
                         break;
+
 
 
                 }
@@ -169,5 +173,8 @@ private void showAlert(String message) {
         }
 
         return userId;
+    }
+    public void quit_app() {
+        System.exit(0);
     }
 }
