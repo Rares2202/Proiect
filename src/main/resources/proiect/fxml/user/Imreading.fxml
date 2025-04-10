@@ -1,18 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
+<?import de.jensd.fx.glyphs.fontawesome.*?>
 <?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 
-<?import javafx.scene.text.Font?>
-<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon?>
-<Pane xmlns="http://javafx.com/javafx"
-      xmlns:fx="http://javafx.com/fxml"
-      prefHeight="400.0" prefWidth="600.0">
+<Pane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1">
     <children>
-        <Button fx:id="inchide"  layoutX="964.0" mnemonicParsing="false"  prefHeight="27.0" prefWidth="66.0" styleClass="exit" textFill="WHITE">
+        <Button fx:id="inchide" layoutX="536.0" layoutY="14.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="66.0" styleClass="exit" textFill="WHITE">
             <font>
                 <Font name="Arial" size="11.0" />
             </font>
@@ -26,6 +22,16 @@
                     </font>
                 </FontAwesomeIcon>
             </graphic>
+        </Button>
+        <Label layoutX="200" layoutY="200" text="Imreading" />
+        <Button fx:id="home" layoutX="479.0" layoutY="350.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="90.0" styleClass="exit" text="Home">
+            <font>
+                <Font name="Arial" size="15.0" />
+            </font>
+            <cursor>
+                <Cursor fx:constant="HAND" />
+            </cursor>
+
         </Button>
     </children>
 

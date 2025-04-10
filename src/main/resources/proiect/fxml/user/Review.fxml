@@ -28,6 +28,17 @@
                 </FontAwesomeIcon>
             </graphic>
         </Button>
+        <Label layoutX="200" layoutY="200"  text="Review" />
+        <Button fx:id="home" layoutX="800.0" layoutY="550"
+                mnemonicParsing="false"  prefHeight="30.0" prefWidth="90.0" styleClass="exit" text="Home">
+            <font>
+                <Font name="Arial" size="15.0" />
+            </font>
+            <cursor>
+                <Cursor fx:constant="HAND" />
+            </cursor>
+
+        </Button>
     </children>
 
 </Pane>

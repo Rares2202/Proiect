@@ -59,7 +59,7 @@
                 <CheckBox fx:id="comicBooksCheckBox" mnemonicParsing="false" text="Comic Books" GridPane.columnIndex="3" />
                 <CheckBox fx:id="cookbooksCheckBox" mnemonicParsing="false" text="Cookbooks" GridPane.columnIndex="2" GridPane.rowIndex="4" />
                 <CheckBox fx:id="dramaCheckBox" mnemonicParsing="false" text="Drama" GridPane.rowIndex="1" />
-                <CheckBox fx:id="fairyTalesCheckBox" mnemonicParsing="false" text="Fairy Tales" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                <CheckBox fx:id="economyCheckBox" mnemonicParsing="false" text="Economy" GridPane.columnIndex="1" GridPane.rowIndex="4" />
                 <CheckBox fx:id="fantasyCheckBox" mnemonicParsing="false" text="Fantasy" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                 <CheckBox fx:id="historicalCheckBox" mnemonicParsing="false" text="Historical" GridPane.columnIndex="2" GridPane.rowIndex="1" />
                 <CheckBox fx:id="horrorCheckBox" mnemonicParsing="false" text="Horror" GridPane.columnIndex="3" GridPane.rowIndex="1" />
