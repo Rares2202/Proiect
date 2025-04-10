@@ -13,21 +13,13 @@
             fx:controller="proiect.controller.ControllerUser"
             prefHeight="400.0" prefWidth="600.0">
     <children>
-        <Button fx:id="inchide"  layoutX="964.0" mnemonicParsing="false"  prefHeight="27.0" prefWidth="66.0" styleClass="exit" textFill="WHITE">
-            <font>
-                <Font name="Arial" size="11.0" />
-            </font>
-            <cursor>
-                <Cursor fx:constant="HAND" />
-            </cursor>
-            <graphic>
-                <FontAwesomeIcon fill="WHITE" glyphName="CLOSE" size="15">
-                    <font>
-                        <Font size="5.0" />
-                    </font>
-                </FontAwesomeIcon>
-            </graphic>
-        </Button>
+
+
+
+            <StackPane fx:id="Userpane" />
+
+
+
     </children>
 
 </AnchorPane>
