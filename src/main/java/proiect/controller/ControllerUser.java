@@ -86,6 +86,7 @@ public class ControllerUser {
                         button.setOnAction(e -> {
                             preferinte = getSelectedGenres(pane);
                             trimitePreferinte(userId);
+                            Userpane.getChildren().setAll(Home);
                         });
                         break;
                         case "home":

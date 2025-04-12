@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import de.jensd.fx.glyphs.fontawesome.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<Pane prefHeight="600.0" prefWidth="1030.0" styleClass="wellcome_background" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1">
+    <children>
+        <Button fx:id="inchide" layoutX="964.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="66.0" styleClass="exit" textFill="WHITE">
+            <font>
+                <Font name="Arial" size="11.0" />
+            </font>
+            <cursor>
+                <Cursor fx:constant="HAND" />
+            </cursor>
+            <graphic>
+                <FontAwesomeIcon fill="WHITE" glyphName="CLOSE" size="15">
+                    <font>
+                        <Font size="5.0" />
+                    </font>
+                </FontAwesomeIcon>
+            </graphic>
+        </Button>
+        <Text fill="WHITE" layoutX="355.0" layoutY="370.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Welcome to LibraryAPP!" textAlignment="CENTER">
+            <font>
+                <Font size="30.0" />
+            </font>
+        </Text>
+        <Button fx:id="login1" layoutX="350.0" layoutY="410.0" mnemonicParsing="false" styleClass="login" text="Log In" />
+        <Button fx:id="register1" layoutX="520.0" layoutY="410.0" styleClass="login" text="Register" />
+        <ImageView fitHeight="124.0" fitWidth="126.0" layoutX="450.0" layoutY="210.0" pickOnBounds="true" preserveRatio="true" styleClass="white">
+            <image>
+                <Image url="@../css/logo.png" />
+            </image></ImageView>
+    </children>
+</Pane>
