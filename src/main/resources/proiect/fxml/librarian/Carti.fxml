@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.text.Text?>
+<?import javafx.scene.shape.Rectangle?>
+<Pane fx:id="books_menu" prefHeight="564.0" prefWidth="802.0" styleClass="background" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1">
+<children>
+
+    <FontAwesomeIcon glyphName="BOOK" layoutY="40.0" size="40" stroke="BLACK" strokeWidth="0.0" />
+    <Text layoutX="52.0" layoutY="33.0" strokeType="OUTSIDE" strokeWidth="0.0" text="CARTI">
+        <font>
+            <Font name="System Bold" size="20.0" />
+        </font>
+    </Text>
+</children>
+</Pane>
+<!--<AnchorPane fx:id="books_menu" layoutX="227.0" layoutY="25.0" prefHeight="564.0" prefWidth="802.0" visible="false">-->
+<!--<children>-->
+<!--    <Pane layoutX="29.0" layoutY="14.0" prefHeight="54.0" prefWidth="124.0">-->
+<!--        <children>-->
+<!--            <FontAwesomeIcon glyphName="BOOK" layoutY="40.0" size="40" stroke="BLACK" strokeWidth="0.0" />-->
+<!--            <Text layoutX="52.0" layoutY="33.0" strokeType="OUTSIDE" strokeWidth="0.0" text="CARTI">-->
+<!--                <font>-->
+<!--                    <Font name="System Bold" size="20.0" />-->
+<!--                </font>-->
+<!--            </Text>-->
+<!--        </children>-->
+<!--    </Pane>-->
+<!--</children>-->
+<!--</AnchorPane>-->

@@ -2,18 +2,10 @@ package proiect.controller;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.*;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
-
-import javax.swing.*;
-import java.awt.event.ActionEvent;
 import java.io.IOException;
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
 public class ControllerMain {
     @FXML
     public StackPane contentPane;
@@ -23,25 +15,27 @@ public class ControllerMain {
     private Pane RegisterAuth;
     private Pane UserMain;
     private Pane LibrarianMain;
+    private Pane Wellcome;
 
     int usrId;
     private static final String DB_URL = "jdbc:mysql://localhost:3306/mydb";
     private static final String DB_USER = "root";
     private static final String DB_PASSWORD = "simone";
     private final String[] buttonIds = {
-            "register", "login", "inchide", "submit", "register1"
+            "register", "login", "inchide", "submit", "register1","login1"
     };
+
 
     @FXML
     public void initialize() {
         try {
 
-
+            Wellcome=loadPane("/proiect/fxml/Wellcome.fxml");
             LoginRegister = loadPane("/proiect/fxml/LoginRegister.fxml");
             RegisterAuth = loadPane("/proiect/fxml/RegisterAuth.fxml");
             UserMain=loadSpecialPane("/proiect/fxml/user/UserMain.fxml", ControllerUser.class);
-            LibrarianMain=loadSpecialPane("/proiect/fxml/LibrarianMain.fxml", ControllerLibrarian.class);
-            contentPane.getChildren().setAll(LoginRegister);
+            LibrarianMain=loadSpecialPane("/proiect/fxml/librarian/LibrarianMain.fxml", ControllerLibrarian.class);
+            contentPane.getChildren().setAll(Wellcome);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -62,11 +56,19 @@ public class ControllerMain {
                                 register_reg();
                             } catch (SQLException ex) {
                                 throw new RuntimeException(ex);
+                            } catch (IOException ex) {
+                                throw new RuntimeException(ex);
                             }
                         });
                         break;
                     case "login":
-                        button.setOnAction(e -> login());
+                        button.setOnAction(e -> {
+                            try {
+                                login();
+                            } catch (IOException ex) {
+                                throw new RuntimeException(ex);
+                            }
+                        });
                         break;
                     case "register1":
                         button.setOnAction(e -> register());
@@ -74,6 +76,9 @@ public class ControllerMain {
                     case "inchide":
                         button.setOnAction(e -> quit_app());
 
+                        break;
+                    case "login1":
+                        button.setOnAction(e -> login1());
                         break;
 
 
@@ -102,53 +107,69 @@ public class ControllerMain {
     private void register() {
         contentPane.getChildren().setAll(RegisterAuth);
     }
+    @FXML
+    private void login1() {
+        contentPane.getChildren().setAll(LoginRegister);
+    }
 
-    private void login() {
+    private void login() throws IOException {
         int id=-1;
         TextField userField = (TextField) LoginRegister.lookup("#username_log");
         String username = userField.getText();
         PasswordField passField = (PasswordField) LoginRegister.lookup("#password_log");
         String password = String.valueOf(passField.getText());
-        id=authenticateUser(username, password);
-        if (id!=-1) {
+         id = authenticateUser(username, password);
+        if (id != -1) {
             showAlert("Login successful!");
-
-            contentPane.getChildren().setAll(UserMain);
-           controllerUser.setUserId(id);
-
-
-
+            boolean isLib = isUserLibrarian(id);// Implement this method to check DB
+            System.out.println("isLib: " + isLib);
+            if (isLib) {
+                contentPane.getChildren().setAll(LibrarianMain);
+                controllerLibrarian.setMainController(this);
+            } else {
+                contentPane.getChildren().setAll(UserMain);
+                controllerUser.setUserId(id);
+            }
         } else {
             showAlert("Invalid credentials.");
         }
-
     }
 
-    private void register_reg() throws SQLException {
+    private void register_reg() throws SQLException, IOException {
         TextField userField = (TextField) RegisterAuth.lookup("#username_reg");
         String username = userField.getText();
         PasswordField passField = (PasswordField) RegisterAuth.lookup("#password_reg");
         String password = String.valueOf(passField.getText());
-        CheckBox librarian1 = (CheckBox) RegisterAuth.lookup("#librarian");
+        CheckBox librarian1 = (CheckBox) RegisterAuth.lookup("#librarian1");
         boolean isLibrarian = librarian1.isSelected();
         int newUserId = registerUser(username, password, isLibrarian);
         if (newUserId != -1) {
             usrId = newUserId;
             showAlert("Registration successful!");
+
             System.out.println("User id = " + usrId);
         } else {
             showAlert("Registration failed. Username might already exist.");
         }
-        if(usrId!=-1)
-        {
-            contentPane.getChildren().setAll(UserMain);
-            controllerUser.setUserId(newUserId);
+        if (newUserId != -1) {
+            usrId = newUserId;
+            showAlert("Registration successful!");
+            if (isLibrarian) {
+                contentPane.getChildren().setAll(LibrarianMain);
+                controllerLibrarian.setMainController(this);
+            } else {
+                contentPane.getChildren().setAll(UserMain);
+                controllerUser.setUserId(newUserId);
+            }
+        } else {
+            showAlert("Registration failed.");
         }
     }
 
     private int authenticateUser(String username, String password) {
-        String query = "SELECT idUser FROM User WHERE userName = ? AND password = ?";
+        String query = "SELECT idUser, librarian FROM User WHERE userName = ? AND password = ?";
         int userId = -1;
+        boolean isLibrarian = false;
         try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
              PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setString(1, username);
@@ -156,8 +177,10 @@ public class ControllerMain {
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 if (resultSet.next()) {
                     userId = resultSet.getInt("idUser");
+                    isLibrarian = resultSet.getBoolean("librarian");
                 }
             }
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -208,6 +231,19 @@ public class ControllerMain {
 
         return userId;
     }
+    private boolean isUserLibrarian(int userId) {
+        String query = "SELECT librarian FROM User WHERE idUser = ?";
+        try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setInt(1, userId);
+            ResultSet rs = stmt.executeQuery();
+            return rs.next() && rs.getBoolean("librarian");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
 
     public void quit_app() {
         System.exit(0);

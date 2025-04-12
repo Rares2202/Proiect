@@ -8,10 +8,14 @@
 
 <?import javafx.scene.text.Font?>
 <?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon?>
+<?import javafx.scene.shape.Rectangle?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.text.Text?>
 <Pane xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
 
-      prefHeight="400.0" prefWidth="600.0">
+      prefHeight="600.0" prefWidth="1030.0">
     <children>
         <Button fx:id="inchide"  layoutX="964.0" mnemonicParsing="false"  prefHeight="27.0" prefWidth="66.0" styleClass="exit" textFill="WHITE">
             <font>
@@ -28,15 +32,23 @@
                 </FontAwesomeIcon>
             </graphic>
         </Button>
+        <Rectangle id="menu_bg" styleClass="rectangle" arcHeight="5.0" arcWidth="5.0" height="599.0" stroke="BLACK" strokeDashOffset="10.0" strokeType="INSIDE" strokeWidth="0.0" width="227.0">
+        </Rectangle>
+        <TextField fx:id="username_log" layoutY="100" layoutX="400"/>
+        <Label layoutY="100" layoutX="300" text="Username:" />
+        <PasswordField fx:id="password_log" layoutY="200" layoutX="400"/>
+        <Label text="Password:" layoutX="300" layoutY="200"/>
+        <Button fx:id="login" text="Login" layoutY="350" layoutX="400" styleClass="register"/>
+        <ImageView fitHeight="124.0" fitWidth="126.0" layoutX="52.0" layoutY="25.0" pickOnBounds="true" preserveRatio="true" styleClass="white">
+            <image>
+                <Image url="@../css/logo.png" />
+            </image></ImageView>
+        <Text fill="WHITE" layoutX="51.0" layoutY="175.0" stroke="BLACK" strokeDashOffset="10.0" strokeType="OUTSIDE" strokeWidth="0.0" text="LibraryApp">
+            <font>
+                <Font name="System Bold" size="24.0" />
+            </font>
+        </Text>
 
-        <TextField fx:id="username_log" layoutY="100" layoutX="200"/>
-        <Label layoutY="100" layoutX="100" text="Username:" />
-        <PasswordField fx:id="password_log" layoutY="200" layoutX="200"/>
-        <Label text="Password:" layoutX="100" layoutY="200"/>
-        <CheckBox  fx:id="librarian1"  layoutY="300" layoutX="200" mnemonicParsing="false" text="CheckBox" />
-        <Label text="Librarian?" layoutY="300" layoutX="100"/>
-        <Button fx:id="register1" text="Register" layoutY="350" layoutX="200"/>
-        <Button fx:id="login" text="Login" layoutY="350" layoutX="300"/>
     </children>
 
 </Pane>

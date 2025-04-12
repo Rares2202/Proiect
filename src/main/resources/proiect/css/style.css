@@ -1,18 +1,136 @@
-#background{
-    -fx-background-color: linear-gradient(to bottom, #36f257, #015d20);
-
+.background{
+    -fx-background-color: radial-gradient(center 50% 50%, radius 50%,rgba(255,255,255,0.6909138655462185) 0%, rgba(218,218,218,1) 100%);
 }
 
-.exit {
+
+
+.button{
+    -fx-background-color: transparent;
+    -fx-text-fill: white;
+}
+
+.button:hover{
+    -fx-background-color: rgba(0,0,0,0.25);
+}
+
+.icon{
+    -fx-fill: white;
+}
+
+#exit {
+    -fx-background-radius: 0;
     -fx-background-color: transparent;
     -fx-font-style: bold;
     -fx-transition: 0.4s;
 }
 
 
-.exit:hover{
-    -fx-background-color: rgba(255, 0, 0, 0.5);
+#exit:hover{
+    -fx-background-color: rgba(0, 0, 0, 0.2);
     -fx-font-style: bold;
 
+}
+
+#menu_bg{
+    -fx-background-color: rgba(0,0,0,0.2);
+}
+
+.white{
+    -fx-background-color:  white;
+}
+
+.list_item {
+    -fx-background-color: white;
+}
+
+.list_item:hover{
+    -fx-background-color: rgba(0,255,0,0.2);
+}
+
+.scroll-pane{
+    -fx-border-color: green;
+    -fx-border-width: 2px;
+    -fx-background-color: white;
+}
+
+.scroll-bar:vertical{
+    -fx-background-color: white;
+}
+
+.scroll-bar:vertical .thumb {
+    -fx-background-color: green;
+    -fx-background-radius: 3;
+    -fx-padding: 0;
+}
+.scroll-bar:vertical .increment-button, .scroll-bar:vertical .decrement-button{
+    -fx-opacity: 0;
+}
+
+.text-field{
+    -fx-background-color: white;
+}
+
+.search-bar{
+    -fx-border-radius: 3px;
+    -fx-border-color: green;
+    -fx-border-radius: 20px;
+    -fx-background-color: white;
+    -fx-background-radius: 20px;
+}
+
+.btn-green-white{
+    -fx-background-radius: 20px;
+    -fx-background-color: green;
+}
+
+.btn-green-white:hover
+{
+    -fx-background-color: rgb(0, 50,0);
+    -fx-cursor: hand;
+}
+.login
+{
+    -fx-text-fill: white;
+    -fx-background-color: transparent;
+    -fx-background-size:10px;
+    -fx-font-size: 20px;
+    -fx-pref-height: 30px;
+    -fx-pref-width: 150px;
+
+}
+.login:hover
+{
+    -fx-background-color: rgb(0, 50,0);
+    -fx-cursor: hand;
+}
+.register
+{
+    -fx-text-fill: white;
+    -fx-background-color: green;
+    -fx-background-size:10px;
+    -fx-pref-height: 30px;
+    -fx-pref-width: 150px;
+}
+.register:hover
+{
+    -fx-background-color: rgb(0, 50,0);
+    -fx-cursor: hand;
+}
+.wellcome_background {
+
+    -fx-background-color: linear-gradient(to bottom, #36f257, #015d20);
+}
+.rectangle {
+    -fx-arc-width: 5.0;
+    -fx-arc-height: 5.0;
+    -fx-stroke: black;
+    -fx-stroke-dash-offset: 10.0;
+    -fx-stroke-type: inside;
+    -fx-stroke-width: 0.0;
+    -fx-fill: linear-gradient(
+            from 100% 0% to 0% 100%,
+            rgba(3, 37, 9, 1.0),
+            rgba(62, 215, 92, 1.0)
+    );
 }
 
