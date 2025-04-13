@@ -2,14 +2,13 @@ package proiect;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
-import javafx.scene.control.ScrollPane;
+import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
@@ -42,6 +41,7 @@ public class ControllerLibrarian{
 
     //Meniu Statistici
     public AnchorPane statistici_menu;
+    public TextField textField_clientName;
 
 
     @FXML
@@ -104,6 +104,7 @@ public class ControllerLibrarian{
     private void loadData()
     {
         //initializare lista de clienti
+
         int nr_items = 100;
         for (int i=0; i<nr_items; i++) {
             try {
@@ -122,6 +123,8 @@ public class ControllerLibrarian{
                 //e.printStackTrace();
             }
         }
+
+        //FilteredList<String> filteredData = new FilteredList<>(list_search_clients, b -> true);
     }
 
 

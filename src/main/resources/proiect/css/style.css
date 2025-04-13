@@ -71,7 +71,6 @@
 }
 
 .search-bar{
-    -fx-border-radius: 3px;
     -fx-border-color: green;
     -fx-border-radius: 20px;
     -fx-background-color: white;
@@ -88,4 +87,49 @@
     -fx-background-color: rgb(0, 50,0);
     -fx-cursor: hand;
 }
+
+.btn-tab{
+    -fx-background-radius: 0px;
+    -fx-background-color: green;
+    -fx-fill: white;
+}
+
+.btn-tab:hover{
+    -fx-background-color: rgb(0, 50,0);
+    -fx-cursor: hand;
+}
+
+.tab-pane > .tab-header-area{
+    -fx-background-color: yellow;  /* culoarea pe care o dorești */
+}
+
+.tab-pane .tab{
+    -fx-background-color: white;
+    -fx-text-base-color: green;
+    -fx-border-width: 1px;
+    -fx-border-color: green;
+    -fx-font-weight: bold;
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+    -fx-padding: 3px 13px;
+
+}
+
+.tab-pane .tab:hover, .tab-pane .tab:selected{
+    -fx-background-color: green;
+    -fx-text-base-color: white;
+    -fx-cursor: hand;
+    -fx-font-weight: bold;
+}
+
+.tab-icon{
+    -fx-fill: green;
+}
+
+.tab-icon:hover{
+    -fx-fill: white;
+}
+
+
+
 
