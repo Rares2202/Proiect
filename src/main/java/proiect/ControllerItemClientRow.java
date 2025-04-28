@@ -1,5 +1,6 @@
 package proiect;
 
+import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcons;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -21,25 +22,28 @@ import java.io.IOException;
 import java.sql.*;
 import java.util.*;
 import java.util.concurrent.Executor;
+import java.util.concurrent.ForkJoinPool;
 
-public class ControllerItemClientRow{
+public class ControllerItemClientRow extends user{
+
     @FXML
     Text clientName;
-
     public ControllerLibrarian mainController;
+
     @FXML
     void initialize() {
-
     }
+
     @FXML
-    public void setName(String name)
-    {
+    public void setName(String name) {
         clientName.setText(name);
     }
 
     @FXML
-    public void showClientDetails(MouseEvent mouseEvent) {
-        mainController.setOnlyMenu(mainController.client_menu_details);
-        mainController.clienti_menu_clientName.setText(clientName.getText());
+    public void showClientDetails(MouseEvent mouseEvent) throws SQLException, IOException {
+        mainController.transaction_user_id = id;
+        mainController.menu_transaction_clientName.setText(clientName.getText());
+        mainController.initialize_menu_client_detalii(id);
     }
+
 }

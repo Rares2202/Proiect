@@ -5,6 +5,7 @@ module Biblioteca {
     requires java.desktop;
     requires java.sql;
     requires fontawesomefx;
+    requires java.naming;
 
     opens proiect to javafx.fxml;
     exports proiect;
