@@ -1,0 +1,189 @@
+#background{
+    -fx-background-color: radial-gradient(center 50% 50%, radius 50%,rgba(255,255,255,0.6909138655462185) 0%, rgba(218,218,218,1) 100%);
+}
+
+
+
+.button{
+    -fx-background-color: transparent;
+    -fx-text-fill: white;
+}
+
+.button:hover{
+    -fx-background-color: rgba(0,0,0,0.25);
+}
+
+.icon{
+    -fx-fill: white;
+}
+
+#exit {
+    -fx-background-radius: 0;
+    -fx-background-color: transparent;
+    -fx-font-style: bold;
+    -fx-transition: 0.4s;
+}
+
+
+#exit:hover{
+    -fx-background-color: rgba(0, 0, 0, 0.2);
+    -fx-font-style: bold;
+
+}
+
+#menu_bg{
+    -fx-background-color: rgba(0,0,0,0.2);
+}
+
+.white{
+    -fx-background-color:  white;
+}
+
+.list_item {
+    -fx-background-color: white;
+}
+
+.list_item:hover{
+    -fx-background-color: rgba(0,255,0,0.2);
+}
+
+.scroll-pane{
+    -fx-border-color: green;
+    -fx-border-width: 2px;
+    -fx-background-color: white;
+}
+
+.scroll-bar:vertical{
+    -fx-background-color: white;
+}
+
+.scroll-bar:vertical .thumb {
+    -fx-background-color: green;
+    -fx-background-radius: 3;
+    -fx-padding: 0;
+}
+.scroll-bar:vertical .increment-button, .scroll-bar:vertical .decrement-button{
+    -fx-opacity: 0;
+}
+
+.text-field{
+    -fx-background-color: white;
+}
+
+.search-bar{
+    -fx-border-color: green;
+    -fx-border-radius: 20px;
+    -fx-background-color: white;
+    -fx-background-radius: 20px;
+}
+
+.btn-green-white{
+    -fx-background-radius: 20px;
+    -fx-background-color: green;
+}
+
+.btn-green-white:hover
+{
+    -fx-background-color: rgb(0, 50,0);
+    -fx-cursor: hand;
+}
+
+.btn-tab{
+    -fx-background-radius: 0px;
+    -fx-background-color: green;
+    -fx-fill: white;
+}
+
+.btn-tab:hover{
+    -fx-background-color: rgb(0, 50,0);
+    -fx-cursor: hand;
+}
+
+.tab-pane > .tab-header-area{
+    -fx-background-color: yellow;  /* culoarea pe care o dorești */
+}
+
+.tab-pane .tab{
+    -fx-background-color: white;
+    -fx-text-base-color: green;
+    -fx-border-width: 1px;
+    -fx-border-color: green;
+    -fx-font-weight: bold;
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+    -fx-padding: 3px 13px;
+    -fx-cursor: hand;
+}
+
+.tab-pane .tab:selected{
+    -fx-background-color: green;
+    -fx-text-base-color: white;
+    -fx-font-weight: bold;
+}
+
+
+.tab-icon{
+    -fx-fill: green;
+}
+
+.tab-icon:hover{
+    -fx-fill: white;
+}
+
+.btn-transparent{
+    -fx-background-color: transparent;
+}
+
+.btn-transparent:hover{
+    -fx-background-color: rgba(0,0,0,0.2);
+}
+
+.menu-small-bg{
+    -fx-background-color: rgba(0,0,0,0.75);
+}
+
+.menu-small-content{
+    -fx-background-color: white;
+    -fx-border-color: green;
+    -fx-border-width: 3px;
+}
+
+.btn-accept{
+    -fx-background-color: rgb(0,125,0);
+}
+
+.btn-accept:hover{
+    -fx-background-color: rgb(0,50,0);
+    -fx-cursor: hand;
+}
+
+.btn-cancel{
+    -fx-background-color: rgb(200,0,0);
+}
+
+.btn-cancel:hover{
+    -fx-background-color: rgb(100,0,0);
+    -fx-cursor: hand;
+}
+
+
+.table-recipe{
+    -fx-background-color: white;
+}
+
+.table-recipe .table-cell {
+    -fx-border-width: 0px;
+}
+
+.table-recipe .scroll-bar:horizontal{
+    -fx-opacity: 0;
+}
+
+.table-recipe .scroll-bar:vertical{
+    -fx-opacity: 100;
+}
+
+
+
+
+
