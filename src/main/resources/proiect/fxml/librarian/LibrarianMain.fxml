@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import de.jensd.fx.glyphs.fontawesome.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<?import javafx.scene.shape.Rectangle?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
+<AnchorPane prefHeight="600.0" prefWidth="1030.0" stylesheets="@../../css/style.css" styleClass="background" xmlns="http://javafx.com/javafx/11.0.14-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="proiect.controller.ControllerLibrarian">
+   <children>
+      <Rectangle id="menu_bg" styleClass="rectangle" arcHeight="5.0" arcWidth="5.0" height="599.0" stroke="BLACK" strokeDashOffset="10.0" strokeType="INSIDE" strokeWidth="0.0" width="227.0">
+      </Rectangle>
+      <Button onAction= "#quit_app" layoutX="964.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="66.0" styleClass="exit" textFill="WHITE">
+         <font>
+            <Font name="Arial" size="11.0" />
+         </font>
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
+         <graphic>
+            <FontAwesomeIcon fill="WHITE" glyphName="CLOSE" size="15">
+               <font>
+                  <Font size="5.0" />
+               </font>
+            </FontAwesomeIcon>
+         </graphic>
+      </Button>
+
+      <Button onAction="#ClientShow" layoutY="216.0" mnemonicParsing="false"  prefHeight="40.0" prefWidth="227.0" text="CLIENTI">
+         <font>
+            <Font name="System Bold" size="15.0" />
+         </font>
+         <graphic>
+            <FontAwesomeIcon glyphName="USERS" size="20" styleClass="icon" wrappingWidth="30.0" />
+         </graphic>
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor></Button>
+      <Button onAction="#BookShow" layoutY="256.0" mnemonicParsing="false"  prefHeight="40.0" prefWidth="227.0" text="CARTI">
+         <font>
+            <Font name="System Bold" size="15.0" />
+         </font>
+         <graphic>
+            <FontAwesomeIcon glyphName="BOOK" size="20" styleClass="icon" wrappingWidth="30.0" />
+         </graphic>
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
+      </Button>
+      <Button onAction="#StatisticsShow" layoutY="296.0" mnemonicParsing="false"  prefHeight="40.0" prefWidth="227.0" text="STATISTICI">
+         <font>
+            <Font name="System Bold" size="15.0" />
+         </font>
+         <graphic>
+            <FontAwesomeIcon glyphName="BAR_CHART" size="20" styleClass="icon" wrappingWidth="30.0" />
+         </graphic>
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
+      </Button>
+      <ImageView fitHeight="124.0" fitWidth="126.0" layoutX="52.0" layoutY="25.0" pickOnBounds="true" preserveRatio="true" styleClass="white">
+         <image>
+            <Image url="@../../css/logo.png" />
+         </image></ImageView>
+      <Text fill="WHITE" layoutX="51.0" layoutY="175.0" stroke="BLACK" strokeDashOffset="10.0" strokeType="OUTSIDE" strokeWidth="0.0" text="LibraryApp">
+         <font>
+            <Font name="System Bold" size="24.0" />
+         </font>
+      </Text>
+
+      <StackPane fx:id="LibrarianPane"  prefWidth="730.0"
+                 prefHeight="600.0"
+                 layoutX="227.0"/>
+   </children>
+</AnchorPane>
