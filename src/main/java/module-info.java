@@ -12,4 +12,6 @@ module Biblioteca {
     exports proiect;
     exports proiect.controller;
     opens proiect.controller to javafx.fxml;
+    exports proiect.utils;
+    opens proiect.utils to javafx.fxml;
 }
