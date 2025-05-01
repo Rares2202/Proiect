@@ -12,7 +12,7 @@ public class LoadingController {
     @FXML
     private void handleLoginButton(ActionEvent event) {
         try {
-            Parent root = FXMLLoader.load(getClass().getResource("/proiect/view/login.fxml"));
+            Parent root = FXMLLoader.load(getClass().getResource("/proiect/fxml/loading.fxml"));
             Stage stage = new Stage();
             stage.setScene(new Scene(root));
             stage.show();

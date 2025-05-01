@@ -11,7 +11,7 @@ public class LoadingScreen {
 
     public LoadingScreen() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/proiect/view/loading.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("proiect/fxml/loading.fxml"));
             Parent root = loader.load();
             stage = new Stage();
             stage.setScene(new Scene(root));
