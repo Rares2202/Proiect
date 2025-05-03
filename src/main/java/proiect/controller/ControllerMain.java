@@ -9,7 +9,13 @@ import java.sql.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * The type Controller main.
+ */
 public class ControllerMain {
+    /**
+     * The Content pane.
+     */
     @FXML
     public StackPane contentPane;
     private ControllerUser controllerUser;
@@ -20,6 +26,9 @@ public class ControllerMain {
     private Pane LibrarianMain;
     private Pane Wellcome;
 
+    /**
+     * The Usr id.
+     */
     int usrId;
     private static final String DB_URL = "jdbc:mysql://localhost:3306/mydb";
     private static final String DB_USER = "root";
@@ -30,6 +39,9 @@ public class ControllerMain {
     private static final String regex = "^[A-Za-z0-9]+$";
 
 
+    /**
+     * Initialize.
+     */
     @FXML
     public void initialize() {
         try {
@@ -258,6 +270,9 @@ public class ControllerMain {
     }
 
 
+    /**
+     * Quit app.
+     */
     public void quit_app() {
         System.exit(0);
     }

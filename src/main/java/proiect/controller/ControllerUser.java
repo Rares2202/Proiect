@@ -15,6 +15,9 @@ import java.io.IOException;
 import java.sql.*;
 
 
+/**
+ * The type Controller user.
+ */
 public class ControllerUser {
 
     @FXML
@@ -26,7 +29,13 @@ public class ControllerUser {
     private Pane Preferinte;
     private Pane Review;
     private Pane Search;
+    /**
+     * The Userpane.
+     */
     public StackPane Userpane;
+    /**
+     * The User id.
+     */
     int userId=-1;
     private static final String DB_URL = "jdbc:mysql://localhost:3306/mydb";
     private static final String DB_USER = "root";
@@ -43,6 +52,10 @@ public class ControllerUser {
             "romanceCheckBox","scienceCheckBox","scienceFictionCheckBox","selfImprovementCheckBox"
     };
     private  List<String> preferinte = new ArrayList<>();
+
+    /**
+     * Initialize.
+     */
     public void initialize() {
         try {
 
@@ -69,6 +82,12 @@ public class ControllerUser {
             throw new RuntimeException(e);
         }
     }
+
+    /**
+     * Sets user id.
+     *
+     * @param userId the user id
+     */
     public void setUserId(int userId) {
         this.userId = userId;
         System.out.println("Received user ID: " + userId);
@@ -240,15 +259,31 @@ public class ControllerUser {
     }
 
 
+    /**
+     * Quit app.
+     */
     @FXML
     public void quit_app() {
         System.exit(0);
     }
+
+    /**
+     * Sets main controller.
+     *
+     * @param mainController the main controller
+     */
     public void setMainController(ControllerMain mainController) {
         this.mainController = mainController;
     }
 
 
+    /**
+     * Have preferences boolean.
+     *
+     * @param id the id
+     * @return the boolean
+     * @throws SQLException the sql exception
+     */
     Boolean havePreferences(int id) throws SQLException {
 
         try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {

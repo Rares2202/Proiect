@@ -9,6 +9,9 @@ import javafx.stage.StageStyle;
 
 import java.util.Date;
 
+/**
+ * The type Main app.
+ */
 public class MainApp extends Application {
 
 
@@ -40,6 +43,11 @@ public class MainApp extends Application {
 
     }
 
+    /**
+     * The entry point of application.
+     *
+     * @param args the input arguments
+     */
     public static void main(String[] args) {
 
         launch(args);
