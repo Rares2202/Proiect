@@ -1,12 +1,14 @@
 package proiect.controller;
 
+
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Insets;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.StackPane;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.layout.*;
 
 import java.util.*;
 import java.io.IOException;
@@ -15,7 +17,8 @@ import java.sql.*;
 
 public class ControllerUser {
 
-
+    @FXML
+    private ScrollPane scrollPane;
     private Pane Home;
     private Pane Imreading;
     private ControllerMain mainController;
@@ -28,6 +31,7 @@ public class ControllerUser {
     private static final String DB_URL = "jdbc:mysql://localhost:3306/mydb";
     private static final String DB_USER = "root";
     private static final String DB_PASSWORD = "simone";
+    private GridPane gridPane;
     private final String[] buttonIds = {
             "myreads", "imreading", "inchide", "submit", "search","home","review"
     };
@@ -41,12 +45,25 @@ public class ControllerUser {
     private  List<String> preferinte = new ArrayList<>();
     public void initialize() {
         try {
+
             Home = loadPane("/proiect/fxml/user/Home.fxml"); // Add Home pane
             Imreading = loadPane("/proiect/fxml/user/Imreading.fxml");
             Myreads = loadPane("/proiect/fxml/user/Myreads.fxml");
             Preferinte = loadPane("/proiect/fxml/user/Preferinte.fxml");
             Review = loadPane("/proiect/fxml/user/Review.fxml");
             Search = loadPane("/proiect/fxml/user/Search.fxml");
+           initializeHomeGrid();
+
+
+
+
+            // Adaugă conținut în GridPane
+
+            // Configurează ScrollPane
+
+
+
+
             Userpane.getChildren().setAll(Home);
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -253,5 +270,94 @@ public class ControllerUser {
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();
+    }
+
+
+    private void initializeHomeGrid() {
+        // Creează și configurează GridPane-ul
+        GridPane homeGrid = new GridPane();
+        int cols = 4;
+        int rows = 20;
+        int cellWidth = 130;
+        int cellHeight = 150;
+
+
+        // Populează grid-ul cu celule colorate
+        generateRandomColors(homeGrid);
+
+        // Calculează dimensiunea totală a gridului
+        double totalWidth = cols * (cellWidth );
+        double totalHeight = rows * (cellHeight )-600;
+
+        homeGrid.setPrefSize(totalWidth, totalHeight);
+
+        // Găsește ScrollPane-ul din scenă
+        ScrollPane scrollPane = (ScrollPane) Home.lookup("#scrollPane");
+
+        // Setează gridul ca și conținut
+        scrollPane.setContent(homeGrid);
+
+
+        // Ajustează dimensiunea ScrollPane-ului la dimensiunea gridului
+        scrollPane.setPrefViewportWidth(totalWidth);
+        scrollPane.setPrefViewportHeight(totalHeight);
+
+        // Dezactivează scrollul vertical
+        scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+
+        // Viteză personalizată pentru scroll (dacă e reactivat)
+        scrollPane.setOnScroll(event -> {
+            double deltaY = event.getDeltaY() * 0.005;
+            scrollPane.setVvalue(scrollPane.getVvalue() - deltaY);
+        });
+    }
+
+
+    private void generateRandomColors(GridPane gridPane) {
+        int cols = 4;
+        int rows = 15; // 20 rânduri, forțează scroll-ul
+        int gap=10;
+        int cellWidth = 130;
+        int cellHeight = 150;
+        gridPane.setHgap(3*gap);
+        gridPane.setVgap(gap);
+        Region region = new Region();
+        region.setPrefSize(70, 2250);
+        for (int row = 0; row < rows; row++) {
+            for (int col = 0; col < cols; col++) {
+                Region cell = new Region();
+                cell.setPrefSize(cellWidth, cellHeight);
+                double red = Math.random();
+                double green = Math.random();
+                double blue = Math.random();
+
+                cell.setStyle(String.format(
+                        "-fx-background-color: rgb(%d, %d, %d);",
+                        (int)(red * 255),
+                        (int)(green * 255),
+                        (int)(blue * 255)
+                ));
+
+                final int r = row;
+                final int c = col;
+
+                cell.setOnMouseClicked(event -> {
+                    double newRed = Math.random();
+                    double newGreen = Math.random();
+                    double newBlue = Math.random();
+
+                    cell.setStyle(String.format(
+                            "-fx-background-color: rgb(%d, %d, %d);",
+                            (int)(newRed * 255),
+                            (int)(newGreen * 255),
+                            (int)(newBlue * 255)
+                    ));
+
+                    System.out.println("Click pe celula: (" + r + ", " + c + ")");
+                });
+
+                gridPane.add(cell, col, row);
+            }
+        }
     }
 }

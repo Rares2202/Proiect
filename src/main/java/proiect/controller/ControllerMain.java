@@ -6,6 +6,9 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import java.io.IOException;
 import java.sql.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 public class ControllerMain {
     @FXML
     public StackPane contentPane;
@@ -24,6 +27,7 @@ public class ControllerMain {
     private final String[] buttonIds = {
             "register", "login", "inchide", "submit", "register1","login1"
     };
+    private static final String regex = "^[A-Za-z0-9]+$";
 
 
     @FXML
@@ -134,15 +138,31 @@ public class ControllerMain {
             showAlert("Invalid credentials.");
         }
     }
-
     private void register_reg() throws SQLException, IOException {
         TextField userField = (TextField) RegisterAuth.lookup("#username_reg");
         String username = userField.getText();
         PasswordField passField = (PasswordField) RegisterAuth.lookup("#password_reg");
         String password = String.valueOf(passField.getText());
+        Matcher matcher=null;
+        Pattern pattern = Pattern.compile(regex);
+        matcher = pattern.matcher(password);
         CheckBox librarian1 = (CheckBox) RegisterAuth.lookup("#librarian1");
         boolean isLibrarian = librarian1.isSelected();
         int newUserId = registerUser(username, password, isLibrarian);
+        if(username.length()<6||password.length()<6)
+        {
+            showAlert("Username or password too short.");
+            newUserId=-1;
+
+        }
+        if(!matcher.matches())
+        {
+            newUserId=-1;
+            showAlert("Invalid password.");
+            return;
+        }
+
+
         if (newUserId != -1) {
             usrId = newUserId;
             showAlert("Registration successful!");
