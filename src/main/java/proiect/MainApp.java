@@ -17,7 +17,21 @@ public class MainApp extends Application {
 
     private double xOffset = 0;
     private double yOffset = 0;
-
+    /**
+     * Initializeaza si afiseaza; fereastra principala a aplicatiei.
+     * <p>
+     * Aceasta metoda realizeaza urmatoarele actiuni principale:
+     * <ul>
+     *   <li>Incarca layout-ul din fifierul FXML</li>
+     *   <li>Adauga stylesheet-ul CSS</li>
+     *   <li>Implementeaza functionalitate de drag pentru ferestra</li>
+     *   <li>Configureaza fereastra sa fie fara bordura standard</li>
+     * </ul>
+     *
+     * @param mainStage Stage-ul primar al aplicatiei JavaFX
+     * @throws Exception Dac&#x103; apare o eroare la Incarcarea resurselor FXML sau CSS
+     * @author Simone
+     */
     @Override
     public void start(Stage mainStage) throws Exception {
         Parent window = FXMLLoader.load(getClass().getResource("fxml/MainApp.fxml"));
@@ -45,8 +59,9 @@ public class MainApp extends Application {
 
     /**
      * The entry point of application.
-     *
-     * @param args the input arguments
+     * <p> Metoda care lanseaza aplicatia </p>
+     * @Author George
+     * @param args Argumente input
      */
     public static void main(String[] args) {
 

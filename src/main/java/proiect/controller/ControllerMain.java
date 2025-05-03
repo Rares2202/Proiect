@@ -27,15 +27,30 @@ public class ControllerMain {
     private Pane Wellcome;
 
     /**
-     * The Usr id.
+     * Id-ul userului curent.
      */
     int usrId;
+    /**
+     * URL-ul la baza de date.
+     */
     private static final String DB_URL = "jdbc:mysql://localhost:3306/mydb";
+    /**
+     * Username-ul vostru de acces la baza de date.
+     */
     private static final String DB_USER = "root";
+    /**
+     * Parola pentru baza de date, aici introduceti fiecare parola voastra pe care v-ati configurat-o la baza voastra de date.
+     */
     private static final String DB_PASSWORD = "root";
+    /**
+     * Aici sunt definite id-urile butoanelor folosite in interfete
+     */
     private final String[] buttonIds = {
             "register", "login", "inchide", "submit", "register1","login1"
     };
+    /**
+     * Regex pentru parola.
+     */
     private static final String regex = "^[A-Za-z0-9]+$";
 
 
