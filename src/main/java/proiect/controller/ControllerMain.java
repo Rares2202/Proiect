@@ -13,7 +13,7 @@ public class ControllerMain {
     @FXML
     public StackPane contentPane;
     private ControllerUser controllerUser;
-    private ControllerLibrarian controllerLibrarian;
+
     private Pane LoginRegister;
     private Pane RegisterAuth;
     private Pane UserMain;
@@ -38,7 +38,6 @@ public class ControllerMain {
             LoginRegister = loadPane("/proiect/fxml/LoginRegister.fxml");
             RegisterAuth = loadPane("/proiect/fxml/RegisterAuth.fxml");
             UserMain=loadSpecialPane("/proiect/fxml/user/UserMain.fxml", ControllerUser.class);
-            LibrarianMain=loadSpecialPane("/proiect/fxml/librarian/LibrarianMain.fxml", ControllerLibrarian.class);
             contentPane.getChildren().setAll(Wellcome);
         } catch (IOException e) {
             e.printStackTrace();
@@ -100,11 +99,7 @@ public class ControllerMain {
         if (controllerClass == ControllerUser.class) {
             controllerUser = loader.getController();
             controllerUser.setMainController(this);
-        } else if (controllerClass == ControllerLibrarian.class) {
-            controllerLibrarian = loader.getController();
-            controllerLibrarian.setMainController(this);
         }
-
         return pane;
     }
 
@@ -129,7 +124,6 @@ public class ControllerMain {
             System.out.println("isLib: " + isLib);
             if (isLib) {
                 contentPane.getChildren().setAll(LibrarianMain);
-                controllerLibrarian.setMainController(this);
             } else {
                 contentPane.getChildren().setAll(UserMain);
                 controllerUser.setUserId(id);
@@ -176,7 +170,6 @@ public class ControllerMain {
             showAlert("Registration successful!");
             if (isLibrarian) {
                 contentPane.getChildren().setAll(LibrarianMain);
-                controllerLibrarian.setMainController(this);
             } else {
                 contentPane.getChildren().setAll(UserMain);
                 controllerUser.setUserId(newUserId);
