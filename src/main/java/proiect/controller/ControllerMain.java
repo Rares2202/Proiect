@@ -4,13 +4,18 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.control.*;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
+import org.w3c.dom.Text;
 
+import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.sql.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 /**
  * <p>Tipul controller main.</p>
  */
@@ -27,6 +32,7 @@ public class ControllerMain {
     private Pane UserMain;
     private Pane LibrarianMain;
     private Pane Wellcome;
+
 
     /**
      * <p>Id-ul userului curent.</p>
@@ -74,9 +80,7 @@ public class ControllerMain {
             e.printStackTrace();
         }
 
-
     }
-
     /**
      * <p>
      * Adauga functionalitati la butoane.

@@ -35,7 +35,7 @@
         <Rectangle id="menu_bg" styleClass="rectangle" arcHeight="5.0" arcWidth="5.0" height="599.0" stroke="BLACK" strokeDashOffset="10.0" strokeType="INSIDE" strokeWidth="0.0" width="227.0">
         </Rectangle>
         <TextField fx:id="username_log" layoutY="100" layoutX="400"/>
-        <Label layoutY="100" layoutX="300" text="Username:" />
+        <Label layoutY="100" layoutX="300" text="Username:"/>
         <PasswordField fx:id="password_log" layoutY="200" layoutX="400"/>
         <Label text="Password:" layoutX="300" layoutY="200"/>
         <Button fx:id="login" text="Login" layoutY="350" layoutX="400" styleClass="register"/>
