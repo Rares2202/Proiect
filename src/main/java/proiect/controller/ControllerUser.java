@@ -5,6 +5,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 
@@ -28,10 +29,9 @@ public class ControllerUser {
     private static final String DB_URL = "jdbc:mysql://localhost:3306/mydb";
     private static final String DB_USER = "root";
     private static final String DB_PASSWORD = "root";
-<<<<<<< Updated upstream
-=======
+
     private GridPane gridPane;
->>>>>>> Stashed changes
+
     private final String[] buttonIds = {
             "myreads", "imreading", "inchide", "submit", "search","home","review"
     };
