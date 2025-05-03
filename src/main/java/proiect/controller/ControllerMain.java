@@ -82,7 +82,7 @@ public class ControllerMain {
      * Adauga functionalitati la butoane.
      * </p>
      * @param fxmlPath
-     * @return
+     * @return Pane-ul cu butoanele functionale.
      * @throws IOException
      */
     private Pane loadPane(String fxmlPath) throws IOException {

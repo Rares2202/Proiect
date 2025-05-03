@@ -60,7 +60,7 @@ public class MainApp extends Application {
     /**
      * The entry point of application.
      * <p> Metoda care lanseaza aplicatia </p>
-     * @Author George
+     * @author George
      * @param args Argumente input
      */
     public static void main(String[] args) {

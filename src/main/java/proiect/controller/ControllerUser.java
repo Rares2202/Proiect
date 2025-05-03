@@ -95,7 +95,8 @@ public class ControllerUser {
     }
 
     /**
-     * <p>Creeaza pane-ul specific userului curent.</p>
+     * <p>Creeaza pane-ul specific userului curent.
+     * </p>
      */
     private void handleUserSpecificPanes() {
         try {
