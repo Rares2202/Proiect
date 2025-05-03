@@ -1,30 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import de.jensd.fx.glyphs.fontawesome.*?>
-<?import javafx.scene.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.text.*?>
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon?>
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
 
-<Pane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1">
+<Pane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
     <children>
-        <Button fx:id="inchide" layoutX="536.0" layoutY="14.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="66.0" styleClass="exit" textFill="WHITE">
+        <Button fx:id="inchide" layoutX="536.0" layoutY="-1.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="66.0" style="-fx-background-color: f70000;" styleClass="exit" textFill="WHITE">
             <font>
                 <Font name="Arial" size="11.0" />
             </font>
             <cursor>
                 <Cursor fx:constant="HAND" />
             </cursor>
-            <graphic>
-                <FontAwesomeIcon fill="WHITE" glyphName="CLOSE" size="15">
-                    <font>
-                        <Font size="5.0" />
-                    </font>
-                </FontAwesomeIcon>
-            </graphic>
         </Button>
-        <Label layoutX="200" layoutY="200" text="Imreading" />
-        <Button fx:id="home" layoutX="479.0" layoutY="350.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="90.0" styleClass="exit" text="Home">
+        <Button fx:id="home" layoutX="491.0" layoutY="356.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="90.0" text="Home">
             <font>
                 <Font name="Arial" size="15.0" />
             </font>
@@ -33,6 +25,11 @@
             </cursor>
 
         </Button>
+          <FontAwesomeIcon fill="WHITE" glyphName="CLOSE" layoutX="563.0" layoutY="19.0" size="15">
+              <font>
+                  <Font size="5.0" />
+              </font>
+          </FontAwesomeIcon>
     </children>
 
 </Pane>
