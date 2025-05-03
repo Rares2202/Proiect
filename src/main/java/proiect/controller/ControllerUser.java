@@ -16,7 +16,7 @@ import java.sql.*;
 
 
 /**
- * The type Controller user.
+ * Tipul controller user.
  */
 public class ControllerUser {
 
@@ -84,9 +84,9 @@ public class ControllerUser {
     }
 
     /**
-     * Sets user id.
+     * <p>Sets user id.</p>
      *
-     * @param userId the user id
+     * @param userId Id user.
      */
     public void setUserId(int userId) {
         this.userId = userId;
@@ -94,6 +94,9 @@ public class ControllerUser {
         handleUserSpecificPanes();
     }
 
+    /**
+     * <p>Creeaza pane-ul specific userului curent.</p>
+     */
     private void handleUserSpecificPanes() {
         try {
             if(this.userId != -1&&!havePreferences(this.userId)) {
@@ -106,6 +109,15 @@ public class ControllerUser {
             throw new RuntimeException(e);
         }
     }
+
+    /**
+     * <p>
+     *     Functionalitatile butoanelor.
+     * </p>
+     * @param fxmlPath Path catre pane-ul ce trebuie incarcat.
+     * @return pane-ul incarcat.
+     * @throws IOException
+     */
     private Pane loadPane(String fxmlPath) throws IOException {
         Pane pane = FXMLLoader.load(getClass().getResource(fxmlPath));
 
@@ -115,7 +127,9 @@ public class ControllerUser {
                 switch (buttonId) {
                     //in switch ul asta se vor adauga restul butoanelor pentru paneluri;
                     case "inchide":
-                        button.setOnAction(e -> quit_app());
+                        button.setOnMouseClicked(e -> {
+                            quit_app();
+                        });
 
                         break;
                     case "submit":
@@ -161,6 +175,14 @@ public class ControllerUser {
        }
         return pane;
     }
+
+    /**
+     * <p>
+     *     Pane-ul de selectare preferinte.
+     * </p>
+     * @param pane Pane-ul in care se vor pune genurile ca si checkmark.
+     * @return pane-ul incarcat
+     */
     private List<String> getSelectedGenres(Pane pane) {
         List<String> selectedGenres = new ArrayList<>();
         Map<String, String> genreMap = Map.ofEntries(
@@ -299,6 +321,13 @@ public class ControllerUser {
         }
         return false;
     }
+
+    /**
+     * <p>
+     *     Alerta eroare.
+     * </p>
+     * @param message
+     */
     private void showAlert(String message) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Pane Changed");
@@ -307,7 +336,11 @@ public class ControllerUser {
         alert.showAndWait();
     }
 
-
+    /**
+     * <p>
+     *     Creare home.
+     * </p>
+     */
     private void initializeHomeGrid() {
         // Creează și configurează GridPane-ul
         GridPane homeGrid = new GridPane();
@@ -347,8 +380,7 @@ public class ControllerUser {
         });
     }
 
-
-    private void generateRandomColors(GridPane gridPane) {
+        private void generateRandomColors(GridPane gridPane) {
         int cols = 4;
         int rows = 15; // 20 rânduri, forțează scroll-ul
         int gap=10;
