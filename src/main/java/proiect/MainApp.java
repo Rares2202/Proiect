@@ -37,9 +37,11 @@ public class MainApp extends Application {
         mainStage.initStyle(StageStyle.UNDECORATED);
         mainStage.setScene(scene);
         mainStage.show();
+
     }
 
     public static void main(String[] args) {
+
         launch(args);
     }
 }
