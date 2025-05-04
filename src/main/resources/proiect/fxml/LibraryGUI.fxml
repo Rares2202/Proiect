@@ -18,6 +18,7 @@
 <?import javafx.scene.paint.Color?>
 <?import javafx.scene.paint.LinearGradient?>
 <?import javafx.scene.paint.Stop?>
+<?import javafx.scene.shape.Line?>
 <?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
@@ -56,33 +57,33 @@
             </FontAwesomeIcon>
          </graphic>
       </Button>
-      <Button layoutY="216.0" mnemonicParsing="false" onMouseClicked="#OnClientiButtonClicked" prefHeight="40.0" prefWidth="227.0" text="CLIENTI">
+      <Button graphicTextGap="0.0" layoutY="216.0" mnemonicParsing="false" onMouseClicked="#OnClientiButtonClicked" prefHeight="40.0" prefWidth="227.0" styleClass="btn-main-menu" stylesheets="@../css/style.css" text="CLIENTI" textAlignment="JUSTIFY" AnchorPane.leftAnchor="0.0">
          <font>
             <Font name="System Bold" size="15.0" />
          </font>
-         <graphic>
-            <FontAwesomeIcon glyphName="USERS" size="20" styleClass="icon" wrappingWidth="30.0" />
-         </graphic>
          <cursor>
             <Cursor fx:constant="HAND" />
-         </cursor></Button>
-      <Button fx:id="cartiButton" layoutY="256.0" mnemonicParsing="false" onMouseClicked="#OnCartiButtonClicked" prefHeight="40.0" prefWidth="227.0" text="CARTI">
+         </cursor>
+         <graphic>
+            <FontAwesomeIcon fill="WHITE" glyphName="USERS" size="20" translateX="50.0" wrappingWidth="80.0" />
+         </graphic></Button>
+      <Button fx:id="cartiButton" layoutY="256.0" mnemonicParsing="false" onMouseClicked="#OnCartiButtonClicked" prefHeight="40.0" prefWidth="227.0" styleClass="btn-main-menu" stylesheets="@../css/style.css" text="CARTI" textAlignment="JUSTIFY">
          <font>
             <Font name="System Bold" size="15.0" />
          </font>
          <graphic>
-            <FontAwesomeIcon glyphName="BOOK" size="20" styleClass="icon" wrappingWidth="30.0" />
+            <FontAwesomeIcon glyphName="BOOK" size="20" styleClass="icon" translateX="50.0" wrappingWidth="80.0" />
          </graphic>
          <cursor>
             <Cursor fx:constant="HAND" />
          </cursor>
       </Button>
-      <Button layoutY="296.0" mnemonicParsing="false" onMouseClicked="#OnStatisticiButtonClicked" prefHeight="40.0" prefWidth="227.0" text="STATISTICI">
+      <Button layoutY="296.0" mnemonicParsing="false" onMouseClicked="#OnStatisticiButtonClicked" prefHeight="40.0" prefWidth="227.0" styleClass="btn-main-menu" stylesheets="@../css/style.css" text="STATISTICI" textAlignment="JUSTIFY">
          <font>
             <Font name="System Bold" size="15.0" />
          </font>
          <graphic>
-            <FontAwesomeIcon glyphName="BAR_CHART" size="20" styleClass="icon" wrappingWidth="30.0" />
+            <FontAwesomeIcon glyphName="BAR_CHART" size="20" styleClass="icon" translateX="50.0" wrappingWidth="80.0" />
          </graphic>
          <cursor>
             <Cursor fx:constant="HAND" />
@@ -97,6 +98,7 @@
             <Font name="System Bold" size="24.0" />
          </font>
       </Text>
+      <Line endX="100.0" layoutX="114.0" layoutY="200.0" startX="-100.0" stroke="WHITE" strokeLineCap="ROUND" strokeType="OUTSIDE" />
       <AnchorPane id="client_menu" fx:id="connectionFailed_menu" layoutX="227.0" layoutY="25.0" prefHeight="564.0" prefWidth="802.0" visible="false">
          <children>
             <Text fill="#868686" layoutX="289.0" layoutY="290.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Ups!...Conexiune esuata">
@@ -138,7 +140,7 @@
          <children>
             <TabPane layoutX="35.0" layoutY="56.0" prefHeight="486.0" prefWidth="748.0" tabClosingPolicy="UNAVAILABLE">
               <tabs>
-                <Tab text="REZERVARI">
+                <Tab text="IMPRUMUT">
                   <content>
                     <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="451.0" prefWidth="862.0">
                            <children>
@@ -157,11 +159,19 @@
                                     <Font name="System Bold" size="12.0" />
                                  </font>
                               </Button>
+                              <Button fx:id="btn_add_book" layoutY="409.0" mnemonicParsing="false" onMouseClicked="#AddBookToRezervari" prefHeight="28.0" prefWidth="126.0" styleClass="btn-tab" text="ADAUGA CARTE">
+                                 <font>
+                                    <Font name="System Bold" size="12.0" />
+                                 </font>
+                                 <graphic>
+                                    <FontAwesomeIcon fill="WHITE" glyphName="PLUS" size="15" />
+                                 </graphic>
+                              </Button>
                            </children>
                         </AnchorPane>
                   </content>
                 </Tab>
-                  <Tab text="INVENTAR">
+                  <Tab text="RETUR">
                      <content>
                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="490.0" prefWidth="746.0">
                            <children>
@@ -277,6 +287,42 @@
                     </columns>
                   </TableView>
                </children></AnchorPane>
+         </children>
+      </AnchorPane>
+      <AnchorPane fx:id="popup_menu_add_book" prefHeight="599.0" prefWidth="1040.0" styleClass="menu-small-bg" stylesheets="@../css/style.css">
+         <children>
+            <AnchorPane layoutX="262.0" layoutY="75.0" prefHeight="495.0" prefWidth="748.0" styleClass="menu-small-content" stylesheets="@../css/style.css">
+               <children>
+                  <Button fx:id="btn_anuleaza_add_book" layoutX="614.0" layoutY="453.0" mnemonicParsing="false" onMouseClicked="#CancelAddBook" prefHeight="27.0" prefWidth="110.0" styleClass="btn-cancel" stylesheets="@../css/style.css" text="ANULEAZA">
+                     <font>
+                        <Font name="System Bold" size="12.0" />
+                     </font>
+                     <graphic>
+                        <FontAwesomeIcon fill="WHITE" glyphName="CLOSE" size="15" />
+                     </graphic>
+                  </Button>
+                  <Label layoutX="49.0" layoutY="29.0" prefWidth="110.0" text="Cauta carte:">
+                     <font>
+                        <Font name="System Bold" size="17.0" />
+                     </font>
+                  </Label>
+                  <ScrollPane fx:id="ScrollPane2" hbarPolicy="NEVER" layoutX="49.0" layoutY="125.0" prefHeight="275.0" prefWidth="650.0" vbarPolicy="ALWAYS">
+                     <content>
+                        <VBox fx:id="list_search_books" layoutY="1.0" prefHeight="271.0" prefWidth="646.0" styleClass="vbox" />
+                     </content>
+                  </ScrollPane>
+                  <AnchorPane layoutX="149.0" layoutY="75.0" prefHeight="32.0" prefWidth="450.0" styleClass="search-bar">
+                     <children>
+                        <TextField fx:id="textField_add_book" layoutX="34.0" layoutY="4.0" prefHeight="25.0" prefWidth="410.0" promptText="Cauta carte" />
+                        <FontAwesomeIcon fill="#00831f" glyphName="SEARCH" layoutX="14.0" layoutY="21.0" size="15" text="">
+                           <font>
+                              <Font size="20.0" />
+                           </font>
+                        </FontAwesomeIcon>
+                     </children>
+                  </AnchorPane>
+               </children>
+            </AnchorPane>
          </children>
       </AnchorPane>
       <AnchorPane fx:id="popup_menu_validation" layoutX="-6.0" layoutY="-9.0" prefHeight="609.0" prefWidth="1046.0" visible="false">

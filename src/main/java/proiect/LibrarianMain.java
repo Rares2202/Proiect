@@ -16,10 +16,10 @@ public class LibrarianMain extends Application {
     @Override
     public void start(Stage mainStage) throws IOException {
         //load fxml file
-        Parent mainAPP = FXMLLoader.load(getClass().getResource("fxml/idk.fxml"));
+        Parent mainAPP = FXMLLoader.load(getClass().getResource("fxml/LibraryGUI.fxml"));
 
         //create GUI
-        Scene scene = new Scene(mainAPP );
+        Scene scene = new Scene(mainAPP);
         scene.getStylesheets().add(this.getClass().getResource("css/style.css").toExternalForm());
 
         //enable window moveing on screen
@@ -38,12 +38,10 @@ public class LibrarianMain extends Application {
         mainStage.initStyle(StageStyle.UNDECORATED);
         mainStage.setScene(scene);
         mainStage.show();
-
-
-
     }
 
     public static void main(String[] args) {
+        System.out.println("Pornire aplicatie.");
         launch();
     }
 }

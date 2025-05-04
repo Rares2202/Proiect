@@ -13,4 +13,9 @@ public abstract class user {
     public String getID() {
         return id;
     }
+    //public Database db;
+
+    void f()
+    {
+    }
 }
