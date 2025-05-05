@@ -1,4 +1,4 @@
-.background{
+#background{
     -fx-background-color: radial-gradient(center 50% 50%, radius 50%,rgba(255,255,255,0.6909138655462185) 0%, rgba(218,218,218,1) 100%);
 }
 

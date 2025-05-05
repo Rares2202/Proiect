@@ -20,31 +20,31 @@
                     <dependency>
                         <groupId>org.openjfx</groupId>
                         <artifactId>javafx-controls</artifactId>
-                        <version>17.0.12</version>
+                        <version>17.0.6</version>
                     </dependency>
                 <!-- fxml -->
                     <dependency>
                         <groupId>org.openjfx</groupId>
                         <artifactId>javafx-fxml</artifactId>
-                        <version>17.0.12</version>
+                        <version>17.0.6</version>
                     </dependency>
                 <!-- web -->
                     <dependency>
                         <groupId>org.openjfx</groupId>
                         <artifactId>javafx-web</artifactId>
-                        <version>17.0.12</version>
+                        <version>17.0.6</version>
                     </dependency>
                 <!-- swing -->
                     <dependency>
                         <groupId>org.openjfx</groupId>
                         <artifactId>javafx-swing</artifactId>
-                        <version>17.0.12</version>
+                        <version>17.0.6</version>
                     </dependency>
                 <!-- media -->
                     <dependency>
                         <groupId>org.openjfx</groupId>
                         <artifactId>javafx-media</artifactId>
-                        <version>17.0.12</version>
+                        <version>17.0.6</version>
                     </dependency>
                 <!-- FontAwsomeFX -->
                     <dependency>
@@ -71,7 +71,7 @@
                         <!-- Default configuration for running with: mvn clean javafx:run -->
                         <id>default-cli</id>
                         <configuration>
-                            <mainClass>proiect.LibrarianGUI</mainClass>
+                            <mainClass>proiect.LibrarianMain</mainClass>
                             <launcher>app</launcher>
                             <jlinkZipName>app</jlinkZipName>
                             <jlinkImageName>app</jlinkImageName>
