@@ -22,7 +22,7 @@
                 <Cursor fx:constant="HAND" />
             </cursor>
             <graphic>
-                <FontAwesomeIcon fill="Black" glyphName="CLOSE" size="15">
+                <FontAwesomeIcon fill="white" glyphName="CLOSE" size="15">
                     <font>
                         <Font size="15.0" />
                     </font>

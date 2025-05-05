@@ -17,18 +17,20 @@
     -fx-fill: white;
 }
 
-#exit {
+.exit {
     -fx-background-radius: 0;
     -fx-background-color: transparent;
     -fx-font-weight: bold;
-
+    -fx-text-fill: green;
     -fx-transition: 0.4s;
 }
 
 
-#exit:hover{
-    -fx-background-color: rgba(0, 0, 0, 0.2);
+.exit:hover{
+
+    -fx-background-color: rgba(255, 0, 0, 1);
     -fx-font-weight: bold;
+    -fx-text-fill: white;
 
 
 }
@@ -50,7 +52,7 @@
 }
 
 .scroll-pane{
-    -fx-border-color: green;
+    -fx-border-color: transparent;
     -fx-border-width: 2px;
     -fx-background-color: white;
 }
@@ -224,4 +226,7 @@
 {
     -fx-pref-height:1050px;
    -fx-pref-width: 600px;
+}
+
+.exit {
 }

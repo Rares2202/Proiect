@@ -1,13 +1,20 @@
 package proiect;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.Parent;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
 
 import java.util.Date;
+import java.util.Objects;
+
+import static proiect.MainApp.ImageUtils.showImage;
 
 public class MainApp extends Application {
 
@@ -40,8 +47,39 @@ public class MainApp extends Application {
 
     }
 
-    public static void main(String[] args) {
+    /**
+     * <li>Metoda pentru vizualizare imagine </li>
+     */
+    public class ImageUtils {
 
+        public static void showImage(String imagePath, String windowTitle, int width, int height) {
+            javafx.application.Platform.runLater(() -> {
+                try {
+                    // Folosim clasa ImageUtils pentru încărcare
+                    javafx.scene.image.Image image = new javafx.scene.image.Image(
+                            ImageUtils.class.getResourceAsStream(imagePath) // <- CORECT
+                    );
+
+                    // Restul codului rămâne la fel
+                    javafx.scene.image.ImageView imageView = new javafx.scene.image.ImageView(image);
+                    imageView.setPreserveRatio(true);
+                    imageView.setFitWidth(width - 20);
+
+                    javafx.stage.Stage stage = new javafx.stage.Stage();
+                    stage.setTitle(windowTitle);
+                    stage.setScene(new javafx.scene.Scene(
+                            new javafx.scene.layout.StackPane(imageView), width, height));
+                    stage.show();
+
+                } catch (Exception e) {
+                    System.err.println("Eroare: " + e.getMessage());
+                }
+            });
+        }
+    }
+
+    public static void main(String[] args) {
+        //showImage("/proiect/css/plus.png","Title", 600, 600);
         launch(args);
     }
 }

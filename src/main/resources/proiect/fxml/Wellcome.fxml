@@ -10,7 +10,7 @@
 <?import javafx.scene.image.ImageView?>
 <Pane prefHeight="600.0" prefWidth="1030.0" styleClass="wellcome_background" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1">
     <children>
-        <Button fx:id="inchide" layoutX="964.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="66.0" styleClass="exit" textFill="WHITE">
+        <Button fx:id="inchide" layoutX="964.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="66.0" styleClass="exit" >
             <font>
                 <Font name="Arial" size="11.0" />
             </font>
@@ -18,7 +18,7 @@
                 <Cursor fx:constant="HAND" />
             </cursor>
             <graphic>
-                <FontAwesomeIcon fill="WHITE" glyphName="CLOSE" size="15">
+                <FontAwesomeIcon fill="GREEN" glyphName="CLOSE" size="15">
                     <font>
                         <Font size="5.0" />
                     </font>

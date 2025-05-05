@@ -51,7 +51,7 @@
                 <Cursor fx:constant="HAND" />
             </cursor>
             <graphic>
-                <FontAwesomeIcon fill="WHITE" glyphName="CLOSE" size="15">
+                <FontAwesomeIcon fill="green" glyphName="CLOSE" size="15">
                     <font>
                         <Font size="5.0" />
                     </font>
@@ -59,19 +59,15 @@
             </graphic>
         </Button>
         <Pane styleClass="carte" layoutY="100" layoutX="400" prefHeight="300" prefWidth="230"> </Pane>
-        <Button fx:id="review" layoutX="835.0" layoutY="250"
-                  styleClass="altebutoane" text="Rezerva">
-            <font>
-                <Font name="Arial" size="15.0" />
-            </font>
-            <cursor>
-                <Cursor fx:constant="HAND" />
-            </cursor>
+        <Button fx:id="review" layoutX="835.0" layoutY="250"/>
 
-        </Button>
+        <Pane fx:id="review1" layoutX="835.0" layoutY="250" prefWidth="150" prefHeight="50">
+            <!-- Stars will be added programmatically -->
+        </Pane>
+
 
         <Button fx:id="rezerva" layoutX="835.0" layoutY="300"
-                styleClass="altebutoane" text="Review">
+                styleClass="altebutoane" text="Rezerva">
             <font>
                 <Font name="Arial" size="15.0" />
             </font>

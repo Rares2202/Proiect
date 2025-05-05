@@ -50,7 +50,7 @@
                 <Cursor fx:constant="HAND" />
             </cursor>
             <graphic>
-                <FontAwesomeIcon fill="WHITE" glyphName="CLOSE" size="15">
+                <FontAwesomeIcon fill="green" glyphName="CLOSE" size="15">
                     <font>
                         <Font size="5.0" />
                     </font>
@@ -65,10 +65,11 @@
 
 
     <ScrollPane fx:id="scrollPane"
+
                 fitToWidth="false"
                 fitToHeight="false"
                prefHeight="500"
-                prefWidth="600"
+                prefWidth="660"
                 layoutY="70" layoutX="300">
     </ScrollPane>
 
