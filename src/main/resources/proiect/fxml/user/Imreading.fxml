@@ -6,6 +6,7 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
+<?import javafx.scene.control.ScrollPane?>
 <Pane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
     <children>
         <Button fx:id="inchide" layoutX="964.0" layoutY="0" mnemonicParsing="false" prefHeight="30.0" prefWidth="66.0" style="-fx-background-color: f70000;" styleClass="exit" textFill="WHITE">
@@ -17,6 +18,7 @@
             </cursor>
         </Button>
         <Button fx:id="home" layoutX="491.0" layoutY="356.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="90.0" text="Home">
+        <Button fx:id="home" layoutX="591.0" layoutY="356.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="90.0" text="Home" style="-fx-background-color: f808080">
             <font>
                 <Font name="Arial" size="15.0" />
             </font>
@@ -31,5 +33,16 @@
               </font>
           </FontAwesomeIcon>
     </children>
+
+
+    <ScrollPane fx:id="scrollPane"
+                fitToWidth="false"
+                fitToHeight="false"
+                prefHeight="500"
+                prefWidth="600"
+                layoutY="70" layoutX="300">
+    </ScrollPane>
+
+
 
 </Pane>
