@@ -22,15 +22,15 @@ public class MainApp extends Application {
      * <p>
      * Aceasta metoda realizeaza urmatoarele actiuni principale:
      * <ul>
-     *   <li>Incarca layout-ul din fifierul FXML</li>
-     *   <li>Adauga stylesheet-ul CSS</li>
-     *   <li>Implementeaza functionalitate de drag pentru ferestra</li>
-     *   <li>Configureaza fereastra sa fie fara bordura standard</li>
+     *   <li>Incarca layout-ul din fisierul FXML.</li>
+     *   <li>Adauga stylesheet-ul CSS.</li>
+     *   <li>Implementeaza functionalitate de drag pentru ferestra.</li>
+     *   <li>Configureaza fereastra sa fie fara bordura standard.</li>
      * </ul>
      *
-     * @param mainStage Stage-ul primar al aplicatiei JavaFX
-     * @throws Exception Dac&#x103; apare o eroare la Incarcarea resurselor FXML sau CSS
-     * @author Simone
+     * @param mainStage Stage-ul primar al aplicatiei JavaFX.
+     * @throws Exception Dac&#x103; apare o eroare la Incarcarea resurselor FXML sau CSS.
+     * @author Simone.
      */
     @Override
     public void start(Stage mainStage) throws Exception {

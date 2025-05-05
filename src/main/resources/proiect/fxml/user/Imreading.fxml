@@ -17,7 +17,6 @@
                 <Cursor fx:constant="HAND" />
             </cursor>
         </Button>
-        <Button fx:id="home" layoutX="491.0" layoutY="356.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="90.0" text="Home">
         <Button fx:id="home" layoutX="591.0" layoutY="356.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="90.0" text="Home" style="-fx-background-color: f808080">
             <font>
                 <Font name="Arial" size="15.0" />
