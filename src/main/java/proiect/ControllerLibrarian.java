@@ -24,23 +24,34 @@ import java.util.*;
 import java.util.concurrent.Executor;
 
 
+/**
+ * Clasa ce implementeaza Controllerul pentru Librarian.
+ */
 public class ControllerLibrarian{
 
-    //Meniu Client
+    /**
+     * Meniu client.
+     */
     public AnchorPane client_menu;
     public VBox list_search_clients;
     public ScrollPane ScrollPane;
 
-    //Meniu Client_Detalii
+    /**
+     * Detalii meniu client.
+     */
     public AnchorPane client_menu_details;
     public Text clienti_menu_clientName;
     public Label clienti_menu_phone;
     public Label clienti_menu_mail;
 
-    //Meniu Carti
+    /**
+     * Meniu carti.
+     */
     public AnchorPane books_menu;
 
-    //Meniu Statistici
+    /**
+     * Meniu statistici.
+     */
     public AnchorPane statistici_menu;
 
 
