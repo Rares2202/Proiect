@@ -19,7 +19,6 @@ public class ControllerMain {
     private Pane RegisterAuth;
     private Pane UserMain;
     private Pane LibrarianMain;
-    private Pane Wellcome;
 
     int usrId;
     private static final String DB_URL = "jdbc:mysql://localhost:3306/mydb";
@@ -35,12 +34,12 @@ public class ControllerMain {
     public void initialize() {
         try {
 
-            Wellcome=loadPane("/proiect/fxml/Wellcome.fxml");
+            Pane wellcome = loadPane("/proiect/fxml/Wellcome.fxml");
             LoginRegister = loadPane("/proiect/fxml/LoginRegister.fxml");
             RegisterAuth = loadPane("/proiect/fxml/RegisterAuth.fxml");
             UserMain=loadSpecialPane("/proiect/fxml/user/UserMain.fxml", ControllerUser.class);
             LibrarianMain=loadSpecialPane("/proiect/fxml/librarian/LibrarianMain.fxml", ControllerLibrarian.class);
-            contentPane.getChildren().setAll(Wellcome);
+            contentPane.getChildren().setAll(wellcome);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -56,7 +55,7 @@ public class ControllerMain {
             if (button != null) {
                 switch (buttonId) {
                     case "register":
-                        button.setOnAction(e -> {
+                        button.setOnAction(_ -> {
                             try {
                                 register_reg();
                             } catch (SQLException ex) {
@@ -67,7 +66,7 @@ public class ControllerMain {
                         });
                         break;
                     case "login":
-                        button.setOnAction(e -> {
+                        button.setOnAction(_ -> {
                             try {
                                 login();
                             } catch (IOException ex) {
@@ -76,14 +75,14 @@ public class ControllerMain {
                         });
                         break;
                     case "register1":
-                        button.setOnAction(e -> register());
+                        button.setOnAction(_ -> register());
                         break;
                     case "inchide":
-                        button.setOnAction(e -> quit_app());
+                        button.setOnAction(_ -> quit_app());
 
                         break;
                     case "login1":
-                        button.setOnAction(e -> login1());
+                        button.setOnAction(_ -> login1());
                         break;
 
 

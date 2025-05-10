@@ -8,7 +8,7 @@
 
 <Pane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1">
     <children>
-        <Button fx:id="inchide" layoutX="536.0" layoutY="14.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="66.0" styleClass="exit" textFill="WHITE">
+        <Button fx:id="inchide" layoutX="536.0" layoutY="5" mnemonicParsing="false" prefHeight="30.0" prefWidth="66.0" styleClass="exit" textFill="WHITE">
             <font>
                 <Font name="Arial" size="11.0" />
             </font>
@@ -16,7 +16,7 @@
                 <Cursor fx:constant="HAND" />
             </cursor>
             <graphic>
-                <FontAwesomeIcon fill="green" glyphName="CLOSE" size="15">
+                <FontAwesomeIcon fill="black" glyphName="CLOSE" size="17">
                     <font>
                         <Font size="5.0" />
                     </font>
