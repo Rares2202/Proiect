@@ -50,21 +50,20 @@
         <Pane  styleClass="user_rectangle"  prefHeight="600.0" prefWidth="227.0">
             <ImageView fitHeight="124.0" fitWidth="126.0" layoutX="52.0" layoutY="25.0" pickOnBounds="true" preserveRatio="true" styleClass="white">
                 <image>
-                    <Image url="@../../css/myReads.png" />
+                    <Image url="@../../css/logo.png" />
                 </image></ImageView>
-            <Text fill="WHITE" layoutX="51.0" layoutY="175.0" stroke="BLACK" strokeDashOffset="10.0" strokeType="OUTSIDE" strokeWidth="0.0" text="MyReads">
+            <Text fill="WHITE" layoutX="61.0" layoutY="175.0" stroke="BLACK" strokeDashOffset="10.0" strokeType="OUTSIDE" strokeWidth="0.0" text="MyReads">
                 <font>
                     <Font name="System Bold" size="24.0" />
                 </font>
             </Text>
 
         </Pane>
-<ScrollPane  fx:id="myReadsScroll"
+<ScrollPane  fx:id="myReadsPane"
              fitToWidth="false"
              fitToHeight="false"
-             prefHeight="500"
-             prefWidth="680"
-             layoutY="70" layoutX="290"></ScrollPane>
+             layoutY="70" layoutX="250"
+             style="-fx-background-color: transparent; -fx-border-color: transparent;"></ScrollPane>
 
     </children>
 

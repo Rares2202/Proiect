@@ -1,14 +1,38 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import de.jensd.fx.glyphs.fontawesome.*?>
+<?import java.lang.*?>
+<?import java.util.*?>
 <?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.text.*?>
 
-<Pane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1">
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.text.Text?>
+<Pane xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+
+      prefHeight="400.0" prefWidth="600.0">
     <children>
-        <Button fx:id="inchide" layoutX="536.0" layoutY="5" mnemonicParsing="false" prefHeight="30.0" prefWidth="66.0" styleClass="exit" textFill="WHITE">
+        <HBox fx:id="topNav" layoutX="0" layoutY="0" prefWidth="1030" styleClass="topnav">
+            <children>
+
+
+                <Button fx:id="home" styleClass="search-button" translateX="230">
+                    <graphic>
+                        <ImageView fitHeight="30" fitWidth="30" preserveRatio="true">
+                            <image>
+                                <Image url="@../../css/back.png" />
+                            </image>
+                        </ImageView>
+                    </graphic>
+                </Button>
+
+            </children>
+        </HBox>
+        <Button fx:id="inchide"  layoutX="964.0"  mnemonicParsing="false"  layoutY="5"  prefHeight="30.0" prefWidth="66.0" styleClass="exit" textFill="WHITE">
             <font>
                 <Font name="Arial" size="11.0" />
             </font>
@@ -23,16 +47,25 @@
                 </FontAwesomeIcon>
             </graphic>
         </Button>
-        <Label layoutX="200" layoutY="200" text="Imreading" />
-        <Button fx:id="home" layoutX="479.0" layoutY="350.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="90.0" styleClass="exit" text="Home">
-            <font>
-                <Font name="Arial" size="15.0" />
-            </font>
-            <cursor>
-                <Cursor fx:constant="HAND" />
-            </cursor>
+        <Pane  styleClass="user_rectangle"  prefHeight="600.0" prefWidth="227.0">
+            <ImageView fitHeight="124.0" fitWidth="126.0" layoutX="52.0" layoutY="25.0" pickOnBounds="true" preserveRatio="true" styleClass="white">
+                <image>
+                    <Image url="@../../css/logo.png" />
+                </image></ImageView>
+            <Text fill="WHITE" layoutX="41.0" layoutY="175.0" stroke="BLACK" strokeDashOffset="10.0" strokeType="OUTSIDE" strokeWidth="0.0" text="I'm Reading!">
+                <font>
+                    <Font name="System Bold" size="24.0" />
+                </font>
+            </Text>
 
-        </Button>
+        </Pane>
+        <ScrollPane  fx:id="myReadsScroll"
+                     fitToWidth="false"
+                     fitToHeight="false"
+                     prefHeight="500"
+                     prefWidth="680"
+                     layoutY="70" layoutX="290"></ScrollPane>
+
     </children>
 
 </Pane>

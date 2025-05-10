@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.image.*?>
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon?>
+<?import javafx.scene.text.Font?>
+
+<?import javafx.scene.Cursor?>
+<Pane xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      prefHeight="600.0" prefWidth="800.0">
+
+    <!-- Bara de navigare superioară -->
+    <HBox fx:id="topNav" layoutX="0" layoutY="0" prefWidth="1030" styleClass="topnav">
+        <children>
+            <HBox styleClass="search-container" translateX="300">
+                <TextField fx:id="searchField" prefWidth="200" promptText="Caută..." styleClass="search-field" />
+                <Button fx:id="search" styleClass="search-button">
+                    <graphic>
+                        <ImageView fitHeight="20" fitWidth="20" preserveRatio="true">
+                            <image>
+                                <Image url="@../../css/search.png" />
+                            </image>
+                        </ImageView>
+                    </graphic>
+                </Button>
+            </HBox>
+            <Button fx:id="home" styleClass="search-button" translateX="-450" translateY="10">
+                <graphic>
+                    <ImageView fitHeight="30" fitWidth="30" preserveRatio="true">
+                        <image>
+                            <Image url="@../../css/back.png" />
+                        </image>
+                    </ImageView>
+                </graphic>
+            </Button>
+        </children>
+    </HBox>
+
+    <!-- Buton de închidere -->
+    <Button fx:id="inchide" layoutX="964.0" layoutY="10" mnemonicParsing="false" prefHeight="30.0" prefWidth="66.0" styleClass="exit" textFill="WHITE">
+        <font>
+            <Font name="Arial" size="11.0" />
+        </font>
+        <cursor>
+            <Cursor fx:constant="HAND" />
+        </cursor>
+        <graphic>
+            <FontAwesomeIcon fill="black" glyphName="CLOSE" size="17">
+                <font>
+                    <Font size="5.0" />
+                </font>
+            </FontAwesomeIcon>
+        </graphic>
+    </Button>
+    <!-- Panoul principal pentru rezultate -->
+    <VBox fx:id="mainContainer" layoutX="200" layoutY="70" prefWidth="800" prefHeight="530">
+        <ScrollPane fx:id="resultsScrollPane"
+                    fitToWidth="true"
+                    fitToHeight="true"
+                    hbarPolicy="NEVER"
+                    vbarPolicy="AS_NEEDED"
+                    style="-fx-background-color: transparent; -fx-border-color: transparent;">
+            <!-- Conținutul va fi adăugat programatic -->
+        </ScrollPane>
+    </VBox>
+</Pane>

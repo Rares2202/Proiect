@@ -106,8 +106,62 @@ public List<Book> SELECT_ALL_FROM_BOOKS(String query, String DB_URL, String DB_U
         return books;
 }
 
+public List<String>SELECT_COVER_FROM_MYREADS( String DB_URL, String DB_USER, String DB_PASS,int userId)
+{
+    List<String> covers = new ArrayList<>();
+    String query = "SELECT coverCarte FROM myreads WHERE user_idUser=?";
 
+    try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASS);
 
+         PreparedStatement stmt = conn.prepareStatement(query)) {
+        stmt.setInt(1,userId );
+        ResultSet rs = stmt.executeQuery();
+
+        while (rs.next()) {
+            String coverUrl = rs.getString("coverCarte");
+            if (coverUrl != null && !coverUrl.isEmpty()) {
+                covers.add(coverUrl);
+            }
+        }
+    } catch (SQLException e) {
+        System.err.println("Error fetching myreads covers: " + e.getMessage());
+    }
+
+    return covers;
+}
+    public List<Book> REZULTATE(String DB_URL, String DB_USER, String DB_PASS, String titlu, String autor) {
+        List<Book> books = new ArrayList<>();
+        // Folosim PreparedStatement cu parametri corecți pentru LIKE
+        String query = "SELECT * FROM carte WHERE titluCarti LIKE ? OR autorCarte LIKE ?";
+
+        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASS);
+             PreparedStatement stmt = connection.prepareStatement(query)) {
+
+            // Setăm parametrii pentru căutare (adaugăm % pentru wildcard)
+            stmt.setString(1, "%" + titlu + "%");
+            stmt.setString(2, "%" + autor + "%");
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    Book book = new Book(
+                            rs.getInt("idCarte"),
+                            rs.getString("titluCarti"),  // Corectat din "titluCarti"
+                            rs.getString("autorCarte"),
+                            rs.getString("descriere"),
+                            rs.getString("genCarte"),
+                            rs.getInt("numarCarte"),
+                            rs.getString("coverCarte")
+                    );
+                    books.add(book);
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Error fetching books: " + e.getMessage());
+        }
+
+        System.out.println(books.size() + " books found");
+        return books;
+    }
 
   public void showAlert(String message) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
