@@ -1,4 +1,4 @@
-package proiect.clase;
+package proiect.claseUser;
 
 import javafx.animation.FillTransition;
 import javafx.scene.control.Button;

@@ -59,12 +59,30 @@
             </Text>
 
         </Pane>
-        <ScrollPane  fx:id="myReadsScroll"
-                     fitToWidth="false"
-                     fitToHeight="false"
-                     prefHeight="500"
-                     prefWidth="680"
-                     layoutY="70" layoutX="290"></ScrollPane>
+        <Text fill="Black" layoutX="241.0" layoutY="75.0" stroke="BLACK" strokeDashOffset="10.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Waiting for approval...">
+            <font>
+                <Font name="System Bold" size="16.0" />
+            </font>
+        </Text>
+        <Text fill="Black" layoutX="241.0" layoutY="330.0" stroke="BLACK" strokeDashOffset="10.0" strokeType="OUTSIDE" strokeWidth="0.0" text="I'm reading">
+            <font>
+                <Font name="System Bold" size="16.0" />
+            </font>
+        </Text>
+        <GridPane fx:id="booksGrid"
+                  alignment="CENTER"
+                  style="-fx-padding: 20;"
+                  layoutX="170"
+                  layoutY="70"
+        prefWidth="770">
+
+        </GridPane>
+        <ImageView fx:id="trashImReading" fitHeight="42.0" fitWidth="38.0" layoutX="982.0" layoutY="535.0"
+                   pickOnBounds="true" preserveRatio="true" >
+            <image>
+                <Image url="@../../css/trash.png" />
+            </image>
+        </ImageView>
 
     </children>
 

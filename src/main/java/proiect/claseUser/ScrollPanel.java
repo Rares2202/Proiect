@@ -1,43 +1,48 @@
-package proiect.clase;
-
+package proiect.claseUser;
+import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
+import javafx.geometry.Pos;
 import javafx.scene.paint.Color;
-
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
-public class myReadsScroll extends ScrollPane {
+public class ScrollPanel extends ScrollPane {
     private final int cols = 4;
-    private int rows;
+    private final int rows = 15;
     private final int cellWidth = 170;
     private final int cellHeight = 250;
     private final int gap = 10;
+
     private GridPane gridPane;
     private List<String> coverUrls;
     private int userId;
     private static final String DB_URL = "jdbc:mysql://localhost:3306/mydb";
     private static final String DB_USER = "root";
     private static final String DB_PASSWORD = "simone";
-    private Consumer<String> onCoverClickHandler;
 
-    public myReadsScroll(int userId) {
+    private Consumer<String> onCoverClickHandler;
+    private Consumer<String> onPlusButtonClickHandler;
+
+    public ScrollPanel(int userId) {
         this.userId = userId;
+
         initialize();
     }
 
-    public void initialize() {
+    private void initialize() {
+        // Configure scroll pane properties
         this.setHbarPolicy(ScrollBarPolicy.AS_NEEDED);
         this.setVbarPolicy(ScrollBarPolicy.NEVER);
         this.setFitToWidth(true);
-
         gridPane = new GridPane();
         gridPane.setHgap(gap);
         gridPane.setVgap(gap);
-
         loadCoverUrls();
         generateGridContent();
         this.setContent(gridPane);
@@ -45,58 +50,52 @@ public class myReadsScroll extends ScrollPane {
 
     private void loadCoverUrls() {
         DBComands dbComands = new DBComands();
-        coverUrls = dbComands.SELECT_COVER_FROM_MYREADS(DB_URL, DB_USER, DB_PASSWORD, userId);
-        rows = (int) Math.ceil((double) coverUrls.size() / cols);
-        if (rows == 0) rows = 1;
+        String query = "SELECT coverCarte FROM carte WHERE coverCarte IS NOT NULL";
+        List<Book> books = dbComands.SELECT_ALL_FROM_BOOKS(query, DB_URL, DB_USER, DB_PASSWORD);
+
+        this.coverUrls = new ArrayList<>();
+        for (Book book : books) {
+            if (book.getCoverUrl() != null) {
+                coverUrls.add(book.getCoverUrl());
+            }
+        }
     }
 
     private void generateGridContent() {
-        gridPane.getChildren().clear();
-        // Adăugăm spacer la stânga
+        Image plusImage = loadPlusIcon();
 //        Pane leftSpacer = new Pane();
 //        leftSpacer.setPrefWidth(30);
 //        GridPane.setRowSpan(leftSpacer, rows);
 //        gridPane.add(leftSpacer, 0, 0);
-
-        // Adăugăm cărțile
         int coverIndex = 0;
         for (int row = 0; row < rows; row++) {
             for (int col = 0; col < cols; col++) {
+                StackPane cell = createCell(plusImage, coverIndex);
+                gridPane.add(cell, col + 1, row);
+
                 if (coverIndex < coverUrls.size()) {
-                    StackPane cell = createCell(coverIndex);
-                    gridPane.add(cell, col + 1, row);
                     coverIndex++;
-                } else {
-                    StackPane emptyCell = createEmptyCell();
-                    gridPane.add(emptyCell, col + 1, row);
                 }
             }
         }
     }
 
-    private StackPane createCell(int coverIndex) {
+    private StackPane createCell(Image plusImage, int coverIndex) {
         StackPane cell = new StackPane();
         cell.setPrefSize(cellWidth, cellHeight);
-
         Region background = createCellBackground(coverIndex);
-        cell.getChildren().add(background);
-
+        Button saveButton = createSaveButton(plusImage, coverIndex);
+        cell.getChildren().addAll(background, saveButton);
         if (isValidCoverIndex(coverIndex)) {
             cell.setOnMouseClicked(event -> {
                 if (onCoverClickHandler != null) {
                     onCoverClickHandler.accept(coverUrls.get(coverIndex));
                 }
             });
+
             setupCellHoverEffects(cell);
         }
 
-        return cell;
-    }
-
-    private StackPane createEmptyCell() {
-        StackPane cell = new StackPane();
-        cell.setPrefSize(cellWidth, cellHeight);
-        cell.setStyle("-fx-background-color: transparent;");
         return cell;
     }
 
@@ -116,36 +115,84 @@ public class myReadsScroll extends ScrollPane {
                 );
                 background.setBackground(new Background(bgImage));
             } catch (Exception e) {
-                System.err.println("Error loading cover image: " + e.getMessage());
-                background.setStyle("-fx-background-color: #f0f0f0;");
+                background.setStyle(createRandomColorStyle());
             }
+        } else {
+            background.setStyle(createRandomColorStyle());
         }
 
         return background;
     }
 
+    private Button createSaveButton(Image plusImage, int coverIndex) {
+        Button saveButton = new Button();
+
+        if (plusImage != null) {
+            ImageView plusIcon = new ImageView(plusImage);
+            plusIcon.setFitWidth(25);
+            plusIcon.setFitHeight(25);
+            saveButton.setGraphic(plusIcon);
+        } else {
+            saveButton.setText("+");
+        }
+
+        saveButton.setStyle("-fx-background-color: transparent; -fx-padding: 5;");
+        StackPane.setAlignment(saveButton, Pos.BOTTOM_RIGHT);
+        saveButton.setTranslateX(-5);
+        saveButton.setTranslateY(-5);
+
+        if (isValidCoverIndex(coverIndex)) {
+            saveButton.setOnAction(event -> {
+                if (onPlusButtonClickHandler != null) {
+                    onPlusButtonClickHandler.accept(coverUrls.get(coverIndex));
+                }
+            });
+        }
+
+        return saveButton;
+    }
+
+    private Image loadPlusIcon() {
+        try {
+            URL imageUrl = getClass().getResource("/proiect/css/plus.png");
+            if (imageUrl != null) {
+                return new Image(imageUrl.toExternalForm());
+            }
+        } catch (Exception e) {
+            System.err.println("Error loading plus icon: " + e.getMessage());
+        }
+        return null;
+    }
+
     private boolean isValidCoverIndex(int index) {
-        return index < coverUrls.size() && coverUrls.get(index) != null && !coverUrls.get(index).isEmpty();
+        return index < coverUrls.size() && coverUrls.get(index) != null;
     }
 
     private void setupCellHoverEffects(StackPane cell) {
         cell.setOnMouseEntered(e -> {
             DropShadow glow = new DropShadow();
-            glow.setColor(Color.LIGHTBLUE);
-            glow.setSpread(0.7);
-            glow.setRadius(15);
+            glow.setColor(Color.LIGHTBLUE); // Setează culoarea dorită
+            glow.setSpread(0.9);           // Intensitatea glow-ului (0-1)
+            glow.setRadius(15);            // Mărimea glow-ului
             cell.setEffect(glow);
         });
 
         cell.setOnMouseExited(e -> cell.setEffect(null));
     }
 
+    private String createRandomColorStyle() {
+        return String.format(
+                "-fx-background-color: rgb(%d, %d, %d);",
+                (int)(Math.random() * 255),
+                (int)(Math.random() * 255),
+                (int)(Math.random() * 255)
+        );
+    }
     public void setOnCoverClick(Consumer<String> handler) {
         this.onCoverClickHandler = handler;
     }
 
-    public void refresh() {
-        loadCoverUrls();
-        generateGridContent();
+    public void setOnPlusButtonClick(Consumer<String> handler) {
+        this.onPlusButtonClickHandler = handler;
     }
 }

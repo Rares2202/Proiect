@@ -1,4 +1,4 @@
-package proiect.clase;
+package proiect.claseUser;
 
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;

@@ -16,7 +16,7 @@
         <children>
             <HBox styleClass="search-container" translateX="300">
                 <TextField fx:id="searchField" prefWidth="200" promptText="Caută..." styleClass="search-field" />
-                <Button fx:id="search" styleClass="search-button">
+                <Button fx:id="search1" styleClass="search-button">
                     <graphic>
                         <ImageView fitHeight="20" fitWidth="20" preserveRatio="true">
                             <image>

@@ -11,11 +11,10 @@ import javafx.scene.layout.*;
 import javafx.geometry.Pos;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import proiect.clase.*;
+import proiect.claseUser.*;
 import java.util.*;
 import java.io.IOException;
-import java.sql.*;
-import java.net.URL;
+
 public class ControllerUser {
 
     @FXML
@@ -23,11 +22,13 @@ public class ControllerUser {
     private Pane Home;
     private Pane Imreading;
     private Pane SearchResults;
+    private GridPane booksGrid;
     private Pane Myreads;
     Book book=new Book(0,null,null,null,null,0,null);
     Review review=new Review(null,0,0,0);
     MyReads myReads;
     SearchResultsScroll searchResults;
+    ImReading imReading;
     private Pane Search;
     public StackPane Userpane;
     int userId=-1;
@@ -36,7 +37,7 @@ public class ControllerUser {
     private static final String DB_PASSWORD = "simone";
     private final DBComands dbComands=new DBComands();
     private final String[] buttonIds = {
-            "myreads", "imreading", "inchide", "submit", "search","home","review"
+            "myreads", "imreading", "inchide", "submit", "search","home","review","rezerva","search1"
     };
     private final String[] checkboxIds = {
             "actionCheckBox","adventureCheckBox","biographyCheckBox","classicsCheckBox",
@@ -173,19 +174,55 @@ public class ControllerUser {
                         break;
                     case "search":
                         button.setOnAction(_ -> {
-                            ReturnResults();
+                            ReturnResults(Home);
+                        });
+                        break;
+                    case "search1":
+                        button.setOnAction(_ -> {
+                            ReturnResults(SearchResults);
                         });
                         break;
                         case "myreads":
                             button.setOnAction(_ -> {
                                 //adauga functie
                                 initializeMyReads();
-                                Userpane.getChildren().setAll(Myreads);
 
+
+                                ImageView trashMyReads = (ImageView) Myreads.lookup("#trashMyReads");
+                                trashMyReads.setOnMouseClicked(e -> {
+                                    myreads.deleteBooks();
+                                    myreads.refresh();
+
+                                    });
+                                Userpane.getChildren().setAll(Myreads);
                             });
+
                         break;
                         case "imreading":
-                            button.setOnAction(_ -> Userpane.getChildren().setAll(Imreading));
+                            button.setOnAction(_ ->{
+                                GridPane booksGrid = (GridPane) Imreading.lookup("#booksGrid");
+                               ImReading imReading1= new ImReading(userId, booksGrid);
+                               imReading1.setOnCoverClick(coverUrl -> {
+                                   try {
+                                       book = book.initializare(coverUrl);
+                                       updateBookDetails(book);
+                                       Userpane.getChildren().setAll(Search);
+                                   } catch (Exception e) {
+                                       System.err.println("Error loading book details: " + e.getMessage());
+                                       showAlert("Error loading book details");
+                                   }
+                               });
+                                ImageView trashImReading = (ImageView) Imreading.lookup("#trashImReading");
+                                trashImReading.setOnMouseClicked(e -> {imReading1.deleteBooks();
+                                                              imReading1.refresh();  });
+                                Userpane.getChildren().setAll(Imreading);
+                            } );
+                        break;
+                    case "rezerva":
+                        button.setOnAction(_ -> {
+                            REZERVA();
+
+                        });
                         break;
 
 
@@ -194,8 +231,24 @@ public class ControllerUser {
        }
         return pane;
     }
-    private void ReturnResults() {
-        TextField searchField = (TextField) Home.lookup("#searchField");
+
+//    private void displayBooksInGrid(GridPane booksGrid, int userId) {
+//        DBComands dbComands = new DBComands();
+//        List <BookInfo> books=new ArrayList<>();
+//        books=dbComands.IS_IN_USE(DB_URL,DB_USER,DB_PASSWORD,userId);
+//
+//    }
+
+    private void REZERVA(){
+        Label titlu =(Label) Search.lookup("#titlu");
+        DBComands dbComands=new DBComands();
+        dbComands.insertIntoImprumuturi(DB_URL,DB_USER,DB_PASSWORD,userId,titlu.getText());
+
+    }
+
+    private void ReturnResults(Pane pane) {
+        TextField searchField = (TextField) pane.lookup("#searchField");
+
         if (searchField != null) {
             String searchText = searchField.getText().trim(); // Elimină spațiile albe
 

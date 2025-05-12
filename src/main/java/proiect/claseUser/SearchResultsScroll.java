@@ -1,4 +1,4 @@
-package proiect.clase;
+package proiect.claseUser;
 
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
