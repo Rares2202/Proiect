@@ -1,32 +1,25 @@
 package proiect;
 
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.collections.transformation.FilteredList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
+import javafx.scene.chart.BarChart;
+import javafx.scene.chart.CategoryAxis;
+import javafx.scene.chart.NumberAxis;
+import javafx.scene.chart.XYChart;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
-import javafx.stage.Stage;
-import javafx.util.Callback;
 
-import javax.naming.ldap.Control;
 import java.io.IOException;
-import java.lang.reflect.Field;
 import java.sql.*;
 import java.util.*;
-import java.util.concurrent.Executor;
 
 
 
@@ -39,49 +32,50 @@ public class ControllerLibrarian{
     String pass = "root";
 
     //Meniuri
+    @FXML AnchorPane connectionFailed_menu;
+    @FXML AnchorPane client_menu;
+    @FXML AnchorPane client_menu_details;
+    @FXML AnchorPane books_menu;
+    @FXML AnchorPane statistici_menu;
+    @FXML AnchorPane popup_menu_validation;
+    @FXML AnchorPane popup_menu_add_book;
     public List<AnchorPane> listMenu = new ArrayList<>();
-    public AnchorPane connectionFailed_menu;
-    public AnchorPane client_menu;
-    public AnchorPane client_menu_details;
-    public AnchorPane books_menu;
-    public AnchorPane statistici_menu;
-    public AnchorPane popup_menu_validation;
-    public AnchorPane popup_menu_add_book;
 
     //Meniu Clienti
-    public VBox list_search_clients;
-    public TextField textField_clientName;
+    @FXML VBox list_search_clients;
+    @FXML TextField textField_clientName;
 
     //Meniu Client_Detalii
+    @FXML Text menu_transaction_clientName;
+    @FXML VBox vbox_books_reserved;
+    @FXML VBox vbox_books_inventory;
+    @FXML Button btn_efectueaza;
+    @FXML Button btn_rezervari_all;
+    @FXML Button btn_rezervari_clear;
+    @FXML Button btn_inventar_all;
+    @FXML Button btn_inventar_clear;
+    @FXML Button btn_add_book;
     public String transaction_user_id = "";
     public String add_book_id = "";
-    public Text menu_transaction_clientName;
-    public VBox vbox_books_reserved;
-    public VBox vbox_books_inventory;
-    public Button btn_efectueaza;
-    public Button btn_rezervari_all;
-    public Button btn_rezervari_clear;
-    public Button btn_inventar_all;
-    public Button btn_inventar_clear;
-    public Button btn_add_book;
     public ObservableList<ControllerItemBookReservedRow> list_books_reserved = FXCollections.observableArrayList();
     public ObservableList<ControllerItemBookInventoryRow> list_books_inventory = FXCollections.observableArrayList();
     public List<ControllerItemBookReservedRow> list_selected_reserved_books = new ArrayList<>();
     public List<ControllerItemBookInventoryRow> list_selected_inventory_books = new ArrayList<>();
 
     //Popup meniu adaugare carti
-    public VBox list_search_books;
-    public TextField textField_add_book;
+    @FXML VBox list_search_books;
+    @FXML TextField textField_add_book;
 
     //Popup meniu de tranzactie
-    public AnchorPane popup_menu_tranzactie;
-    public TableView<ObservableList<Label>> tableView_transaction;
-    public Button btn_confirma_tranzactie;
-    public Button btn_anuleaza_tranzactie;
+    @FXML AnchorPane popup_menu_tranzactie;
+    @FXML TableView<ObservableList<Label>> tableView_transaction;
+    @FXML Button btn_confirma_tranzactie;
+    @FXML Button btn_anuleaza_tranzactie;
 
     //Meniu Carti
 
     //Meniu Statistici
+    @FXML BarChart bar_chart_book;
 
     //Mesaje pentru erori
     String err_connection_null = "Nu exista conexiune. (ControllerLibrarian.connection = null)";
@@ -177,19 +171,31 @@ public class ControllerLibrarian{
         {
             String _name = rs.getString("userName");
             String userId = rs.getString("idUser");
+
             try {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("fxml/ItemClientRow.fxml"));
                 Node node = loader.load();
                 ControllerItemClientRow controller = loader.getController();
                 controller.id = userId;
                 controller.name = _name;
+                controller.label_books_inventory.setText("b");
+                controller.label_books_reserved.setText("a");
+
+                controller.label_books_reserved.setText(""+connection.getQueryCount("SELECT statusImprumut \n" +
+                                                                                    "FROM cartiimprumutate\n" +
+                                                                                    "WHERE User_idUser = " + userId + " AND UPPER(statusImprumut) = 'REZERVAT';"));
+                controller.label_books_inventory.setText(""+connection.getQueryCount("SELECT statusImprumut \n" +
+                                                                                    "FROM cartiimprumutate\n" +
+                                                                                    "WHERE User_idUser = " + userId + " AND UPPER(statusImprumut) = 'INVENTAR';"));
+
+
                 controller.setName(String.format("%s (#%s)", _name, userId));
                 controller.mainController = this;
                 list_search_clients.getChildren().add(node);
             }
             catch (Exception e) {
-                System.out.print("Nu s-a putut genera client(FXML)");
-                //e.printStackTrace();
+                System.err.print("\nNu s-a putut genera client(FXML)");
+                e.printStackTrace();
             }
         }
     }
@@ -197,7 +203,7 @@ public class ControllerLibrarian{
         setOnlyMenu(books_menu);
     }
     @FXML void OnStatisticiButtonClicked(MouseEvent mouseEvent) {
-        setOnlyMenu(statistici_menu);
+        initialize_statistics_menu();
     }
 
     // CLIENT_DETAILS MENU FUNCTIONS
@@ -212,7 +218,6 @@ public class ControllerLibrarian{
         vbox_books_inventory.getChildren().clear();
         list_books_inventory.clear();
         list_selected_inventory_books.clear();
-        //tableView_transaction.getItems().clear();
 
         //Verificare conexiune
         if(connection.getConnection()==null) {
@@ -221,8 +226,8 @@ public class ControllerLibrarian{
         }
 
         ResultSet rs = connection.executeQuery("SELECT carte.idCarte, carte.titluCarti, carte.autorCarte, carte.genCarte, borrow.statusImprumut\n" +
-                                                "FROM mydb.carte carte, mydb.cartiimprumutate borrow\n" +
-                                                "WHERE carte.idCarte = borrow.Carte_idCarte AND borrow.User_idUser = " + userID + " LIMIT 100;");
+                "FROM mydb.carte carte, mydb.cartiimprumutate borrow\n" +
+                "WHERE carte.idCarte = borrow.Carte_idCarte AND borrow.User_idUser = " + userID + " LIMIT 100;");
         while(rs.next())
         {
             String bookId = rs.getString("idCarte");
@@ -255,7 +260,8 @@ public class ControllerLibrarian{
 
         }
     }
-    @FXML void SelectAllFromRezervari(MouseEvent mouseEvent) {
+    @FXML
+    void SelectAllFromRezervari(MouseEvent mouseEvent) {
         for(ControllerItemBookReservedRow reserved : list_books_reserved)
         {
             reserved.btn_add_icon.setVisible(true);
@@ -329,11 +335,11 @@ public class ControllerLibrarian{
             list_search_books.getChildren().clear();
             text = text.toUpperCase();
             ResultSet rs = connection.executeQuery("SELECT idCarte, titluCarti, autorCarte, genCarte, numarCarte\n" +
-                                                    "FROM carte\n" +
-                                                    "WHERE UPPER(titluCarti) LIKE '%" + text + "%' \n" +
-                                                    "OR UPPER(autorCarte) LIKE '%" + text + "%'\n" +
-                                                    "OR UPPER(genCarte) LIKE '%" + text + "%'\n" +
-                                                    "ORDER BY titluCarti LIMIT 100;");
+                    "FROM carte\n" +
+                    "WHERE UPPER(titluCarti) LIKE '%" + text + "%' \n" +
+                    "OR UPPER(autorCarte) LIKE '%" + text + "%'\n" +
+                    "OR UPPER(genCarte) LIKE '%" + text + "%'\n" +
+                    "ORDER BY titluCarti LIMIT 100;");
             //adaugam in VBox cartile valabile
             while(rs.next())
             {
@@ -443,14 +449,14 @@ public class ControllerLibrarian{
                 {
                     //statement pentru schimbarea statusului REZERVAT -> IMPRUMUTAT
                     connection.executeUpdate("UPDATE cartiimprumutate\n" +
-                                            "SET statusImprumut = 'INVENTAR'\n" +
-                                            "WHERE statusImprumut = 'REZERVAT' AND\n" +
-                                            "User_idUser = " + transaction_user_id + " AND Carte_idCarte = " + book.id + ';');
+                            "SET statusImprumut = 'INVENTAR'\n" +
+                            "WHERE statusImprumut = 'REZERVAT' AND\n" +
+                            "User_idUser = " + transaction_user_id + " AND Carte_idCarte = " + book.id + ';');
 
                     //statement pentru stergerea cu o unitate a cartii din stoc
                     connection.executeUpdate("UPDATE carte\n" +
-                                            "SET numarCarte = numarCarte-1\n" +
-                                            "WHERE idCarte = " + book.id + ';');
+                            "SET numarCarte = numarCarte-1\n" +
+                            "WHERE idCarte = " + book.id + ';');
                 }
 
                 //RETUR
@@ -459,13 +465,13 @@ public class ControllerLibrarian{
                 {
                     //statement pentru adaugarea cu o unitate a cartii in stoc
                     connection.executeUpdate("UPDATE carte\n" +
-                                            "SET numarCarte = numarCarte+1\n" +
-                                            "WHERE idCarte = " + book.id + ';');
+                            "SET numarCarte = numarCarte+1\n" +
+                            "WHERE idCarte = " + book.id + ';');
 
                     //statement pentru stergerea cartii din inventar
                     connection.executeUpdate("DELETE FROM cartiimprumutate\n" +
-                                            "WHERE statusImprumut = 'INVENTAR' AND\n" +
-                                            "User_idUser = " + transaction_user_id + " AND Carte_idCarte = " + book.id + ';');
+                            "WHERE statusImprumut = 'INVENTAR' AND\n" +
+                            "User_idUser = " + transaction_user_id + " AND Carte_idCarte = " + book.id + ';');
                 }
 
                 //actualizam meniul
@@ -498,6 +504,33 @@ public class ControllerLibrarian{
     }
     @FXML void AreYouSureNo(MouseEvent mouseEvent) {
         popup_menu_validation.setVisible(false);
+    }
+
+    // MENU STATISTICS
+    void initialize_statistics_menu()
+    {
+        setOnlyMenu(statistici_menu);
+        bar_chart_book.getData().clear();
+
+        XYChart.Series<Number, String> series = new XYChart.Series<>();
+        XYChart.Data[] data = new XYChart.Data[10];
+        series.setName("books");
+        for(int i=0; i<10; i++)
+        {
+            data[i] = new XYChart.Data<>(i, ""+i);
+            series.getData().add(data[i]);
+        }
+        bar_chart_book.getData().add(series);
+
+        int index = 0;
+        for(XYChart.Data bar : data)
+        {
+            Label label = new Label("book_"+index);
+            label.setTextAlignment(TextAlignment.LEFT);
+            label.setLayoutX(0);
+            StackPane barNode = (StackPane) bar.getNode();
+            barNode.getChildren().add(label);
+        }
     }
 
 

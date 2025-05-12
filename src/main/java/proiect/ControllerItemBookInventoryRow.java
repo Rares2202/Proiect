@@ -13,35 +13,30 @@ import javafx.scene.paint.Color;
 public class ControllerItemBookInventoryRow {
 
     public ControllerLibrarian mainController;
-
-    public AnchorPane background;
-    public Label name;
-    public Label author;
-    public Label genre;
-    public Button btn_add;
     public boolean selected;
-    public FontAwesomeIcon btn_add_icon;
-
     public String id;
+    @FXML AnchorPane background;
+    @FXML Label name;
+    @FXML Label author;
+    @FXML Label genre;
+    @FXML Button btn_add;
+    @FXML FontAwesomeIcon btn_add_icon;
 
-    @FXML
-    void initialize() {
+
+
+    @FXML void initialize() {
         btn_add.setStyle("-fx-background-color: transparent;");
         //btn_add.setStyle("-fx-background-radius: 0;");
         setDisabled();
         btn_add_icon.setVisible(false);
         selected = false;
     }
-
-    public void setData(String id, String name, String author, String genre)
-    {
+    public void setData(String id, String name, String author, String genre) {
         this.id = id;
         this.name.setText(name);
         this.author.setText(author);
         this.genre.setText(genre);
     }
-
-
     public void OnAddButtonClicked(MouseEvent mouseEvent) {
 
         if(!selected)
@@ -60,7 +55,6 @@ public class ControllerItemBookInventoryRow {
                 mainController.btn_efectueaza.setDisable(true);
         }
     }
-
     public void OnMouseEntered(MouseEvent mouseEvent) {
         if(!selected)
         {
@@ -69,7 +63,6 @@ public class ControllerItemBookInventoryRow {
         }
 
     }
-
     public void OnMouseExited(MouseEvent mouseEvent) {
         if(!selected)
         {
@@ -77,9 +70,7 @@ public class ControllerItemBookInventoryRow {
             btn_add_icon.setVisible(false);
         }
     }
-
-    void setEnabled()
-    {
+    void setEnabled() {
         background.setStyle("-fx-background-color: red");
         name.setStyle("-fx-text-fill: white");
         author.setStyle("-fx-text-fill: white");
@@ -88,9 +79,7 @@ public class ControllerItemBookInventoryRow {
         btn_add_icon.setGlyphName(String.valueOf(FontAwesomeIcons.PLUS));
         selected = true;
     }
-
-    void setDisabled()
-    {
+    void setDisabled() {
         background.setStyle("-fx-background-color: white");
         name.setStyle("-fx-text-fill: black");
         author.setStyle("-fx-text-fill: black");
@@ -99,12 +88,10 @@ public class ControllerItemBookInventoryRow {
         btn_add_icon.setGlyphName(String.valueOf(FontAwesomeIcons.MINUS));
         selected = false;
     }
-
     public void OnAddButtonEntered(MouseEvent mouseEvent) {
         btn_add.setStyle("-fx-background-color: rgb(75,0,0); -fx-cursor: hand;");
         btn_add_icon.setFill(Color.WHITE);
     }
-
     public void OnAddButtonExited(MouseEvent mouseEvent) {
         btn_add.setStyle("-fx-background-color: transparent; -fx-cursor: none;");
         if(!selected)

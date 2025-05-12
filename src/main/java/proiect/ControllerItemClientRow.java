@@ -9,6 +9,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.input.MouseEvent;
@@ -26,8 +27,9 @@ import java.util.concurrent.ForkJoinPool;
 
 public class ControllerItemClientRow extends user{
 
-    @FXML
-    Text clientName;
+    @FXML Text clientName;
+    public Label label_books_reserved;
+    public Label label_books_inventory;
     public ControllerLibrarian mainController;
 
     @FXML
