@@ -50,8 +50,8 @@ public class ScrollPanel extends ScrollPane {
 
     private void loadCoverUrls() {
         DBComands dbComands = new DBComands();
-        String query = "SELECT coverCarte FROM carte WHERE coverCarte IS NOT NULL";
-        List<Book> books = dbComands.SELECT_ALL_FROM_BOOKS(query, DB_URL, DB_USER, DB_PASSWORD);
+        System.out.println("User id:"+userId);
+        List<Book> books = dbComands.SELECT_ALL_FROM_USERPREF(DB_URL,DB_USER,DB_PASSWORD,userId);
 
         this.coverUrls = new ArrayList<>();
         for (Book book : books) {
@@ -63,10 +63,6 @@ public class ScrollPanel extends ScrollPane {
 
     private void generateGridContent() {
         Image plusImage = loadPlusIcon();
-//        Pane leftSpacer = new Pane();
-//        leftSpacer.setPrefWidth(30);
-//        GridPane.setRowSpan(leftSpacer, rows);
-//        gridPane.add(leftSpacer, 0, 0);
         int coverIndex = 0;
         for (int row = 0; row < rows; row++) {
             for (int col = 0; col < cols; col++) {
@@ -117,9 +113,10 @@ public class ScrollPanel extends ScrollPane {
             } catch (Exception e) {
                 background.setStyle(createRandomColorStyle());
             }
-        } else {
-            background.setStyle(createRandomColorStyle());
         }
+        //else {
+//            background.setStyle(createRandomColorStyle());
+//        }
 
         return background;
     }

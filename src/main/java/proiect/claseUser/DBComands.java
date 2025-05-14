@@ -283,85 +283,155 @@ public List<String>SELECT_COVER_FROM_MYREADS( String DB_URL, String DB_USER, Str
 
         return books;
     }
-    public void UPDATE_USERPREF(String DB_URL, String DB_USER, String DB_PASS, int userId,String genre,int number) {
-        String query="UPDATE userpref up JOIN genuri g ON up.preferinte_idpreferinte = g.idpreferinte SET up.number = up.number+?   WHERE up.user_idUser = ? AND g.genuri = ?";
-        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASS)) {
+    public void UPDATE_USERPREF(String DB_URL, String DB_USER, String DB_PASS, int number, int userId, int genre) {
+        String query = "UPDATE userpref SET number = number + ? WHERE user_idUser = ? AND preferinte_idpreferinte = ?";
 
+        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASS)) {
             connection.setAutoCommit(false);
 
             try (PreparedStatement pstmt = connection.prepareStatement(query)) {
+                pstmt.setInt(1, number);
+                pstmt.setInt(2, userId);
+                pstmt.setInt(3, genre);
 
-                    pstmt.setInt(1, number);
-                    pstmt.setInt(2, userId);
-                    pstmt.setString(3, genre);
-                    pstmt.addBatch();
+                int rowsUpdated = pstmt.executeUpdate();  // executi efectiv update-ul
 
+                connection.commit(); // finalizezi tranzactia
 
-            } catch (SQLException e) {
-                connection.rollback();
-                e.printStackTrace();
-                showAlert("Error saving preferences: " + e.getMessage());
-            }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-            showAlert("Database connection error: " + e.getMessage());
-        }
-    }
-    public void SELECT_ALL_FROM_USERPREF(String DB_URL, String DB_USER, String DB_PASS, int userId) {
-            String query="SELECT * FROM userpref WHERE user_idUser=? ORDER BY number DESC";
-        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASS)) {
-
-            connection.setAutoCommit(false);
-
-            try (PreparedStatement pstmt = connection.prepareStatement(query)) {
-
-                pstmt.setInt(1, userId);
-            } catch (SQLException e) {
-                connection.rollback();
-                e.printStackTrace();
-                showAlert("Error saving preferences: " + e.getMessage());
-            }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-            showAlert("Database connection error: " + e.getMessage());
-        }
-    }
-    public void INSERT_INTO_USERPREF_GEN( String DB_URL, String DB_USER, String DB_PASS,
-                                     int userId, String genre) {
-        String query="INSERT INTO userpref VALUES(?,?,?,?,?,?)";
-        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASS)) {
-
-            connection.setAutoCommit(false);
-
-            try (PreparedStatement pstmt = connection.prepareStatement(query)) {
-
-                    pstmt.setInt(1, 3);
-                    pstmt.setInt(2, userId);
-                    pstmt.setString(3, genre);
-                    pstmt.addBatch();
-
-
-                int[] results = pstmt.executeBatch();
-                connection.commit();
-
-                int totalInserted = Arrays.stream(results).sum();
-                if (totalInserted > 0) {
-                    showAlert("Successfully saved " + totalInserted + " preferences!");
+                if (rowsUpdated > 0) {
+                    showAlert("Preferințele au fost actualizate!");
                 } else {
-                    showAlert("No preferences were saved.");
+                    showAlert("Nu s-a actualizat nimic!");
                 }
 
             } catch (SQLException e) {
                 connection.rollback();
                 e.printStackTrace();
-                showAlert("Error saving preferences: " + e.getMessage());
+                showAlert("Eroare la actualizare: " + e.getMessage());
             }
 
         } catch (SQLException e) {
             e.printStackTrace();
+            showAlert("Eroare conexiune DB: " + e.getMessage());
+        }
+    }
+
+    public List<Book> SELECT_ALL_FROM_USERPREF(String DB_URL, String DB_USER, String DB_PASS, int userId) {
+        String query = "SELECT c.* \n" +
+                "FROM mydb.carte c \n" +
+                "JOIN mydb.genuri g ON c.genCarte = g.genuri \n" +
+                "JOIN mydb.userpref u ON g.idpreferinte = u.preferinte_idpreferinte\n" +
+                "WHERE u.user_idUser = ?\n" +
+                "AND c.coverCarte NOT IN (SELECT coverCarte FROM mydb.myreads)\n" +
+                "ORDER BY u.number DESC";
+
+        List<Book> books = new ArrayList<>();
+
+        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASS)) {
+            connection.setAutoCommit(false);
+
+            try (PreparedStatement pstmt = connection.prepareStatement(query)) {
+                pstmt.setInt(1, userId);
+
+                try (ResultSet rs = pstmt.executeQuery()) {
+                    while (rs.next()) {
+                        Book book = new Book(
+                                rs.getInt("idCarte"),
+                                rs.getString("titluCarti"),
+                                rs.getString("autorCarte"),
+                                rs.getString("descriere"),
+                                rs.getString("genCarte"),
+                                rs.getInt("numarCarte"),
+                                rs.getString("coverCarte")
+                        );
+                        books.add(book);
+                    }
+                }
+                connection.commit();
+            } catch (SQLException e) {
+                connection.rollback();
+                e.printStackTrace();
+                showAlert("Error fetching books: " + e.getMessage());
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
             showAlert("Database connection error: " + e.getMessage());
+        }
+
+        return books;
+    }
+    public int SEARCH_BY_COVER(String DB_URL, String DB_USER, String DB_PASS, String cover) {
+        int preferinta_id = -1;
+        String query = "SELECT g.idpreferinte FROM genuri g JOIN carte c ON c.genCarte = g.genuri WHERE c.coverCarte = ?";
+
+        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASS);
+             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+
+            preparedStatement.setString(1, cover);
+
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    preferinta_id = resultSet.getInt("idpreferinte");
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+
+        }
+
+        return preferinta_id;
+    }
+
+    public void INSERT_INTO_USERPREF_GEN(String DB_URL, String DB_USER, String DB_PASS,
+                                         int number, int userId, int preferinte) {
+
+        String checkQuery = "SELECT 1 FROM userpref WHERE user_idUser = ? AND preferinte_idpreferinte = ?";
+
+        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASS)) {
+            connection.setAutoCommit(false);
+
+            try (PreparedStatement checkStmt = connection.prepareStatement(checkQuery)) {
+                checkStmt.setInt(1, userId);
+                checkStmt.setInt(2, preferinte);
+                System.out.println("Preferinte "+preferinte);
+
+                boolean exists = checkStmt.executeQuery().next();
+                System.out.println("EXISTĂ în baza de date? " + exists);
+                if (exists) {
+                    System.out.println("Fac update...");
+                    UPDATE_USERPREF(DB_URL, DB_USER, DB_PASS, number, userId, preferinte);
+                } else {
+                    System.out.println("preferinta "+ preferinte);
+                    String insertQuery = "INSERT INTO userpref(number, user_idUser, preferinte_idpreferinte) VALUES(?,?,?)";
+
+                    try (PreparedStatement insertStmt = connection.prepareStatement(insertQuery)) {
+                        insertStmt.setInt(1, number);
+                        insertStmt.setInt(2, userId);
+                        insertStmt.setInt(3, preferinte);
+
+                        int rowsAffected = insertStmt.executeUpdate();
+                        connection.commit();
+
+                        if (rowsAffected > 0) {
+                            showAlert("Ati introdus un nou gen!");
+                            exists=false;
+                        }
+                        else
+                        {
+                            showAlert("Nu s-a introdus nimic!");
+                        }
+                    }
+                }
+            } catch (SQLException e) {
+                connection.rollback();
+                e.printStackTrace();
+                showAlert("Eroare la adaugare in preferinte: " + e.getMessage());
+            } finally {
+                connection.setAutoCommit(true);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            showAlert("Eroare la conexiunea cu baza de date: " + e.getMessage());
         }
     }
     public void DELETE_FROM_MYREADS(String DB_URL, String DB_USER, String DB_PASS, int userId, List<String>coverImage) {
@@ -409,7 +479,35 @@ public List<String>SELECT_COVER_FROM_MYREADS( String DB_URL, String DB_USER, Str
             }
         }
     }
+public List<String> SELECT_ALL_FROM_REVIEWS(String DB_URL, String DB_USER, String DB_PASS, int userId,int idCarte) {
 
+            List<String>reviews=new ArrayList<>();
+            String query="SELECT reviewText FROM review WHERE User_idUser = ? AND  Carte_idCarte = ?";
+    try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASS)) {
+        connection.setAutoCommit(false);
+
+        try (PreparedStatement pstmt = connection.prepareStatement(query)) {
+            pstmt.setInt(1, userId);
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                String reviewText = "";
+                while (rs.next()) {
+                reviewText=rs.getString("reviewText");
+                    reviews.add(reviewText);
+                }
+            }
+            connection.commit();
+        } catch (SQLException e) {
+            connection.rollback();
+            e.printStackTrace();
+            showAlert("Error fetching books: " + e.getMessage());
+        }
+    } catch (SQLException e) {
+        e.printStackTrace();
+        showAlert("Database connection error: " + e.getMessage());
+    }
+return reviews;
+}
 
     public void showAlert(String message) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);

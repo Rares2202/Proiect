@@ -116,6 +116,8 @@ public class ControllerMain {
         contentPane.getChildren().setAll(LoginRegister);
     }
 
+
+
     private void login() throws IOException {
         int id=-1;
         TextField userField = (TextField) LoginRegister.lookup("#username_log");
@@ -125,17 +127,8 @@ public class ControllerMain {
          id = authenticateUser(username, password);
         if (id != -1) {
             showAlert("Login successful!");
-            boolean isLib = isUserLibrarian(id);// Implement this method to check DB
-            System.out.println("isLib: " + isLib);
-            if (isLib) {
-                contentPane.getChildren().setAll(LibrarianMain);
-                controllerLibrarian.setMainController(this);
-            } else {
-                contentPane.getChildren().setAll(UserMain);
-                controllerUser.setUserId(id);
-            }
-        } else {
-            showAlert("Invalid credentials.");
+            initializeUserController(id);
+            contentPane.getChildren().setAll(UserMain);
         }
     }
     private void register_reg() throws SQLException, IOException {
@@ -174,15 +167,8 @@ public class ControllerMain {
         if (newUserId != -1) {
             usrId = newUserId;
             showAlert("Registration successful!");
-            if (isLibrarian) {
-                contentPane.getChildren().setAll(LibrarianMain);
-                controllerLibrarian.setMainController(this);
-            } else {
-                contentPane.getChildren().setAll(UserMain);
-                controllerUser.setUserId(newUserId);
-            }
-        } else {
-            showAlert("Registration failed.");
+            initializeUserController(newUserId);
+            contentPane.getChildren().setAll(UserMain);
         }
     }
 
@@ -267,6 +253,19 @@ public class ControllerMain {
 
     public void quit_app() {
         System.exit(0);
+    }
+    private void initializeUserController(int userId) {
+        try {
+            if (controllerUser == null) {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/proiect/fxml/user/UserMain.fxml"));
+                UserMain = loader.load();
+                controllerUser = loader.getController();
+                controllerUser.setMainController(this);
+            }
+            controllerUser.setUserId(userId);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 

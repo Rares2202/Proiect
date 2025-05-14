@@ -24,20 +24,23 @@ public class ControllerUser {
     private Pane SearchResults;
     private GridPane booksGrid;
     private Pane Myreads;
+    private Pane Review;
     Book book=new Book(0,null,null,null,null,0,null);
     Review review=new Review(null,0,0,0);
     MyReads myReads;
+    private static String coverImagine;
     SearchResultsScroll searchResults;
     ImReading imReading;
     private Pane Search;
     public StackPane Userpane;
+    private boolean isInitialized = false;
     int userId=-1;
     private static final String DB_URL = "jdbc:mysql://localhost:3306/mydb";
     private static final String DB_USER = "root";
     private static final String DB_PASSWORD = "simone";
     private final DBComands dbComands=new DBComands();
     private final String[] buttonIds = {
-            "myreads", "imreading", "inchide", "submit", "search","home","review","rezerva","search1"
+            "myreads", "imreading", "inchide", "submit", "search","home","review","rezerva","search1","plus","reviews"
     };
     private final String[] checkboxIds = {
             "actionCheckBox","adventureCheckBox","biographyCheckBox","classicsCheckBox",
@@ -67,6 +70,11 @@ public class ControllerUser {
     public void setUserId(int userId) {
         this.userId = userId;
         System.out.println("Received user ID: " + userId);
+        if (!isInitialized) {
+            initialize();
+            isInitialized = true;
+        }
+
         handleUserSpecificPanes();
     }
 
@@ -83,7 +91,9 @@ public class ControllerUser {
                     Label description = (Label) Search.lookup("#descriere");
                     Label genre = (Label) Search.lookup("#gen");
                     Pane pane=(Pane) Search.lookup("#imagine");
+
                     book=book.initializare(coverUrl);
+                    this.coverImagine=coverUrl;
                     System.out.println(coverUrl);
                     author.setText(book.getAuthor());
                     title.setText(book.getTitle());
@@ -100,6 +110,15 @@ public class ControllerUser {
                     pane.setBackground(new Background(bgImage));
 
                     Platform.runLater(() ->Userpane.getChildren().setAll(Search));
+                Button plus=(Button) Search.lookup("#plus");
+                plus.setOnMouseClicked(e -> {
+                    System.out.println("Clicked!");
+
+                    int  genre1=dbComands.SEARCH_BY_COVER(DB_URL,DB_USER,DB_PASSWORD,coverUrl);
+
+                    dbComands.INSERT_INTO_USERPREF_GEN(DB_URL,DB_USER,DB_PASSWORD,2,userId,genre1);
+
+                });
 
             } catch (Exception e) {
                 System.err.println("Error handling book click: " + e.getMessage());
@@ -111,6 +130,8 @@ public class ControllerUser {
 
                 myReads = new MyReads(userId, coverUrl);
                 myReads.addBook(myReads);
+                DBComands dbComands=new DBComands();
+
 
                 Platform.runLater(() ->
                         showAlert("The book has been saved in MyReads section!")
@@ -149,6 +170,7 @@ public class ControllerUser {
             e.printStackTrace();
         }
     }
+
     private Pane loadPane(String fxmlPath) throws IOException {
         Pane pane = FXMLLoader.load(Objects.requireNonNull(Objects.requireNonNull(getClass().getResource(fxmlPath))));
 
@@ -175,6 +197,8 @@ public class ControllerUser {
                     case "search":
                         button.setOnAction(_ -> {
                             ReturnResults(Home);
+
+
                         });
                         break;
                     case "search1":
@@ -224,6 +248,31 @@ public class ControllerUser {
 
                         });
                         break;
+                    case "plus":
+                        button.setOnAction(_ -> {
+                            try {
+
+                                myReads = new MyReads(userId, coverImagine);
+                                myReads.addBook(myReads);
+                                DBComands dbComands=new DBComands();
+
+
+                                Platform.runLater(() ->
+                                        showAlert("The book has been saved in MyReads section!")
+                                );
+                            } catch (Exception e) {
+                                System.err.println("Error saving to MyReads: " + e.getMessage());
+                                Platform.runLater(() ->
+                                        showAlert("Error saving book to MyReads")
+                                );
+                            }
+                            int  genre=dbComands.SEARCH_BY_COVER(DB_URL,DB_USER,DB_PASSWORD,coverImagine);
+                            System.out.println("Gen "+genre);
+                            dbComands.INSERT_INTO_USERPREF_GEN(DB_URL,DB_USER,DB_PASSWORD,2,userId,genre);});
+                        break;
+                    case "reviews":
+
+                                break;
 
 
                 }
@@ -273,6 +322,7 @@ public class ControllerUser {
             searchResults.setOnCoverClick(coverUrl -> {
                 try {
                     book = book.initializare(coverUrl);
+                    this.coverImagine = coverUrl;
                     updateBookDetails(book);
                     Userpane.getChildren().setAll(Search);
                 } catch (Exception e) {
