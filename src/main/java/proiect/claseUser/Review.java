@@ -92,7 +92,7 @@ public class Review {
     }
 
 
-    private boolean existaReview(Connection conn, int userId, int carteId) throws SQLException {
+  public boolean existaReview(Connection conn, int userId, int carteId) throws SQLException {
         String query = "SELECT 1 FROM review WHERE User_idUser = ? AND Carte_idCarte = ?";
         try (PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setInt(1, userId);
@@ -101,6 +101,20 @@ public class Review {
                 return rs.next();
             }
         }
+    }
+    public String SELECT_USER_FROM_REVIEWS(String DB_URL, String DB_USER, String DB_PASS, int userId) throws SQLException {
+        Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASS);
+      String query = "SELECT userName FROM user WHERE idUser = ?";
+      String cv=" ";
+      try (PreparedStatement stmt = conn.prepareStatement(query)) {
+          stmt.setInt(1, userId);
+          try (ResultSet rs = stmt.executeQuery()) {
+              if (rs.next()) {
+                  cv=rs.getString("userName");
+              }
+          }
+      }
+      return cv;
     }
 
 

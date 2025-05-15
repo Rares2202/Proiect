@@ -12,6 +12,7 @@ import javafx.geometry.Pos;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import proiect.claseUser.*;
+import java.sql.SQLException;
 import java.util.*;
 import java.io.IOException;
 
@@ -30,7 +31,7 @@ public class ControllerUser {
     MyReads myReads;
     private static String coverImagine;
     SearchResultsScroll searchResults;
-    ImReading imReading;
+    ReviewScroll reviewScroll;
     private Pane Search;
     public StackPane Userpane;
     private boolean isInitialized = false;
@@ -50,26 +51,49 @@ public class ControllerUser {
             "romanceCheckBox","scienceCheckBox","scienceFictionCheckBox","selfImprovementCheckBox"
     };
     private  List<String> preferinte = new ArrayList<>();
+    /**
+     * <li>Initializeaza controller User</li>
+     */
     public void initialize() {
         try {
+            String[] fxmlFiles = {
+                    "/proiect/fxml/user/Home.fxml",
+                    "/proiect/fxml/user/Imreading.fxml",
+                    "/proiect/fxml/user/Myreads.fxml",
+                    "/proiect/fxml/user/Preferinte.fxml",
+                    "/proiect/fxml/user/Search.fxml",
+                    "/proiect/fxml/user/SearchResults.fxml"
+            };
+
+            for (String file : fxmlFiles) {
+                if (getClass().getResource(file) == null) {
+                    throw new IOException("FXML file not found: " + file);
+                }
+            }
+
             Home = loadPane("/proiect/fxml/user/Home.fxml");
             Imreading = loadPane("/proiect/fxml/user/Imreading.fxml");
             Myreads = loadPane("/proiect/fxml/user/Myreads.fxml");
             Pane preferinte1 = loadPane("/proiect/fxml/user/Preferinte.fxml");
             Search = loadPane("/proiect/fxml/user/Search.fxml");
             SearchResults = loadPane("/proiect/fxml/user/SearchResults.fxml");
-            initializeScrollPanel();
+
+            initializeScrollPanel();//adaug in cache dinainte sa se afiseze Home
             initializeReviewPane();
 
             Userpane.getChildren().setAll(Home);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            System.err.println("Initialization error: " + e.getMessage());
+            e.printStackTrace();
+            showAlert("Critical error: Could not load application resources");
+            Platform.exit();
         }
     }
-
+    /**
+     * <li>Seteaza id-ul user-ului</li>
+     */
     public void setUserId(int userId) {
         this.userId = userId;
-        System.out.println("Received user ID: " + userId);
         if (!isInitialized) {
             initialize();
             isInitialized = true;
@@ -79,45 +103,60 @@ public class ControllerUser {
     }
 
 
-
+    /**
+     * <li>Initializeaza scrollPanel ul din pagina de Home</li>
+     */
     private void initializeScrollPanel() {
 
         ScrollPanel customScrollPanel = new ScrollPanel(userId);
+        ScrollPane homeScrollPane = (ScrollPane) Home.lookup("#scrollPane");
+        if (homeScrollPane != null) {
+            homeScrollPane.setContent(customScrollPanel);
+            homeScrollPane.setFitToWidth(true);
+            homeScrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+            homeScrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+        } else {
+            ((Pane)Home).getChildren().add(customScrollPanel);
+        }
+
+        customScrollPanel.setPrefViewportWidth(Region.USE_COMPUTED_SIZE);
+        customScrollPanel.setPrefViewportHeight(Region.USE_COMPUTED_SIZE);
 
         customScrollPanel.setOnCoverClick(coverUrl -> {
+
+
+
             try {
                 Label author = (Label) Search.lookup("#autor");
-                    Label title = (Label) Search.lookup("#titlu");
-                    Label description = (Label) Search.lookup("#descriere");
-                    Label genre = (Label) Search.lookup("#gen");
-                    Pane pane=(Pane) Search.lookup("#imagine");
+                Label title = (Label) Search.lookup("#titlu");
+                Label description = (Label) Search.lookup("#descriere");
+                Label genre = (Label) Search.lookup("#gen");
+                Pane pane = (Pane) Search.lookup("#imagine");
 
-                    book=book.initializare(coverUrl);
-                    this.coverImagine=coverUrl;
-                    System.out.println(coverUrl);
-                    author.setText(book.getAuthor());
-                    title.setText(book.getTitle());
-                    description.setText(book.getDescription());
-                    genre.setText(book.getGenre());
-                    Image coverImage = new Image(coverUrl);
-                    BackgroundImage bgImage = new BackgroundImage(
-                            coverImage,
-                            BackgroundRepeat.NO_REPEAT,
-                            BackgroundRepeat.NO_REPEAT,
-                            BackgroundPosition.CENTER,
-                            new BackgroundSize(BackgroundSize.AUTO, BackgroundSize.AUTO, false, false, true, true)
-                    );
-                    pane.setBackground(new Background(bgImage));
+                book = book.initializare(coverUrl);
+                this.coverImagine = coverUrl;
 
-                    Platform.runLater(() ->Userpane.getChildren().setAll(Search));
-                Button plus=(Button) Search.lookup("#plus");
+                author.setText(book.getAuthor());
+                title.setText(book.getTitle());
+                description.setText(book.getDescription());
+                genre.setText(book.getGenre());
+
+                Image coverImage = ScrollPanel.getCachedImage(coverUrl);
+                BackgroundImage bgImage = new BackgroundImage(
+                        coverImage,
+                        BackgroundRepeat.NO_REPEAT,
+                        BackgroundRepeat.NO_REPEAT,
+                        BackgroundPosition.CENTER,
+                        new BackgroundSize(BackgroundSize.AUTO, BackgroundSize.AUTO, false, false, true, true)
+                );
+                pane.setBackground(new Background(bgImage));
+
+                Platform.runLater(() -> Userpane.getChildren().setAll(Search));
+
+                Button plus = (Button) Search.lookup("#plus");
                 plus.setOnMouseClicked(e -> {
-                    System.out.println("Clicked!");
-
-                    int  genre1=dbComands.SEARCH_BY_COVER(DB_URL,DB_USER,DB_PASSWORD,coverUrl);
-
-                    dbComands.INSERT_INTO_USERPREF_GEN(DB_URL,DB_USER,DB_PASSWORD,2,userId,genre1);
-
+                    int genre1 = dbComands.SEARCH_BY_COVER(DB_URL, DB_USER, DB_PASSWORD, coverUrl);
+                    dbComands.INSERT_INTO_USERPREF_GEN(DB_URL, DB_USER, DB_PASSWORD, 2, userId, genre1);
                 });
 
             } catch (Exception e) {
@@ -142,22 +181,14 @@ public class ControllerUser {
                         showAlert("Error saving book to MyReads")
                 );
             }
+         initializeScrollPanel();
         });
 
-        ScrollPane homeScrollPane = (ScrollPane) Home.lookup("#scrollPane");
-        if (homeScrollPane != null) {
-            homeScrollPane.setContent(customScrollPanel);
-            homeScrollPane.setFitToWidth(true);
-            homeScrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
-            homeScrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
-        } else {
-            ((Pane)Home).getChildren().add(customScrollPanel);
-        }
 
-        customScrollPanel.setPrefViewportWidth(Region.USE_COMPUTED_SIZE);
-        customScrollPanel.setPrefViewportHeight(Region.USE_COMPUTED_SIZE);
     }
-
+    /**
+     * <li>Daca user ul se inregistreaza va trebui sa selectez preferintele</li>
+     */
     private void handleUserSpecificPanes() {
         String query = "SELECT * FROM userpref WHERE user_idUser = ?";
         Boolean havePreferences=dbComands.USER_ARE_PREF(query,DB_URL,DB_USER,DB_PASSWORD,this.userId);
@@ -170,7 +201,9 @@ public class ControllerUser {
             e.printStackTrace();
         }
     }
-
+    /**
+     * <li>Initializeaza pane-urile</li>
+     */
     private Pane loadPane(String fxmlPath) throws IOException {
         Pane pane = FXMLLoader.load(Objects.requireNonNull(Objects.requireNonNull(getClass().getResource(fxmlPath))));
 
@@ -188,10 +221,20 @@ public class ControllerUser {
                             preferinte = getSelectedGenres(pane);
                             trimitePreferinte(userId);
                             Userpane.getChildren().setAll(Home);
+                            initializeScrollPanel();
                         });
                         break;
                         case "home":
-                            button.setOnAction(_ -> Userpane.getChildren().setAll(Home));
+                            button.setOnAction(_ -> {
+                                Userpane.getChildren().setAll(Home);
+                                ScrollPane homeScrollPane = (ScrollPane) Home.lookup("#scrollPane");
+                                if (homeScrollPane != null) {
+                                    ScrollPanel scrollPanel = (ScrollPanel) homeScrollPane.getContent();
+                                    if (scrollPanel != null) {
+                                        scrollPanel.refresh();
+                                    }
+                                }
+                            });
 
                         break;
                     case "search":
@@ -208,10 +251,7 @@ public class ControllerUser {
                         break;
                         case "myreads":
                             button.setOnAction(_ -> {
-                                //adauga functie
                                 initializeMyReads();
-
-
                                 ImageView trashMyReads = (ImageView) Myreads.lookup("#trashMyReads");
                                 trashMyReads.setOnMouseClicked(e -> {
                                     myreads.deleteBooks();
@@ -266,59 +306,100 @@ public class ControllerUser {
                                         showAlert("Error saving book to MyReads")
                                 );
                             }
+
                             int  genre=dbComands.SEARCH_BY_COVER(DB_URL,DB_USER,DB_PASSWORD,coverImagine);
-                            System.out.println("Gen "+genre);
                             dbComands.INSERT_INTO_USERPREF_GEN(DB_URL,DB_USER,DB_PASSWORD,2,userId,genre);});
                         break;
                     case "reviews":
+                        button.setOnAction(_ -> {
+                            try {
+                                if (reviewScroll != null && !reviewScroll.isShowing()) {
+                                    reviewScroll.show();
+                                } else {
 
-                                break;
-
+                                    book.initializare(coverImagine);
+                                    initializeReviewsDisplay();
+                                }
+                            } catch (SQLException e) {
+                                throw new RuntimeException(e);
+                            }
+                        });
+                        break;
 
                 }
            }
        }
         return pane;
     }
+    /**
+     * <li>Initializeaza scrollPanel ul din pagina Review.fxml care contine toate review-urile</li>
+     */
+    private void initializeReviewsDisplay() throws SQLException {
+        if (book == null || book.getId() == 0) {
+            System.err.println("No book selected for reviews");
+            showAlert("Please select a book first");
+            return;
+        }
 
-//    private void displayBooksInGrid(GridPane booksGrid, int userId) {
-//        DBComands dbComands = new DBComands();
-//        List <BookInfo> books=new ArrayList<>();
-//        books=dbComands.IS_IN_USE(DB_URL,DB_USER,DB_PASSWORD,userId);
-//
-//    }
+        ScrollPane reviewsContainer = (ScrollPane) Search.lookup("#reviews1");
+        if (reviewsContainer == null) {
+            System.err.println("Reviews container not found");
+            return;
+        }
 
+        if (reviewScroll != null && reviewScroll.getBookId() == book.getId()) {
+            if (!reviewScroll.isShowing()) {
+                reviewScroll.show();
+            }
+            return;
+        }
+
+        reviewScroll = new ReviewScroll(book.getId(), reviewsContainer);
+        reviewsContainer.setHbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+        reviewsContainer.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+        reviewsContainer.setFitToWidth(true);
+        reviewsContainer.setVisible(true);
+        reviewScroll.show();
+    } /**
+     * <li>functionalitate cand fac rezervarea cartii</li>
+     */
     private void REZERVA(){
         Label titlu =(Label) Search.lookup("#titlu");
         DBComands dbComands=new DBComands();
         dbComands.insertIntoImprumuturi(DB_URL,DB_USER,DB_PASSWORD,userId,titlu.getText());
 
     }
-
+    /**
+     * <li>metoda care returneaza rezultatele cautarii dupa ce am dat search</li>
+     */
     private void ReturnResults(Pane pane) {
         TextField searchField = (TextField) pane.lookup("#searchField");
 
         if (searchField != null) {
-            String searchText = searchField.getText().trim(); // Elimină spațiile albe
-
-            // Verifică dacă searchText este gol
+            String searchText = searchField.getText().trim();
             if (searchText.isEmpty()) {
                 showAlert("Please enter a search term");
-                return; // Ieșim din metodă fără a efectua căutarea
+                return;
             }
 
             List<Book> results = dbComands.REZULTATE(DB_URL, DB_USER, DB_PASSWORD, searchText, searchText);
-
-            // Verifică dacă s-au găsit rezultate
             if (results == null || results.isEmpty()) {
                 showAlert("No results found for: " + searchText);
                 return;
             }
 
-            // Creează un nou SearchResultsScroll cu rezultatele obținute
-            searchResults = new SearchResultsScroll(results);
+            // Preload images in background
+            new Thread(() -> {
+                List<String> urls = new ArrayList<>();
+                for (Book book : results) {
+                    if (book.getCoverUrl() != null) {
+                        urls.add(book.getCoverUrl());
+                    }
+                }
+                ScrollPanel.preloadImages(urls);
+            }).start();
 
-            // Setează handler pentru click pe copertă
+            searchResults = new SearchResultsScroll(results);
             searchResults.setOnCoverClick(coverUrl -> {
                 try {
                     book = book.initializare(coverUrl);
@@ -330,8 +411,6 @@ public class ControllerUser {
                     showAlert("Error loading book details");
                 }
             });
-
-            // Afișează rezultatele
             ScrollPane resultsScrollPane = (ScrollPane) SearchResults.lookup("#resultsScrollPane");
             if (resultsScrollPane != null) {
                 resultsScrollPane.setContent(searchResults);
@@ -342,6 +421,9 @@ public class ControllerUser {
             showAlert("Search field not found");
         }
     }
+    /**
+     * <li>afiseaza detaliile cartii(Search.fxml) </li>
+     */
     private void updateBookDetails(Book book) {
         try {
             Label author = (Label) Search.lookup("#autor");
@@ -356,20 +438,30 @@ public class ControllerUser {
             if (genre != null) genre.setText(book.getGenre() != null ? book.getGenre() : "N/A");
 
             if (pane != null && book.getCoverUrl() != null) {
-                Image coverImage = new Image(book.getCoverUrl());
-                BackgroundImage bgImage = new BackgroundImage(
-                        coverImage,
-                        BackgroundRepeat.NO_REPEAT,
-                        BackgroundRepeat.NO_REPEAT,
-                        BackgroundPosition.CENTER,
-                        new BackgroundSize(BackgroundSize.AUTO, BackgroundSize.AUTO, false, false, true, true)
-                );
-                pane.setBackground(new Background(bgImage));
+                try {
+                    Image coverImage = new Image(book.getCoverUrl(), true); // true for async loading
+
+
+                    BackgroundImage bgImage = new BackgroundImage(
+                            coverImage,
+                            BackgroundRepeat.NO_REPEAT,
+                            BackgroundRepeat.NO_REPEAT,
+                            BackgroundPosition.CENTER,
+                            new BackgroundSize(BackgroundSize.AUTO, BackgroundSize.AUTO, false, false, true, true)
+                    );
+                    pane.setBackground(new Background(bgImage));
+                } catch (Exception e) {
+                    System.err.println("Error loading cover: " + e.getMessage());
+                    pane.setStyle("-fx-background-color: #f0f0f0;");
+                }
             }
         } catch (Exception e) {
             System.err.println("Error updating book details: " + e.getMessage());
         }
     }
+    /**
+     * <li>Initializeaza scrollPanel ul din pagina de MyReads</li>
+     */
     private void initializeMyReads() {
         myreads = new myReadsScroll(userId);
         myreads.setOnCoverClick(coverUrl -> {
@@ -385,8 +477,7 @@ public class ControllerUser {
                 title.setText(book.getTitle());
                 description.setText(book.getDescription());
                 genre.setText(book.getGenre());
-
-                Image coverImage = new Image(coverUrl);
+                Image coverImage = ScrollPanel.getCachedImage(coverUrl);
                 BackgroundImage bgImage = new BackgroundImage(
                         coverImage,
                         BackgroundRepeat.NO_REPEAT,
@@ -397,6 +488,7 @@ public class ControllerUser {
                 pane.setBackground(new Background(bgImage));
 
                 Platform.runLater(() -> Userpane.getChildren().setAll(Search));
+
             } catch (Exception e) {
                 System.err.println("Error handling book click: " + e.getMessage());
                 showAlert("Error loading book details");
@@ -413,6 +505,9 @@ public class ControllerUser {
             ((Pane)Myreads).getChildren().add(myreads);
         }
     }
+    /**
+     * <li>Checkbox urile din pagina de Preferinte.fxml </li>
+     */
     private List<String> getSelectedGenres(Pane pane) {
         List<String> selectedGenres = new ArrayList<>();
         Map<String, String> genreMap = Map.ofEntries(
@@ -446,6 +541,9 @@ public class ControllerUser {
         }
         return selectedGenres;
     }
+    /**
+     * <li>Se trimit preferintele in baza de date</li>
+     */
     private void trimitePreferinte(int userId) {
         if (preferinte.isEmpty()) {
             showAlert("No genres selected");
@@ -466,20 +564,24 @@ public class ControllerUser {
         }
 
         if (!invalidGenres.isEmpty()) {
-            showAlert("Invalid genres: " + String.join(", ", invalidGenres));
+            showAlert("Invalid genre");
             return;
         }
          query = "INSERT INTO userpref(number, user_idUser, preferinte_idpreferinte) VALUES(?, ?, ?)";
         dbComands.INSERT_INTO_USERPREF(query,DB_URL,DB_USER,DB_PASSWORD,userId,validGenreIds);
 
     }
-
+    /**
+     * <li>Inchide aplicatia</li>
+     */
     @FXML
     public void quit_app() {
         System.exit(0);
     }
- 
 
+    /**
+     * <li>Afiseaza orice tip de atentionare</li>
+     */
     private void showAlert(String message) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Attention!");
@@ -492,20 +594,15 @@ public class ControllerUser {
 
     List<Star> stars = new ArrayList<>();
     int currentRating = 0;
-    // Add these methods to your ControllerUser class:
 
     private void initializeReviewPane() {
-        // Get the review pane from your Search pane
-        Pane reviewPane = (Pane) Search.lookup("#review1");
 
-        // Clear any existing content
+        Pane reviewPane = (Pane) Search.lookup("#review1");
         reviewPane.getChildren().clear();
 
-        // Create star container
         HBox starContainer = new HBox(5);
-        starContainer.setAlignment(Pos.CENTER); // Center the stars
+        starContainer.setAlignment(Pos.CENTER);
 
-        // Create 5 stars
         for (int i = 0; i < 5; i++) {
             Star star = new Star(i + 1);
             star.setOnAction(_ -> handleStarClick(star));
@@ -519,11 +616,8 @@ public class ControllerUser {
     private void handleStarClick(Star clickedStar) {
         currentRating = clickedStar.getRatingValue();
         updateStars();
-        System.out.println("Selected rating: " + currentRating);
         showReviewPopup();
-
        resetAllStars();
-        System.out.println("Selected rating: " + currentRating);
     }
     private void updateStars() {
         for (Star star : stars) {

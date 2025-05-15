@@ -59,13 +59,8 @@ public class myReadsScroll extends ScrollPane {
 
     private void generateGridContent() {
         gridPane.getChildren().clear();
-        // Adăugăm spacer la stânga
-//        Pane leftSpacer = new Pane();
-//        leftSpacer.setPrefWidth(30);
-//        GridPane.setRowSpan(leftSpacer, rows);
-//        gridPane.add(leftSpacer, 0, 0);
 
-        // Adăugăm cărțile
+        // adauga cărțile in GridPane
         int coverIndex = 0;
         for (int row = 0; row < rows; row++) {
             for (int col = 0; col < cols; col++) {

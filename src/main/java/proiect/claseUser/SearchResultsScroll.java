@@ -57,7 +57,7 @@ public class SearchResultsScroll extends ScrollPane {
                 gridPane.add(paneCarte, 0, i);
             }
         } else {
-            Label noResults = new Label("Nu s-au găsit rezultate");
+            Label noResults = new Label("Not found!");
             noResults.setStyle("-fx-font-size: 16px; -fx-text-fill: #666;");
             gridPane.add(noResults, 0, 0);
         }
@@ -66,4 +66,6 @@ public class SearchResultsScroll extends ScrollPane {
     public void setOnCoverClick(Consumer<String> handler) {
         this.onCoverClickHandler = handler;
     }
+
+
 }

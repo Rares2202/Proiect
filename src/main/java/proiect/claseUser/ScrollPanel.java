@@ -8,16 +8,15 @@ import javafx.scene.layout.*;
 import javafx.geometry.Pos;
 import javafx.scene.paint.Color;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.function.Consumer;
 
 public class ScrollPanel extends ScrollPane {
     private final int cols = 4;
-    private final int rows = 15;
     private final int cellWidth = 170;
     private final int cellHeight = 250;
     private final int gap = 10;
+    private final int maxVisibleRows = 3;
 
     private GridPane gridPane;
     private List<String> coverUrls;
@@ -25,21 +24,27 @@ public class ScrollPanel extends ScrollPane {
     private static final String DB_URL = "jdbc:mysql://localhost:3306/mydb";
     private static final String DB_USER = "root";
     private static final String DB_PASSWORD = "simone";
+    private static final Image DEFAULT_COVER_IMAGE = createDefaultCoverImage();
+    // hashmap care pastreaza imaginile
+    private static final Map<String, Image> imageCache = new HashMap<>();
 
     private Consumer<String> onCoverClickHandler;
     private Consumer<String> onPlusButtonClickHandler;
 
     public ScrollPanel(int userId) {
         this.userId = userId;
-
         initialize();
     }
-
+    /**
+     * <li>Initializeaza scrollPanel ul din pagina de Home</li>
+     * <li>E un scrollPane ce este sectionat printr un GridPane si ca elemente avem Pane-uri adica imaginile cartilor</li>
+     */
     private void initialize() {
-        // Configure scroll pane properties
-        this.setHbarPolicy(ScrollBarPolicy.AS_NEEDED);
+        this.setHbarPolicy(ScrollBarPolicy.NEVER);
         this.setVbarPolicy(ScrollBarPolicy.NEVER);
         this.setFitToWidth(true);
+        this.setPrefViewportHeight(maxVisibleRows * (cellHeight + gap) + gap);
+
         gridPane = new GridPane();
         gridPane.setHgap(gap);
         gridPane.setVgap(gap);
@@ -48,10 +53,57 @@ public class ScrollPanel extends ScrollPane {
         this.setContent(gridPane);
     }
 
+    // adauga in hashmap
+    public static Image getCachedImage(String url) {
+        if (url == null) {
+            return DEFAULT_COVER_IMAGE;
+        }
+
+        if (imageCache.containsKey(url)) {
+            return imageCache.get(url);
+        }
+
+        try {
+            Image image = new Image(url, true);
+            imageCache.put(url, image);
+            return image;
+        } catch (Exception e) {
+            System.err.println("Error loading image: " + url);
+            return DEFAULT_COVER_IMAGE;
+        }
+    }
+    /**
+     * <li>Initializeaza imagine</li>
+     */
+    private static Image createDefaultCoverImage() {
+        try {
+            URL imageUrl = ScrollPanel.class.getResource("/proiect/css/white.jpg");
+            if (imageUrl != null) {
+                return new Image(imageUrl.toExternalForm());
+            } else {
+                System.err.println("Default cover image not found in resources.");
+            }
+        } catch (Exception e) {
+            System.err.println("Error loading default cover image: " + e.getMessage());
+        }
+
+        return null;
+    }
+    public static void clearImageCache() {
+        imageCache.clear();
+    }
+
+    public static void preloadImages(List<String> urls) {
+        for (String url : urls) {
+            getCachedImage(url);
+        }
+    }
+    /**
+     * <li>Incarca imaginile intr o lista de url</li>
+     */
     private void loadCoverUrls() {
         DBComands dbComands = new DBComands();
-        System.out.println("User id:"+userId);
-        List<Book> books = dbComands.SELECT_ALL_FROM_USERPREF(DB_URL,DB_USER,DB_PASSWORD,userId);
+        List<Book> books = dbComands.SELECT_ALL_FROM_USERPREF(DB_URL, DB_USER, DB_PASSWORD, userId);
 
         this.coverUrls = new ArrayList<>();
         for (Book book : books) {
@@ -59,68 +111,78 @@ public class ScrollPanel extends ScrollPane {
                 coverUrls.add(book.getCoverUrl());
             }
         }
-    }
 
+        // se incarca imaginile in hashmap si apoi din hashmap se afiseaza in scrollPanel
+        new Thread(() -> preloadImages(coverUrls)).start();
+    }
+    /**
+     * <li>Se incarca fiecare Pane in GridPane</li>
+     */
     private void generateGridContent() {
+        gridPane.getChildren().clear();
         Image plusImage = loadPlusIcon();
         int coverIndex = 0;
-        for (int row = 0; row < rows; row++) {
-            for (int col = 0; col < cols; col++) {
-                StackPane cell = createCell(plusImage, coverIndex);
-                gridPane.add(cell, col + 1, row);
+        int totalBooks = coverUrls.size();
+        int requiredRows = (int) Math.ceil((double) totalBooks / cols);
 
-                if (coverIndex < coverUrls.size()) {
+        gridPane.setPrefWidth(cols * (cellWidth + gap) + gap);
+        gridPane.setPrefHeight(requiredRows * (cellHeight + gap) + gap);
+
+        for (int row = 0; row < requiredRows; row++) {
+            for (int col = 0; col < cols; col++) {
+                if (coverIndex < totalBooks) {
+                    StackPane cell = createCell(plusImage, coverIndex);
+                    gridPane.add(cell, col, row);
                     coverIndex++;
                 }
             }
         }
     }
-
+    /**
+     * <li>Se creaza Panel pentru carte</li>
+     */
     private StackPane createCell(Image plusImage, int coverIndex) {
         StackPane cell = new StackPane();
         cell.setPrefSize(cellWidth, cellHeight);
         Region background = createCellBackground(coverIndex);
         Button saveButton = createSaveButton(plusImage, coverIndex);
         cell.getChildren().addAll(background, saveButton);
+
         if (isValidCoverIndex(coverIndex)) {
             cell.setOnMouseClicked(event -> {
                 if (onCoverClickHandler != null) {
                     onCoverClickHandler.accept(coverUrls.get(coverIndex));
                 }
             });
-
             setupCellHoverEffects(cell);
         }
 
         return cell;
     }
-
+    /**
+     * <li>Adauga background-ul la Panel</li>
+     */
     private Region createCellBackground(int coverIndex) {
         Region background = new Region();
         background.setPrefSize(cellWidth, cellHeight);
 
         if (isValidCoverIndex(coverIndex)) {
-            try {
-                Image coverImage = new Image(coverUrls.get(coverIndex));
-                BackgroundImage bgImage = new BackgroundImage(
-                        coverImage,
-                        BackgroundRepeat.NO_REPEAT,
-                        BackgroundRepeat.NO_REPEAT,
-                        BackgroundPosition.CENTER,
-                        new BackgroundSize(BackgroundSize.AUTO, BackgroundSize.AUTO, false, false, true, true)
-                );
-                background.setBackground(new Background(bgImage));
-            } catch (Exception e) {
-                background.setStyle(createRandomColorStyle());
-            }
+            Image coverImage = getCachedImage(coverUrls.get(coverIndex));
+            BackgroundImage bgImage = new BackgroundImage(
+                    coverImage,
+                    BackgroundRepeat.NO_REPEAT,
+                    BackgroundRepeat.NO_REPEAT,
+                    BackgroundPosition.CENTER,
+                    new BackgroundSize(BackgroundSize.AUTO, BackgroundSize.AUTO, false, false, true, true)
+            );
+            background.setBackground(new Background(bgImage));
         }
-        //else {
-//            background.setStyle(createRandomColorStyle());
-//        }
 
         return background;
     }
-
+    /**
+     * <li>Butonul de plus  din Carte,care daca este apasat,cartea va fi adauggata in myReads</li>
+     */
     private Button createSaveButton(Image plusImage, int coverIndex) {
         Button saveButton = new Button();
 
@@ -148,7 +210,9 @@ public class ScrollPanel extends ScrollPane {
 
         return saveButton;
     }
-
+    /**
+     * <li>Incarca imaginea butonului de +</li>
+     */
     private Image loadPlusIcon() {
         try {
             URL imageUrl = getClass().getResource("/proiect/css/plus.png");
@@ -160,7 +224,9 @@ public class ScrollPanel extends ScrollPane {
         }
         return null;
     }
-
+    /**
+     * <li>Verifica daca imaginea cu indexul dat se afla in lista de imagini</li>
+     */
     private boolean isValidCoverIndex(int index) {
         return index < coverUrls.size() && coverUrls.get(index) != null;
     }
@@ -177,19 +243,26 @@ public class ScrollPanel extends ScrollPane {
         cell.setOnMouseExited(e -> cell.setEffect(null));
     }
 
-    private String createRandomColorStyle() {
-        return String.format(
-                "-fx-background-color: rgb(%d, %d, %d);",
-                (int)(Math.random() * 255),
-                (int)(Math.random() * 255),
-                (int)(Math.random() * 255)
-        );
-    }
+    /**
+     * <li>Handler pentru apasare pe imagine</li>
+     */
     public void setOnCoverClick(Consumer<String> handler) {
         this.onCoverClickHandler = handler;
     }
-
+    /**
+     * <li>Handler pentru apasare +</li>
+     */
     public void setOnPlusButtonClick(Consumer<String> handler) {
         this.onPlusButtonClickHandler = handler;
     }
+    /**
+     * <li>Da refresh la homeScrollPane</li>
+     */
+    public void refresh()
+    {
+        loadCoverUrls();
+        generateGridContent();
+
+    }
+
 }

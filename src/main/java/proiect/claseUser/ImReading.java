@@ -66,8 +66,8 @@ public class ImReading {
             System.out.println("Rezervat books: " + rezervatBooks.size());
 
             // Adaugă cărțile în grid
-            addBooksToRow(inventarBooks, 0); // Primul rând
-            addBooksToRow(rezervatBooks, 1); // Al doilea rând
+            addBooksToRow(inventarBooks, 1); // Primul rând
+            addBooksToRow(rezervatBooks, 0); // Al doilea rând
 
             // Ajustează dimensiunile rândurilor
             adjustRowSizes(inventarBooks.size(), rezervatBooks.size());

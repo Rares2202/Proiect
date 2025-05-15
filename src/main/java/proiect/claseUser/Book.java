@@ -22,13 +22,11 @@ public class Book {
         this.coverUrl = coverUrl;
     }
 
-    // Getters and setters
     public int getId() { return id; }
     public String getTitle() { return title; }
     public String getAuthor() { return author; }
     public String getDescription() { return description; }
     public String getGenre() { return genre; }
-    public int getCopies() { return copies; }
     public String getCoverUrl() { return coverUrl; }
     public Book initializare(String URL)
     {

@@ -159,8 +159,6 @@ public class ControllerMain {
         if (newUserId != -1) {
             usrId = newUserId;
             showAlert("Registration successful!");
-
-            System.out.println("User id = " + usrId);
         } else {
             showAlert("Registration failed. Username might already exist.");
         }

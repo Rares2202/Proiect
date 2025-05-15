@@ -77,6 +77,9 @@ public Boolean USER_ARE_PREF(String query, String DB_URL, String DB_USER, String
     }
     return false;
 }
+    /**
+     * <li>Nu are usage dar las o pentru un eventual debugging</li>
+     */
 public List<Book> SELECT_ALL_FROM_BOOKS(String query, String DB_URL, String DB_USER, String DB_PASS)
 {
     List<Book> books = new ArrayList<>();
@@ -172,7 +175,7 @@ public List<String>SELECT_COVER_FROM_MYREADS( String DB_URL, String DB_USER, Str
 
         // Check maximum limit query remains the same
         String countQuery = "SELECT COUNT(*) AS count FROM cartiimprumutate " +
-                "WHERE User_idUser = ? AND status = 'INVENTAR'";
+                "WHERE User_idUser = ? AND status = 'REZERVAT'";
 
         try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASS)) {
             // Check for duplicate book first
@@ -205,7 +208,7 @@ public List<String>SELECT_COVER_FROM_MYREADS( String DB_URL, String DB_USER, Str
 
             // Proceed with insertion if checks pass
             Date date = new Date();
-            String status = "INVENTAR";
+            String status = "REZERVAT";
             int carteId = -1;
 
             // Get book ID
@@ -322,7 +325,7 @@ public List<String>SELECT_COVER_FROM_MYREADS( String DB_URL, String DB_USER, Str
                 "JOIN mydb.genuri g ON c.genCarte = g.genuri \n" +
                 "JOIN mydb.userpref u ON g.idpreferinte = u.preferinte_idpreferinte\n" +
                 "WHERE u.user_idUser = ?\n" +
-                "AND c.coverCarte NOT IN (SELECT coverCarte FROM mydb.myreads)\n" +
+                "AND c.coverCarte NOT IN (SELECT coverCarte FROM mydb.myreads WHERE user_idUser=? )\n" +
                 "ORDER BY u.number DESC";
 
         List<Book> books = new ArrayList<>();
@@ -332,6 +335,7 @@ public List<String>SELECT_COVER_FROM_MYREADS( String DB_URL, String DB_USER, Str
 
             try (PreparedStatement pstmt = connection.prepareStatement(query)) {
                 pstmt.setInt(1, userId);
+                pstmt.setInt(2, userId);
 
                 try (ResultSet rs = pstmt.executeQuery()) {
                     while (rs.next()) {
@@ -479,21 +483,24 @@ public List<String>SELECT_COVER_FROM_MYREADS( String DB_URL, String DB_USER, Str
             }
         }
     }
-public List<String> SELECT_ALL_FROM_REVIEWS(String DB_URL, String DB_USER, String DB_PASS, int userId,int idCarte) {
+public List<Review> SELECT_ALL_FROM_REVIEWS(String DB_URL, String DB_USER, String DB_PASS,int idCarte) {
 
-            List<String>reviews=new ArrayList<>();
-            String query="SELECT reviewText FROM review WHERE User_idUser = ? AND  Carte_idCarte = ?";
+            List<Review>reviews=new ArrayList<>();
+            String query="SELECT * FROM review WHERE  Carte_idCarte = ?";
     try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASS)) {
         connection.setAutoCommit(false);
 
         try (PreparedStatement pstmt = connection.prepareStatement(query)) {
-            pstmt.setInt(1, userId);
+            pstmt.setInt(1, idCarte);
 
             try (ResultSet rs = pstmt.executeQuery()) {
-                String reviewText = "";
+
                 while (rs.next()) {
-                reviewText=rs.getString("reviewText");
-                    reviews.add(reviewText);
+                    Review review=new Review(rs.getString("reviewText"),
+                        rs.getInt("reviewRating"),
+                        rs.getInt("User_idUser"),
+                        rs.getInt("Carte_idCarte"));
+                    reviews.add(review);
                 }
             }
             connection.commit();
