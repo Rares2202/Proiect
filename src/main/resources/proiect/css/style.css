@@ -207,6 +207,10 @@
     -fx-cursor: pointer;
 }
 
+.row{
+    -fx-border-width: 0.5;
+    -fx-border-color: green;
+}
 
 
 

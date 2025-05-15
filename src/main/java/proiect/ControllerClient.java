@@ -142,6 +142,4 @@ public class ControllerClient extends ControllerLibrarian{
     @FXML void AddBookToRezervari(MouseEvent mouseEvent) throws SQLException {
         initialize_popup_menu_add_book();
     }
-
-
 }

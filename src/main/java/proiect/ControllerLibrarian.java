@@ -39,6 +39,7 @@ public class ControllerLibrarian{
     @FXML AnchorPane statistici_menu;
     @FXML AnchorPane popup_menu_validation;
     @FXML AnchorPane popup_menu_add_book;
+    @FXML AnchorPane popup_menu_add_carte;
     public List<AnchorPane> listMenu = new ArrayList<>();
 
     //Meniu Clienti
@@ -73,6 +74,18 @@ public class ControllerLibrarian{
     @FXML Button btn_anuleaza_tranzactie;
 
     //Meniu Carti
+    @FXML VBox list_search_carti;
+    @FXML TextField textField_bookTitle;
+    @FXML Button addBase;
+    @FXML Button deleteBase;
+
+    //Popup meniu adaugare carte in baza de date
+    @FXML TextField titleBar;
+    @FXML TextField authorBar;
+    @FXML TextField genreBar;
+    @FXML TextField numberBar;
+    @FXML TextField coverBar;
+    @FXML Button bookAddBase;
 
     //Meniu Statistici
     @FXML BarChart bar_chart_book;
@@ -91,6 +104,7 @@ public class ControllerLibrarian{
         listMenu.add(popup_menu_add_book);
         listMenu.add(popup_menu_tranzactie);
         listMenu.add(popup_menu_validation);
+        listMenu.add(popup_menu_add_carte);
 
         //initailizare TableView pentru tranzactionarea imprumuturilor/retururilor
         ObservableList<TableColumn<ObservableList<Label>, ?>> rawCols = tableView_transaction.getColumns();
@@ -199,8 +213,67 @@ public class ControllerLibrarian{
             }
         }
     }
-    @FXML void OnCartiButtonClicked(MouseEvent mouseEvent) {
+    @FXML void OnCartiButtonClicked(MouseEvent mouseEvent) throws SQLException {
+        if(books_menu.isVisible())
+            return;
+
+        //verificam conexiunea pentru afisarea meniului cu carti
+        if(connection.getConnection()==null)
+        {
+            connection.setFailed(err_connection_null);
+            return;
+        }
         setOnlyMenu(books_menu);
+        update_list_books("");
+
+        textField_bookTitle.setOnKeyPressed(event -> {
+            if(event.getCode().equals(KeyCode.ENTER))
+                try{
+                    System.out.print("ENTER");
+                    update_list_books(textField_bookTitle.getText());
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+        });
+    }
+    void update_list_books(String text) throws SQLException {
+        if(connection.getConnection()==null)
+        {
+            connection.setFailed(err_connection_null);
+            return;
+        }
+
+        text=text.toUpperCase();
+        list_search_carti.getChildren().clear();
+        ResultSet rs = connection.executeQuery("SELECT titluCarti\n, autorCarte\n, numarCarte\n, genCarte\n" +
+                                                "FROM carte\n" +
+                                                "WHERE UPPER(titluCarti) LIKE '%" + text + "%'\n" +
+                                                "OR UPPER(idCarte) LIKE '%" + text + "%' \n" +
+                                                "ORDER BY idCarte LIMIT 100;");
+        while(rs.next()){
+            String _titlu = rs.getString("titluCarti");
+            String _author = rs.getString("autorCarte");
+            String _genre = rs.getString("genCarte");
+            String _num = rs.getString("numarCarte");
+
+            try{
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("fxml/ItemBookRow.fxml"));
+                Node node = loader.load();
+                ControllerItemBookRow controller = loader.getController();
+
+                controller.bookTitle.setText(_titlu);
+                controller.authorBook.setText(_author);
+                controller.genreBook.setText(_genre);
+                controller.quantityBook.setText(_num);
+
+                controller.mainController = this;
+                list_search_carti.getChildren().add(node);
+            }
+            catch (Exception e) {
+                System.err.print("\nNu s-a putut genera book(FXML)");
+                e.printStackTrace();
+            }
+        }
     }
     @FXML void OnStatisticiButtonClicked(MouseEvent mouseEvent) {
         initialize_statistics_menu();
@@ -308,6 +381,33 @@ public class ControllerLibrarian{
     }
     @FXML void AddBookToRezervari(MouseEvent mouseEvent) throws SQLException {
         initialize_popup_menu_add_book();
+    }
+
+    // BOOKS MENU FUNCTIONS
+    @FXML void initialize_popup_add_book() throws SQLException {
+        if(connection.getConnection()!=null){
+            connection.setFailed(err_connection_null);
+            return;
+        }
+        addBase.setOnAction(event -> {
+            popup_menu_add_carte.setVisible(true);
+
+            String _title = titleBar.getText();
+            String _author = authorBar.getText();
+            String _genre = genreBar.getText();
+            String _number = numberBar.getText();
+            String _cover = coverBar.getText();
+
+            ResultSet rs = connection.executeQuery("INSERT INTO carte(titluCarti, autorCarte, numarCarte, genCarte, coverCarte)" +
+                    "VALUES(" + _title + "," + _author + "," + _number + "," + _genre + "," + _cover + ")");
+
+
+
+        });
+
+    }
+    @FXML void AddBookToInventory(MouseEvent mouseEvent) throws SQLException {
+
     }
 
         // POPUP ADD BOOK

@@ -16,7 +16,10 @@
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.paint.Color?>
 <?import javafx.scene.paint.LinearGradient?>
@@ -214,7 +217,7 @@
                </font>
             </Text>
          </children></AnchorPane>
-      <AnchorPane fx:id="books_menu" layoutX="227.0" layoutY="25.0" prefHeight="564.0" prefWidth="802.0" visible="false">
+      <AnchorPane fx:id="books_menu" layoutX="227.0" layoutY="25.0" prefHeight="564.0" prefWidth="802.0">
          <children>
             <Pane layoutX="29.0" layoutY="14.0" prefHeight="54.0" prefWidth="124.0">
                <children>
@@ -226,9 +229,43 @@
                   </Text>
                </children>
             </Pane>
+            <GridPane layoutX="62.0" layoutY="99.0" prefHeight="30.0" prefWidth="616.0" styleClass="tab-pane" stylesheets="@../css/style.css">
+              <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" maxWidth="181.0" minWidth="10.0" prefWidth="162.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="139.0" minWidth="10.0" prefWidth="138.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="113.0" minWidth="10.0" prefWidth="74.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="111.0" minWidth="10.0" prefWidth="76.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="152.0" minWidth="10.0" prefWidth="86.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="158.0" minWidth="10.0" prefWidth="80.0" />
+              </columnConstraints>
+              <rowConstraints>
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+              </rowConstraints>
+               <children>
+                  <Label prefHeight="17.0" prefWidth="25.0" text="Titlu" />
+                  <Label prefHeight="17.0" prefWidth="41.0" text="Autor" GridPane.columnIndex="1" />
+                  <Label text="Gen" GridPane.columnIndex="2" />
+                  <Label prefHeight="17.0" prefWidth="65.0" text="Cantitate" GridPane.columnIndex="3" />
+                  <Label text="Stoc" GridPane.columnIndex="4" />
+                  <Label text="Editare" GridPane.columnIndex="5" />
+               </children>
+            </GridPane>
+            <ScrollPane layoutX="62.0" layoutY="129.0" prefHeight="381.0" prefWidth="616.0" stylesheets="@../css/style.css">
+               <content>
+                  <VBox fx:id="list_search_carti" prefHeight="378.0" prefWidth="613.0" />
+               </content>
+            </ScrollPane>
+            <Button fx:id="addBase" layoutX="695.0" layoutY="129.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="74.0" styleClass="btn-accept" stylesheets="@../css/style.css" text="Adauga" />
+            <Button fx:id="deleteBase" layoutX="695.0" layoutY="171.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="74.0" styleClass="btn-cancel" stylesheets="@../css/style.css" text="Sterge" />
+            <AnchorPane layoutX="239.0" layoutY="61.0" prefHeight="27.0" prefWidth="224.0" styleClass="search-bar" stylesheets="@../css/style.css">
+               <children>
+                  <FontAwesomeIcon fill="#00831f" glyphName="SEARCH" layoutX="8.0" layoutY="17.0" wrappingWidth="13.928571701049805" />
+                  <TextField fx:id="textField_bookTitle" layoutX="22.0" layoutY="1.0" prefHeight="25.0" prefWidth="186.0" promptText="Cauta carte" />
+               </children>
+            </AnchorPane>
          </children>
       </AnchorPane>
-      <AnchorPane fx:id="statistici_menu" layoutX="227.0" layoutY="25.0" prefHeight="564.0" prefWidth="802.0">
+      <AnchorPane fx:id="statistici_menu" layoutX="227.0" layoutY="25.0" prefHeight="564.0" prefWidth="802.0" visible="false">
          <children>
             <Pane layoutX="29.0" layoutY="14.0" prefHeight="54.0" prefWidth="165.0">
                <children>
@@ -392,6 +429,25 @@
                   </Button>
                </children>
             </Pane>
+         </children>
+      </AnchorPane>
+      <AnchorPane fx:id="popup_menu_add_carte" layoutX="1.0" prefHeight="600.0" prefWidth="1040.0" styleClass="menu-small-bg" stylesheets="@../css/style.css" visible="false">
+         <children>
+            <AnchorPane layoutX="281.0" layoutY="99.0" prefHeight="448.0" prefWidth="709.0" styleClass="menu-small-content" stylesheets="@../css/style.css">
+               <children>
+                  <Label layoutX="236.0" layoutY="45.0" prefHeight="35.0" prefWidth="237.0" text="INFORMATII CARTE">
+                     <font>
+                        <Font name="System Bold" size="24.0" />
+                     </font>
+                  </Label>
+                  <TextField fx:id="titleBar" layoutX="170.0" layoutY="128.0" prefHeight="25.0" prefWidth="370.0" promptText="Titlu Carte" styleClass="search-bar" stylesheets="@../css/style.css" />
+                  <TextField fx:id="authorBar" layoutX="170.0" layoutY="169.0" prefHeight="27.0" prefWidth="370.0" promptText="Autor Carte" styleClass="search-bar" stylesheets="@../css/style.css" />
+                  <TextField fx:id="genreBar" layoutX="170.0" layoutY="211.0" prefHeight="27.0" prefWidth="370.0" promptText="Gen Carte" styleClass="search-bar" stylesheets="@../css/style.css" />
+                  <TextField fx:id="numberBar" layoutX="170.0" layoutY="251.0" prefHeight="27.0" prefWidth="370.0" promptText="Numar Carti" styleClass="search-bar" stylesheets="@../css/style.css" />
+                  <TextField fx:id="coverBar" layoutX="170.0" layoutY="289.0" prefHeight="27.0" prefWidth="370.0" promptText="Coperta Carte" styleClass="search-bar" stylesheets="@../css/style.css" />
+                  <Button fx:id="bookAddBase" layoutX="312.0" layoutY="352.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="86.0" styleClass="btn-green-white" stylesheets="@../css/style.css" text="Adauga" />
+               </children>
+            </AnchorPane>
          </children>
       </AnchorPane>
      
