@@ -217,7 +217,7 @@
                </font>
             </Text>
          </children></AnchorPane>
-      <AnchorPane fx:id="books_menu" layoutX="227.0" layoutY="25.0" prefHeight="564.0" prefWidth="802.0">
+      <AnchorPane fx:id="books_menu" layoutX="227.0" layoutY="25.0" prefHeight="564.0" prefWidth="802.0" visible="false">
          <children>
             <Pane layoutX="29.0" layoutY="14.0" prefHeight="54.0" prefWidth="124.0">
                <children>
@@ -445,7 +445,19 @@
                   <TextField fx:id="genreBar" layoutX="170.0" layoutY="211.0" prefHeight="27.0" prefWidth="370.0" promptText="Gen Carte" styleClass="search-bar" stylesheets="@../css/style.css" />
                   <TextField fx:id="numberBar" layoutX="170.0" layoutY="251.0" prefHeight="27.0" prefWidth="370.0" promptText="Numar Carti" styleClass="search-bar" stylesheets="@../css/style.css" />
                   <TextField fx:id="coverBar" layoutX="170.0" layoutY="289.0" prefHeight="27.0" prefWidth="370.0" promptText="Coperta Carte" styleClass="search-bar" stylesheets="@../css/style.css" />
-                  <Button fx:id="bookAddBase" layoutX="312.0" layoutY="352.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="86.0" styleClass="btn-green-white" stylesheets="@../css/style.css" text="Adauga" />
+                  <Button fx:id="bookAddBase" layoutX="244.0" layoutY="357.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="86.0" styleClass="btn-green-white" stylesheets="@../css/style.css" text="Adauga" />
+                  <Button fx:id="cancelButton" layoutX="362.0" layoutY="358.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="85.0" styleClass="btn-green-white" stylesheets="@../css/style.css" text="Cancel" />
+               </children>
+            </AnchorPane>
+         </children>
+      </AnchorPane>
+      <AnchorPane fx:id="popup_success_book" layoutX="-2.0" layoutY="-2.0" prefHeight="599.0" prefWidth="1046.0" styleClass="menu-small-bg" stylesheets="@../css/style.css" visible="false">
+         <children>
+            <AnchorPane layoutX="464.0" layoutY="206.0" prefHeight="188.0" prefWidth="307.0" styleClass="menu-small-content" stylesheets="@../css/style.css">
+               <children>
+                  <FontAwesomeIcon fill="#00831f" glyphName="INFO_CIRCLE" layoutX="45.0" layoutY="70.0" size="1.5EM" wrappingWidth="20.0" />
+                  <Label layoutX="67.0" layoutY="46.0" prefHeight="35.0" prefWidth="193.0" text=" Cartea a fost adaugata cu succes!" />
+                  <Button fx:id="buttonOK" layoutX="137.0" layoutY="104.0" mnemonicParsing="false" styleClass="btn-accept" stylesheets="@../css/style.css" text="OK" />
                </children>
             </AnchorPane>
          </children>
