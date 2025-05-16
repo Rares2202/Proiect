@@ -29,7 +29,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane id="background" prefHeight="589.0" prefWidth="1030.0" stylesheets="@../css/style.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="proiect.ControllerLibrarian">
+<AnchorPane id="background" prefHeight="607.0" prefWidth="1000.0" stylesheets="@../css/style.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="proiect.ControllerLibrarian">
    <children>
       <Rectangle id="menu_bg" arcHeight="5.0" arcWidth="5.0" height="599.0" stroke="BLACK" strokeDashOffset="10.0" strokeType="INSIDE" strokeWidth="0.0" width="227.0">
          <fill>
@@ -256,7 +256,6 @@
                </content>
             </ScrollPane>
             <Button fx:id="addBase" layoutX="695.0" layoutY="129.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="74.0" styleClass="btn-accept" stylesheets="@../css/style.css" text="Adauga" />
-            <Button fx:id="deleteBase" layoutX="695.0" layoutY="171.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="74.0" styleClass="btn-cancel" stylesheets="@../css/style.css" text="Sterge" />
             <AnchorPane layoutX="239.0" layoutY="61.0" prefHeight="27.0" prefWidth="224.0" styleClass="search-bar" stylesheets="@../css/style.css">
                <children>
                   <FontAwesomeIcon fill="#00831f" glyphName="SEARCH" layoutX="8.0" layoutY="17.0" wrappingWidth="13.928571701049805" />
@@ -417,12 +416,12 @@
                         <Font name="System Bold" size="18.0" />
                      </font>
                   </Label>
-                  <Button layoutX="90.0" layoutY="140.0" mnemonicParsing="false" onMouseClicked="#AreYouSureYes" prefHeight="32.0" prefWidth="103.0" styleClass="btn-accept" stylesheets="@../css/style.css" text="DA" textFill="WHITE">
+                  <Button fx:id="confirmButton" layoutX="90.0" layoutY="140.0" mnemonicParsing="false" onMouseClicked="#AreYouSureYes" prefHeight="32.0" prefWidth="103.0" styleClass="btn-accept" stylesheets="@../css/style.css" text="DA" textFill="WHITE">
                      <font>
                         <Font size="15.0" />
                      </font>
                   </Button>
-                  <Button layoutX="247.0" layoutY="140.0" mnemonicParsing="false" onMouseClicked="#AreYouSureNo" prefHeight="32.0" prefWidth="103.0" styleClass="btn-cancel" stylesheets="@../css/style.css" text="NU" textFill="WHITE">
+                  <Button fx:id="cancelButton" layoutX="247.0" layoutY="140.0" mnemonicParsing="false" onMouseClicked="#AreYouSureNo" prefHeight="32.0" prefWidth="103.0" styleClass="btn-cancel" stylesheets="@../css/style.css" text="NU" textFill="WHITE">
                      <font>
                         <Font size="15.0" />
                      </font>
@@ -446,7 +445,7 @@
                   <TextField fx:id="numberBar" layoutX="170.0" layoutY="251.0" prefHeight="27.0" prefWidth="370.0" promptText="Numar Carti" styleClass="search-bar" stylesheets="@../css/style.css" />
                   <TextField fx:id="coverBar" layoutX="170.0" layoutY="289.0" prefHeight="27.0" prefWidth="370.0" promptText="Coperta Carte" styleClass="search-bar" stylesheets="@../css/style.css" />
                   <Button fx:id="bookAddBase" layoutX="244.0" layoutY="357.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="86.0" styleClass="btn-green-white" stylesheets="@../css/style.css" text="Adauga" />
-                  <Button fx:id="cancelButton" layoutX="362.0" layoutY="358.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="85.0" styleClass="btn-green-white" stylesheets="@../css/style.css" text="Cancel" />
+                  <Button fx:id="cancel" layoutX="362.0" layoutY="358.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="85.0" styleClass="btn-green-white" stylesheets="@../css/style.css" text="Cancel" />
                </children>
             </AnchorPane>
          </children>
@@ -458,6 +457,61 @@
                   <FontAwesomeIcon fill="#00831f" glyphName="INFO_CIRCLE" layoutX="45.0" layoutY="70.0" size="1.5EM" wrappingWidth="20.0" />
                   <Label layoutX="67.0" layoutY="46.0" prefHeight="35.0" prefWidth="193.0" text=" Cartea a fost adaugata cu succes!" />
                   <Button fx:id="buttonOK" layoutX="137.0" layoutY="104.0" mnemonicParsing="false" styleClass="btn-accept" stylesheets="@../css/style.css" text="OK" />
+               </children>
+            </AnchorPane>
+         </children>
+      </AnchorPane>
+      <AnchorPane fx:id="menu_increase" layoutX="1.0" prefHeight="601.0" prefWidth="1040.0" visible="false">
+         <children>
+            <AnchorPane layoutX="391.0" layoutY="167.0" prefHeight="267.0" prefWidth="494.0" styleClass="menu-small-content" stylesheets="@../css/style.css">
+               <children>
+                  <FontAwesomeIcon fill="#00831f" glyphName="INFO_CIRCLE" layoutX="46.0" layoutY="58.0" size="3em" wrappingWidth="33.0" />
+                  <Label layoutX="108.0" layoutY="28.0" prefHeight="35.0" prefWidth="329.0" text="Adauga-ti numarul de carti">
+                     <font>
+                        <Font size="24.0" />
+                     </font>
+                  </Label>
+                  <TextField fx:id="numberUp" layoutX="117.0" layoutY="102.0" prefHeight="32.0" prefWidth="260.0" promptText="Minin o carte" styleClass="search-bar" stylesheets="@../css/style.css" />
+                  <Button fx:id="addIncrease" layoutX="145.0" layoutY="183.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="65.0" styleClass="btn-accept" stylesheets="@../css/style.css" text="Adauga" />
+                  <Button fx:id="cancelIncrease" layoutX="279.0" layoutY="183.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="65.0" styleClass="btn-accept" stylesheets="@../css/style.css" text="Cancel" />
+                  <Label fx:id="title_book" layoutX="125.0" layoutY="74.0" prefHeight="17.0" prefWidth="245.0" text="Label">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </Label>
+               </children>
+            </AnchorPane>
+         </children>
+      </AnchorPane>
+      <AnchorPane fx:id="menu_decrease" layoutX="11.0" layoutY="10.0" prefHeight="583.0" prefWidth="1040.0" visible="false">
+         <children>
+            <AnchorPane layoutX="384.0" layoutY="159.0" prefHeight="267.0" prefWidth="494.0" styleClass="menu-small-content" stylesheets="@../css/style.css">
+               <children>
+                  <FontAwesomeIcon fill="#00831f" glyphName="INFO_CIRCLE" layoutX="46.0" layoutY="58.0" size="3em" wrappingWidth="33.0" />
+                  <Label layoutX="108.0" layoutY="28.0" prefHeight="35.0" prefWidth="329.0" text="Sterge-ti numarul de carti">
+                     <font>
+                        <Font size="24.0" />
+                     </font>
+                  </Label>
+                  <TextField fx:id="numberDown" layoutX="117.0" layoutY="105.0" prefHeight="32.0" prefWidth="260.0" promptText="Minin o carte" styleClass="search-bar" stylesheets="@../css/style.css" />
+                  <Button fx:id="removeDecrease" layoutX="147.0" layoutY="164.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="65.0" styleClass="btn-cancel" stylesheets="@../css/style.css" text="Sterge" />
+                  <Button fx:id="cancelDecrease" layoutX="281.0" layoutY="164.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="65.0" styleClass="btn-accept" stylesheets="@../css/style.css" text="Cancel" />
+                  <Label fx:id="title_book1" layoutX="124.0" layoutY="74.0" prefHeight="17.0" prefWidth="245.0" text="Label">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </Label>
+               </children>
+            </AnchorPane>
+         </children>
+      </AnchorPane>
+      <AnchorPane fx:id="popup_success_book1" layoutY="-2.0" prefHeight="609.0" prefWidth="1054.0" styleClass="menu-small-bg" stylesheets="@../css/style.css" visible="false">
+         <children>
+            <AnchorPane layoutX="464.0" layoutY="206.0" prefHeight="188.0" prefWidth="307.0" styleClass="menu-small-content" stylesheets="@../css/style.css">
+               <children>
+                  <FontAwesomeIcon fill="#00831f" glyphName="INFO_CIRCLE" layoutX="45.0" layoutY="70.0" size="1.5EM" wrappingWidth="20.0" />
+                  <Label layoutX="67.0" layoutY="46.0" prefHeight="35.0" prefWidth="193.0" text=" Cartea a fost stearsa cu succes!" />
+                  <Button fx:id="buttonOK1" layoutX="137.0" layoutY="104.0" mnemonicParsing="false" styleClass="btn-accept" stylesheets="@../css/style.css" text="OK" />
                </children>
             </AnchorPane>
          </children>

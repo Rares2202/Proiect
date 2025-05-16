@@ -12,5 +12,14 @@ public abstract class book {
     public String gen_name;
     public String number;
 
-    //public String getId { return id; }
+    public String getBookId() {
+        return id;
+    }
+
+    public String getBookName() {
+        return book_name;
+    }
+
+    void f() {}
+
 }

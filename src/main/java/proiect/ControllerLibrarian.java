@@ -41,6 +41,9 @@ public class ControllerLibrarian{
     @FXML AnchorPane popup_menu_add_book;
     @FXML AnchorPane popup_menu_add_carte;
     @FXML AnchorPane popup_success_book;
+    @FXML AnchorPane menu_increase;
+    @FXML AnchorPane menu_decrease;
+    @FXML AnchorPane popup_success_book1;
     public List<AnchorPane> listMenu = new ArrayList<>();
 
     //Meniu Clienti
@@ -78,7 +81,21 @@ public class ControllerLibrarian{
     @FXML VBox list_search_carti;
     @FXML TextField textField_bookTitle;
     @FXML Button addBase;
-    @FXML Button deleteBase;
+    public String book_id;
+    public String book_name;
+
+    //Meniu adauga cantitate carte
+    @FXML TextField numberUp;
+    public Label title_book;
+    public Button addIncrease;
+    public Button cancelIncrease;
+
+    //Meniu stergere cantitate/carte
+    @FXML TextField numberDown;
+    public Label title_book1;
+    public Button removeDecrease;
+    public Button cancelDecrease;
+
 
     //Popup meniu adaugare carte in baza de date
     @FXML TextField titleBar;
@@ -87,10 +104,17 @@ public class ControllerLibrarian{
     @FXML TextField numberBar;
     @FXML TextField coverBar;
     @FXML Button bookAddBase;
+    @FXML Button cancel;
+
+    //Popup meniu "esti sigur?"
+    @FXML Button confirmButton;
     @FXML Button cancelButton;
 
-    //Popup adaugare cu succes
+    //Popup adaugare cu success
     @FXML Button buttonOK;
+
+    //Popup stergere cu success
+    @FXML Button buttonOK1;
 
     //Meniu Statistici
     @FXML BarChart bar_chart_book;
@@ -111,6 +135,9 @@ public class ControllerLibrarian{
         listMenu.add(popup_menu_validation);
         listMenu.add(popup_menu_add_carte);
         listMenu.add(popup_success_book);
+        listMenu.add(menu_increase);
+        listMenu.add(menu_decrease);
+        listMenu.add(popup_success_book1);
 
         //initailizare TableView pentru tranzactionarea imprumuturilor/retururilor
         ObservableList<TableColumn<ObservableList<Label>, ?>> rawCols = tableView_transaction.getColumns();
@@ -271,7 +298,7 @@ public class ControllerLibrarian{
             String _genre = rs.getString("genCarte");
             String _num = rs.getString("numarCarte");
             int numar = Integer.parseInt(_num);
-            int reserved = connection.getQueryCount("SELECT * FROM cartiimprumutate WHERE Carte_idCarte = '" + id + "'");
+            int reserved = connection.getQueryCount("SELECT * FROM cartiimprumutate WHERE UPPER(statusImprumut)='REZERVAT' AND Carte_idCarte = '" + id + "'");
             int stoc = numar - reserved;
 
             try{
@@ -279,11 +306,14 @@ public class ControllerLibrarian{
                 Node node = loader.load();
                 ControllerItemBookRow controller = loader.getController();
 
+                controller.id = String.valueOf(id);
                 controller.bookTitle.setText(_titlu);
                 controller.authorBook.setText(_author);
                 controller.genreBook.setText(_genre);
                 controller.quantityBook.setText(_num);
                 controller.availableBook.setText(String.valueOf(stoc));
+
+                controller.book_name = _titlu;
 
                 controller.mainController = this;
                 list_search_carti.getChildren().add(node);
@@ -412,9 +442,14 @@ public class ControllerLibrarian{
         }
         popup_menu_add_carte.setVisible(true);
         books_menu.setVisible(false);
-        cancelButton.setOnAction(event -> {
+        cancel.setOnAction(event -> {
             popup_menu_add_carte.setVisible(false);
             books_menu.setVisible(true);
+            titleBar.setText("");
+            authorBar.setText("");
+            genreBar.setText("");
+            numberBar.setText("");
+            coverBar.setText("");
         });
         bookAddBase.setOnAction(event -> {
             String title = titleBar.getText();
@@ -463,6 +498,238 @@ public class ControllerLibrarian{
             }
 
         });
+    }
+
+
+    public void initialize_increase_button(String book_id) throws SQLException {
+        // Șterge handler-ul vechi, pentru a evita acumularea de acțiuni multiple
+        addIncrease.setOnAction(null);
+        cancelIncrease.setOnAction(null);
+
+        if (addIncrease != null && addIncrease.getOnAction() == null) {
+            addIncrease.setOnAction(actionEvent -> {
+                String numarText = numberUp.getText();
+                if (numarText.isEmpty()) return;
+
+                int number;
+                try {
+                    number = Integer.parseInt(numarText);
+                    if (number <= 0) return;
+                } catch (NumberFormatException e) {
+                    return;
+                }
+
+                try {
+                    increase(book_id, number);
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            });
+        }
+
+        if (cancelIncrease != null && cancelIncrease.getOnAction() == null) {
+            cancelIncrease.setOnAction(actionEvent -> {
+                menu_increase.setVisible(false);
+                books_menu.setVisible(true);
+                numberUp.setText("");
+            });
+        }
+    }
+    @FXML void increase(String bookID, int number) throws SQLException {
+        if(connection.getConnection()==null){
+            connection.setFailed(err_connection_null);
+            return;
+        }
+
+        book_id = bookID;
+
+        // Verificam daca exista book id
+        if(book_id == null || book_id.isEmpty()) {
+            System.out.println("Eroare: ID carte neconfigurat!");
+            return;
+        }
+
+        try {
+            // Obtinem cantitatea curenta
+            ResultSet rs = connection.executeQuery("SELECT numarCarte FROM carte WHERE idCarte = " + book_id);
+
+            if(rs.next()){
+                int cantitate = rs.getInt("numarCarte");
+                cantitate += number;
+
+                // Actualizam cantitatea in baza de date
+                connection.executeUpdate("UPDATE carte SET numarCarte = numarCarte + " + number + " WHERE idCarte = " + book_id);
+
+                // Verificam daca actualizarea a avut loc
+                ResultSet checkRs = connection.executeQuery("SELECT numarCarte FROM carte WHERE idCarte = " + book_id);
+                if(checkRs.next() && checkRs.getInt("numarCarte")==cantitate){
+                    update_list_books("");
+
+                    popup_success_book.setVisible(true);
+                    menu_increase.setVisible(false);
+
+                    buttonOK.setOnAction(event1 -> {
+                        popup_success_book.setVisible(false);
+                        books_menu.setVisible(true);
+                        numberUp.setText("");
+                    });
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void initialize_decrease_button(String book_id) throws SQLException {
+        // Sterge handle-uri vechi, pentru a evita acumularea de actiuni multiple
+        removeDecrease.setOnAction(null);
+        cancelDecrease.setOnAction(null);
+
+        if (removeDecrease != null && removeDecrease.getOnAction() == null) {
+            removeDecrease.setOnAction(actionEvent -> {
+                String numarText = numberDown.getText();
+                if (numarText.isEmpty()) return;
+
+                int number;
+
+                try{
+                    number = Integer.parseInt(numarText);
+                    if (number <= 0) return;
+                } catch (NumberFormatException e) {
+                    return;
+                }
+                try{
+                    decrease(book_id,number);
+                } catch (SQLException e){
+                    e.printStackTrace();
+                }
+            });
+        }
+
+        if (cancelDecrease != null && cancelDecrease.getOnAction() == null) {
+            cancelDecrease.setOnAction(actionEvent -> {
+                menu_decrease.setVisible(false);
+                books_menu.setVisible(true);
+                numberDown.setText("");
+            });
+        }
+    }
+    @FXML void decrease(String bookID, int number) throws SQLException {
+        if (connection.getConnection() == null) {
+            connection.setFailed(err_connection_null);
+            return;
+        }
+
+        book_id = bookID;
+
+        // Verificam daca exista book id
+        if (book_id == null || book_id.isEmpty()) {
+            System.out.println("Eroare: ID carte neconfigurat!");
+            return;
+        }
+
+        try {
+            // Obtinem cantitatea curenta
+            ResultSet rs = connection.executeQuery("SELECT numarCarte FROM carte WHERE idCarte = " + book_id);
+
+            if (rs.next()) {
+                int cantitate = rs.getInt("numarCarte");
+                cantitate = cantitate - number;
+
+                if (cantitate >= 0) {
+                    // Actualizam cantitatea in baza de date
+                    connection.executeUpdate("UPDATE carte SET numarCarte = numarCarte - " + number + " WHERE idCarte = " + book_id);
+
+                    // Verificam daca actualizarea a avut loc
+                    ResultSet checkRs = connection.executeQuery("SELECT numarCarte FROM carte WHERE idCarte = " + book_id);
+                    if (checkRs.next() && checkRs.getInt("numarCarte") == cantitate) {
+
+                        popup_success_book1.setVisible(true);
+                        menu_decrease.setVisible(false);
+
+                        buttonOK1.setOnAction(event1 -> {
+                            try {
+                                update_list_books("");
+                                popup_success_book1.setVisible(false);
+                                books_menu.setVisible(true);
+                            } catch (SQLException e) {
+                                throw new RuntimeException(e);
+                            }
+                        });
+                    }
+                } else {
+                    popup_menu_validation.setVisible(true);
+                    menu_decrease.setVisible(false);
+                    confirmButton.setOnAction(event1 -> {
+                        try{
+                            connection.executeUpdate("DELETE FROM carte WHERE idCarte = " + book_id);
+                            reindexBookIds();
+                            update_list_books("");
+                            popup_success_book1.setVisible(true);
+                            popup_menu_validation.setVisible(false);
+
+                            buttonOK1.setOnAction(event2 -> {
+                                popup_success_book1.setVisible(false);
+                                books_menu.setVisible(true);
+                                numberDown.setText("");
+                            });
+                        } catch (SQLException e) {
+                            throw new RuntimeException(e);
+                        }
+                    });
+                    cancelButton.setOnAction(event1 -> {
+                        popup_menu_validation.setVisible(false);
+                        books_menu.setVisible(true);
+                        numberDown.setText("");
+                    });
+
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void resetAutoIncrement() throws SQLException {
+        Statement stmt = null;
+        try {
+            stmt = connection.getConnection().createStatement();
+            // Obține ultimul ID utilizat
+            ResultSet rs = stmt.executeQuery("SELECT MAX(idCarte) AS maxId FROM carte");
+            int maxId = 1;
+            if (rs.next()) {
+                maxId = rs.getInt("maxId") + 1;
+            }
+            // Setează auto-incrementul la următorul ID disponibil
+            stmt.executeUpdate("ALTER TABLE carte AUTO_INCREMENT = " + maxId);
+        } finally {
+            if (stmt != null) {
+                stmt.close();
+            }
+        }
+    }
+    private void reindexBookIds() throws SQLException {
+        // Obține toate cărțile ordonate după ID
+        ResultSet rs = connection.executeQuery("SELECT idCarte FROM carte ORDER BY idCarte");
+        List<Integer> ids = new ArrayList<>();
+        while (rs.next()) {
+            ids.add(rs.getInt("idCarte"));
+        }
+
+        // Actualizează ID-urile pentru a fi consecutive
+        int newId = 1;
+        for (int oldId : ids) {
+            if (oldId != newId) {
+                // Actualizează ID-ul în tabela `carte`
+                connection.executeUpdate("UPDATE carte SET idCarte = " + newId + " WHERE idCarte = " + oldId);
+                // Actualizează și referințele în tabela `cartiimprumutate`
+                connection.executeUpdate("UPDATE cartiimprumutate SET Carte_idCarte = " + newId + " WHERE Carte_idCarte = " + oldId);
+            }
+            newId++;
+        }
+
+        // Resetează auto-incrementul
+        resetAutoIncrement();
     }
 
         // POPUP ADD BOOK
