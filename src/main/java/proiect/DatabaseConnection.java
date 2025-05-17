@@ -65,6 +65,13 @@ public class DatabaseConnection {
             count++;
         return count;
     }
+    public int getQuerrySum(String query) throws SQLException {
+        ResultSet rs = executeQuery(query);
+        int sum = 0;
+        while(rs.next())
+            sum += rs.getInt(1);
+        return sum;
+    }
 }
 
 

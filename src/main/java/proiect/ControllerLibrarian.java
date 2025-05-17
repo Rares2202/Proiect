@@ -6,16 +6,17 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
-import javafx.scene.chart.BarChart;
-import javafx.scene.chart.CategoryAxis;
-import javafx.scene.chart.NumberAxis;
-import javafx.scene.chart.XYChart;
+import javafx.scene.chart.*;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
+import javafx.scene.shape.Circle;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
-import javafx.scene.text.TextAlignment;
 
 import java.io.IOException;
 import java.sql.*;
@@ -75,7 +76,24 @@ public class ControllerLibrarian{
     //Meniu Carti
 
     //Meniu Statistici
-    @FXML BarChart bar_chart_book;
+    @FXML VBox vbox_statistics_top_books;
+    @FXML VBox vbox_statistics_clients;
+    @FXML VBox vbox_statistics_books;
+    @FXML PieChart piechart_statistics_genre;
+    @FXML PieChart piechart_statistics_books1;
+    @FXML PieChart piechart_statistics_clients;
+    @FXML BarChart<Number, String> statistics_authors;
+    @FXML Pane pane_top_genre;
+    @FXML CategoryAxis CategoryAxis_statistics_authors;
+    @FXML NumberAxis NumberAxis_statistics_authors;
+    @FXML Pane pane_statistics_clients;
+    @FXML Pane pane_statistics_books;
+    Color color1 = Color.rgb(17,108,0);
+    Color color2 = Color.rgb(40,243,40);
+    Color color3 = Color.rgb(128,218,131);
+    Color color4 = Color.rgb(183,180,180);
+    Color color5 = Color.rgb(46,46,46);
+    Color[] colors = {color1, color2, color3, color4, color5};
 
     //Mesaje pentru erori
     String err_connection_null = "Nu exista conexiune. (ControllerLibrarian.connection = null)";
@@ -202,7 +220,7 @@ public class ControllerLibrarian{
     @FXML void OnCartiButtonClicked(MouseEvent mouseEvent) {
         setOnlyMenu(books_menu);
     }
-    @FXML void OnStatisticiButtonClicked(MouseEvent mouseEvent) {
+    @FXML void OnStatisticiButtonClicked(MouseEvent mouseEvent) throws SQLException {
         initialize_statistics_menu();
     }
 
@@ -507,31 +525,208 @@ public class ControllerLibrarian{
     }
 
     // MENU STATISTICS
-    void initialize_statistics_menu()
-    {
+    void initialize_statistics_menu() throws SQLException {
         setOnlyMenu(statistici_menu);
-        bar_chart_book.getData().clear();
+        load_pane_statistics_clients();
+        load_pane_statistics_books();
+        load_pane_statistics_top_genres();
+        load_pane_statistics_top_authors();
+        load_pane_statistics_top_books();
+    }
+    private void load_pane_statistics_clients() throws SQLException {
+        //Clienti
+        pane_statistics_clients.getChildren().clear();
+        //date
+        int nr_total_clients = connection.getQueryCount("SELECT DISTINCT idUser FROM user;");
+        int nr_active_clients = connection.getQueryCount("SELECT DISTINCT User_idUser FROM cartiimprumutate;");
 
-        XYChart.Series<Number, String> series = new XYChart.Series<>();
-        XYChart.Data[] data = new XYChart.Data[10];
-        series.setName("books");
-        for(int i=0; i<10; i++)
-        {
-            data[i] = new XYChart.Data<>(i, ""+i);
-            series.getData().add(data[i]);
-        }
-        bar_chart_book.getData().add(series);
+        //legenda
+        String[] labels_clients = {String.format("Activi:     %d/%d", nr_active_clients, nr_total_clients),
+                String.format("Inactivi:   %d/%d", nr_total_clients-nr_active_clients, nr_total_clients)};
+        Color[] colors_clients = {color2, color5};
+        statisticsBoxAddLegend(pane_statistics_clients, labels_clients, colors_clients, 2);
 
-        int index = 0;
-        for(XYChart.Data bar : data)
-        {
-            Label label = new Label("book_"+index);
-            label.setTextAlignment(TextAlignment.LEFT);
-            label.setLayoutX(0);
-            StackPane barNode = (StackPane) bar.getNode();
-            barNode.getChildren().add(label);
+        //piechart
+        ObservableList<PieChart.Data> data_clients = FXCollections.observableArrayList();
+        data_clients.add(new PieChart.Data("", nr_active_clients));
+        data_clients.add(new PieChart.Data("", nr_total_clients));
+        piechart_statistics_clients.setData(data_clients);
+        for (int i = 0; i < 2; i++) {
+            PieChart.Data slice = data_clients.get(i);
+            switch(i)
+            {
+                case 0 -> slice.getNode().setStyle("-fx-pie-color: #1fcd00;");
+                case 1 -> slice.getNode().setStyle("-fx-pie-color: #2E2E2EFF;");
+            }
         }
     }
+    private void load_pane_statistics_books() throws SQLException {
+        //Carti
+        pane_statistics_books.getChildren().clear();
+        //date
+        int nr_books_total = connection.getQuerrySum("SELECT SUM(numarCarte) FROM carte;");
+        int nr_books_reserved = connection.getQueryCount("SELECT * FROM cartiimprumutate WHERE UPPER(statusImprumut)='REZERVAT';");
+        int nr_books_borrowed = connection.getQueryCount("SELECT * FROM cartiimprumutate WHERE UPPER(statusImprumut)='INVENTAR';");
+        int nr_books_stock = nr_books_total - nr_books_reserved - nr_books_borrowed;
+        String books_stock = "In stoc";
+        String books_reserved = "Rezervate";
+        String books_borrowed = "Imprumutate";
 
+        //legenda
+        String[] labels_books = {String.format("In stoc:       %d/%d",nr_books_stock,nr_books_total),
+                String.format("Rezervate:     %d/%d",nr_books_reserved,nr_books_total),
+                String.format("Imprumutate:   %d/%d",nr_books_borrowed,nr_books_total)};
+        Color[] colors_books = {color2, color4, color5};
+        statisticsBoxAddLegend(pane_statistics_books, labels_books, colors_books, 3);
 
+        //piechart
+        ObservableList<PieChart.Data> data_books = FXCollections.observableArrayList();
+        data_books.add(new PieChart.Data("", nr_books_stock));
+        data_books.add(new PieChart.Data("", nr_books_reserved));
+        data_books.add(new PieChart.Data("", nr_books_borrowed));
+        piechart_statistics_books1.setData(data_books);
+        for (int i = 0; i < 3; i++) {
+            PieChart.Data slice = data_books.get(i);
+            switch(i)
+            {
+                case 0 -> slice.getNode().setStyle("-fx-pie-color: #1fcd00;");
+                case 1 -> slice.getNode().setStyle("-fx-pie-color: #b8b5b5;");
+                case 2 -> slice.getNode().setStyle("-fx-pie-color: #2e2e2e;");
+            }
+        }
+    }
+    private void load_pane_statistics_top_genres() throws SQLException {
+        //Top genuri
+        pane_top_genre.getChildren().clear();
+        //date
+        ResultSet rs_top_5_genres = connection.executeQuery("SELECT genCarte, COUNT(genCarte) AS nr_books\n" +
+                "FROM cartiimprumutate borrow, carte book\n" +
+                "WHERE book.idCarte = borrow.Carte_idCarte\n" +
+                "GROUP BY genCarte\n" +
+                "ORDER BY nr_books DESC LIMIT 5;");
+        //legenda
+        String[] labels_genres = new String[5];
+        int[] nr_genres = new int[5];
+        int index = 0;
+        while(rs_top_5_genres.next())
+        {
+            String gen_carte = rs_top_5_genres.getString("genCarte");
+            nr_genres[index] = rs_top_5_genres.getInt("nr_books");
+            labels_genres[index] = String.format("%s - %d", gen_carte, nr_genres[index]);
+            index++;
+        }
+        Color[] colors_genres  = {color1,color2,color3,color4,color5};
+        statisticsBoxAddLegend(pane_top_genre,labels_genres,colors_genres,index);
+
+        //piechart genres
+        ObservableList<PieChart.Data> data_genres = FXCollections.observableArrayList();
+        for(int i=0; i<index; i++)
+            data_genres.add(new PieChart.Data("", nr_genres[i]));
+        piechart_statistics_genre.setData(data_genres);
+        for (int i = 0; i < index; i++) {
+            PieChart.Data slice = data_genres.get(i);
+            switch(i)
+            {
+                case 0 -> slice.getNode().setStyle("-fx-pie-color: #116c00;");
+                case 1 -> slice.getNode().setStyle("-fx-pie-color: #28f328;");
+                case 2 -> slice.getNode().setStyle("-fx-pie-color: #80da83;");
+                case 3 -> slice.getNode().setStyle("-fx-pie-color: #b7b4b4;");
+                case 4 -> slice.getNode().setStyle("-fx-pie-color: #2e2e2e;");
+            }
+        }
+    }
+    private void load_pane_statistics_top_authors() throws SQLException{
+        //data
+        ResultSet rs = connection.executeQuery("SELECT autorCarte, COUNT(autorCarte) AS nr_author\n" +
+                                                "FROM cartiimprumutate borrow, carte book\n" +
+                                                "WHERE book.idCarte = borrow.Carte_idCarte\n" +
+                                                "GROUP BY autorCarte\n" +
+                                                "ORDER BY nr_author LIMIT 5;");
+        String[] labels_authors = new String[5];
+        int[] nr_authors = new int[5];
+        int index = 0;
+        while(rs.next()) {
+            labels_authors[index] = rs.getString("autorCarte");
+            nr_authors[index] = rs.getInt("nr_author");
+            index++;
+        }
+
+        //barchart
+        XYChart.Series<Number, String> series1 = new XYChart.Series<>();
+        int i=0;
+        for(i=0; i<index; i++)
+            series1.getData().add(new XYChart.Data<>(nr_authors[i], labels_authors[i]+"   ---"));
+        NumberAxis_statistics_authors.setUpperBound(nr_authors[index-1]);
+        NumberAxis_statistics_authors.setTickUnit(nr_authors[index-1] < 5 ? 1 : nr_authors[index-1]/index);
+        NumberAxis_statistics_authors.setTickLabelFill(Paint.valueOf("black"));
+        NumberAxis_statistics_authors.setTickLabelFont(Font.font("Arial", FontWeight.BOLD, 11));
+
+        statistics_authors.getData().setAll(series1);
+        cssBarChart(statistics_authors);
+        CategoryAxis_statistics_authors.setTickLabelFont(Font.font("Arial", FontWeight.BOLD, 12));
+        CategoryAxis_statistics_authors.setTickLabelFill(Paint.valueOf("black"));
+        CategoryAxis_statistics_authors.lookup(".axis-tick-mark").setStyle("-fx-stroke: transparent;");
+    }
+    private void load_pane_statistics_top_books() throws SQLException {
+        vbox_statistics_top_books.getChildren().clear();
+        ResultSet rs = connection.executeQuery("SELECT titluCarti, idCarte, COUNT(titluCarti) AS nr_books\n" +
+                                                "FROM cartiimprumutate borrow, carte book\n" +
+                                                "WHERE book.idCarte = borrow.Carte_idCarte\n" +
+                                                "GROUP BY titluCarti, idCarte\n" +
+                                                "ORDER BY nr_books DESC LIMIT 8;");
+        int cnt = 0;
+        while(rs.next()) {
+            String title = rs.getString("titluCarti");
+            String idCarte = rs.getString("idCarte");
+            int nb_books = rs.getInt("nr_books");
+            Label label = new Label(String.format("   %s (#%s)   ->   (%d)", title, idCarte, nb_books));
+            label.setPrefWidth(vbox_statistics_top_books.getPrefWidth());    label.setPrefHeight(35);
+            String style = " -fx-border-width: 1px; -fx-border-color: white; -fx-font-size: 13; -fx-font-weight: bold;";
+            if(cnt%2==0)
+                style+=" -fx-background-color: #abff9c; ";
+            else
+                style+=" -fx-background-color: #ececec; ";
+            label.setStyle(style);
+            vbox_statistics_top_books.getChildren().add(label);
+            cnt++;
+        }
+    }
+    private void statisticsBoxAddLegend(Pane paneLegend, String[] string_arr, Color[] color_arr, int nr_items){
+        int height = 20;
+        for(int i=0; i<nr_items; i++)
+        {
+            Pane box = new Pane();
+            box.setPrefWidth(paneLegend.getPrefWidth());
+            box.setPrefHeight(height);
+            box.setLayoutY(i*height);
+
+            Circle circle = new Circle();
+            circle.setRadius(5);
+            circle.setFill(color_arr[i]);
+            circle.setLayoutY(height/2);
+            circle.setLayoutX(height/2);
+
+            Label label = new Label(string_arr[i]);
+            label.setLayoutY(2);
+            label.setLayoutX(height);
+            label.setStyle("fx-text-fill: black; -fx-font-size: 12; -fx-font-weight: bold");
+            box.getChildren().setAll(circle, label);
+            paneLegend.getChildren().add(box);
+        }
+    }
+    private void cssBarChart(BarChart barChart) {
+        XYChart.Series<String, Number> series = (XYChart.Series<String, Number>) barChart.getData().get(0);
+            for (int i = 0; i < 5; i++) {
+                XYChart.Data<String, Number> data = series.getData().get(i);
+                if (data.getNode() != null) {
+                    switch (i) {
+                        case 0 -> data.getNode().setStyle("-fx-bar-fill: #8aff75;");
+                        case 1 -> data.getNode().setStyle("-fx-bar-fill: #00ff00;");
+                        case 2 -> data.getNode().setStyle("-fx-bar-fill: #28a609;");
+                        case 3 -> data.getNode().setStyle("-fx-bar-fill: #135100;");
+                        case 4 -> data.getNode().setStyle("-fx-bar-fill: #003300;");
+                    }
+                }
+            }
+    }
 }

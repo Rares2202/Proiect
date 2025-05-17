@@ -207,6 +207,11 @@
     -fx-cursor: pointer;
 }
 
+.statistics-box{
+    -fx-background-color: #ffffff;
+    -fx-background-radius: 20;
+
+}
 
 
 
