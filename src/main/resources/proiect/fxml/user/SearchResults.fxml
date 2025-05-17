@@ -12,7 +12,6 @@
       prefHeight="600.0" prefWidth="1030.0"
 styleClass="background">
 
-    <!-- Bara de navigare superioară -->
     <HBox fx:id="topNav" layoutX="0" layoutY="0" prefWidth="1030" styleClass="topnav">
         <children>
             <HBox styleClass="search-container" translateX="300">
@@ -55,15 +54,13 @@ styleClass="background">
             </FontAwesomeIcon>
         </graphic>
     </Button>
-    <!-- Panoul principal pentru rezultate -->
-    <VBox fx:id="mainContainer" layoutX="200" layoutY="70" prefWidth="800" prefHeight="530">
+    <VBox fx:id="mainContainer" layoutX="200" layoutY="70" prefWidth="600" prefHeight="530">
         <ScrollPane fx:id="resultsScrollPane"
                     fitToWidth="true"
                     fitToHeight="true"
                     hbarPolicy="NEVER"
                     vbarPolicy="AS_NEEDED"
                     style="-fx-background-color: transparent; -fx-border-color: transparent;">
-            <!-- Conținutul va fi adăugat programatic -->
         </ScrollPane>
     </VBox>
 </Pane>

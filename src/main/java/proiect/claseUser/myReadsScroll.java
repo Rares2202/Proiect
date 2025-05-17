@@ -48,6 +48,7 @@ public class myReadsScroll extends ScrollPane {
         loadCoverUrls();
         generateGridContent();
         this.setContent(gridPane);
+
     }
 
     private void loadCoverUrls() {
@@ -59,7 +60,7 @@ public class myReadsScroll extends ScrollPane {
 
     private void generateGridContent() {
         gridPane.getChildren().clear();
-
+        gridPane.setStyle("-fx-background-color: WHITE;");
         // adauga cărțile in GridPane
         int coverIndex = 0;
         for (int row = 0; row < rows; row++) {
