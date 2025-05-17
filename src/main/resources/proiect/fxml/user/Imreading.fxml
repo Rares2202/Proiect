@@ -14,7 +14,7 @@
 <Pane xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
 
-      prefHeight="400.0" prefWidth="600.0">
+      prefHeight="600.0" prefWidth="1030.0" styleClass="white">
     <children>
         <HBox fx:id="topNav" layoutX="0" layoutY="0" prefWidth="1030" styleClass="topnav">
             <children>

@@ -41,7 +41,7 @@ public class ControllerUser {
     private static final String DB_PASSWORD = "simone";
     private final DBComands dbComands=new DBComands();
     private final String[] buttonIds = {
-            "myreads", "imreading", "inchide", "submit", "search","home","review","rezerva","search1","plus","reviews"
+            "myreads", "imreading", "inchide", "submit", "search","home","review","rezerva","search1","plus","reviews","search2"
     };
     private final String[] checkboxIds = {
             "actionCheckBox","adventureCheckBox","biographyCheckBox","classicsCheckBox",
@@ -51,26 +51,12 @@ public class ControllerUser {
             "romanceCheckBox","scienceCheckBox","scienceFictionCheckBox","selfImprovementCheckBox"
     };
     private  List<String> preferinte = new ArrayList<>();
+    private ScrollPanel homeScrollPanel;
     /**
      * <li>Initializeaza controller User</li>
      */
     public void initialize() {
         try {
-            String[] fxmlFiles = {
-                    "/proiect/fxml/user/Home.fxml",
-                    "/proiect/fxml/user/Imreading.fxml",
-                    "/proiect/fxml/user/Myreads.fxml",
-                    "/proiect/fxml/user/Preferinte.fxml",
-                    "/proiect/fxml/user/Search.fxml",
-                    "/proiect/fxml/user/SearchResults.fxml"
-            };
-
-            for (String file : fxmlFiles) {
-                if (getClass().getResource(file) == null) {
-                    throw new IOException("FXML file not found: " + file);
-                }
-            }
-
             Home = loadPane("/proiect/fxml/user/Home.fxml");
             Imreading = loadPane("/proiect/fxml/user/Imreading.fxml");
             Myreads = loadPane("/proiect/fxml/user/Myreads.fxml");
@@ -78,10 +64,10 @@ public class ControllerUser {
             Search = loadPane("/proiect/fxml/user/Search.fxml");
             SearchResults = loadPane("/proiect/fxml/user/SearchResults.fxml");
 
-            initializeScrollPanel();//adaug in cache dinainte sa se afiseze Home
+            initializeScrollPanel();
             initializeReviewPane();
 
-            Userpane.getChildren().setAll(Home);
+            Userpane.getChildren().add(Home);
         } catch (IOException e) {
             System.err.println("Initialization error: " + e.getMessage());
             e.printStackTrace();
@@ -89,289 +75,232 @@ public class ControllerUser {
             Platform.exit();
         }
     }
-    /**
-     * <li>Seteaza id-ul user-ului</li>
-     */
+
     public void setUserId(int userId) {
         this.userId = userId;
         if (!isInitialized) {
             initialize();
             isInitialized = true;
         }
-
         handleUserSpecificPanes();
     }
 
-
-    /**
-     * <li>Initializeaza scrollPanel ul din pagina de Home</li>
-     */
     private void initializeScrollPanel() {
-
-        ScrollPanel customScrollPanel = new ScrollPanel(userId);
+        homeScrollPanel = new ScrollPanel(userId);
         ScrollPane homeScrollPane = (ScrollPane) Home.lookup("#scrollPane");
+
         if (homeScrollPane != null) {
-            homeScrollPane.setContent(customScrollPanel);
+            homeScrollPane.setContent(homeScrollPanel);
             homeScrollPane.setFitToWidth(true);
             homeScrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
             homeScrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
         } else {
-            ((Pane)Home).getChildren().add(customScrollPanel);
+            ((Pane) Home).getChildren().add(homeScrollPanel);
         }
 
-        customScrollPanel.setPrefViewportWidth(Region.USE_COMPUTED_SIZE);
-        customScrollPanel.setPrefViewportHeight(Region.USE_COMPUTED_SIZE);
+        homeScrollPanel.setPrefViewportWidth(Region.USE_COMPUTED_SIZE);
+        homeScrollPanel.setPrefViewportHeight(Region.USE_COMPUTED_SIZE);
 
-        customScrollPanel.setOnCoverClick(coverUrl -> {
-
-
-
+        homeScrollPanel.setOnCoverClick(coverUrl -> {
             try {
-                Label author = (Label) Search.lookup("#autor");
-                Label title = (Label) Search.lookup("#titlu");
-                Label description = (Label) Search.lookup("#descriere");
-                Label genre = (Label) Search.lookup("#gen");
-                Pane pane = (Pane) Search.lookup("#imagine");
-
                 book = book.initializare(coverUrl);
-                this.coverImagine = coverUrl;
-
-                author.setText(book.getAuthor());
-                title.setText(book.getTitle());
-                description.setText(book.getDescription());
-                genre.setText(book.getGenre());
-
-                Image coverImage = ScrollPanel.getCachedImage(coverUrl);
-                BackgroundImage bgImage = new BackgroundImage(
-                        coverImage,
-                        BackgroundRepeat.NO_REPEAT,
-                        BackgroundRepeat.NO_REPEAT,
-                        BackgroundPosition.CENTER,
-                        new BackgroundSize(BackgroundSize.AUTO, BackgroundSize.AUTO, false, false, true, true)
-                );
-                pane.setBackground(new Background(bgImage));
-
-                Platform.runLater(() -> Userpane.getChildren().setAll(Search));
-
-                Button plus = (Button) Search.lookup("#plus");
-                plus.setOnMouseClicked(e -> {
-                    int genre1 = dbComands.SEARCH_BY_COVER(DB_URL, DB_USER, DB_PASSWORD, coverUrl);
-                    dbComands.INSERT_INTO_USERPREF_GEN(DB_URL, DB_USER, DB_PASSWORD, 2, userId, genre1);
-                });
-
+                coverImagine = coverUrl;
+                updateBookDetails(book);
+                navigateTo(Search);
             } catch (Exception e) {
                 System.err.println("Error handling book click: " + e.getMessage());
                 showAlert("Error loading book details");
             }
         });
-        customScrollPanel.setOnPlusButtonClick(coverUrl -> {
-            try {
 
+        homeScrollPanel.setOnPlusButtonClick(coverUrl -> {
+            try {
                 myReads = new MyReads(userId, coverUrl);
                 myReads.addBook(myReads);
-                DBComands dbComands=new DBComands();
+                showAlert("The book has been saved in MyReads section!");
 
+                int genre = dbComands.SEARCH_BY_COVER(DB_URL, DB_USER, DB_PASSWORD, coverUrl);
+                dbComands.INSERT_INTO_USERPREF_GEN(DB_URL, DB_USER, DB_PASSWORD, 2, userId, genre);
 
-                Platform.runLater(() ->
-                        showAlert("The book has been saved in MyReads section!")
-                );
+                homeScrollPanel.refresh();
             } catch (Exception e) {
                 System.err.println("Error saving to MyReads: " + e.getMessage());
-                Platform.runLater(() ->
-                        showAlert("Error saving book to MyReads")
-                );
+                showAlert("Error saving book to MyReads");
             }
-         initializeScrollPanel();
         });
-
-
     }
-    /**
-     * <li>Daca user ul se inregistreaza va trebui sa selectez preferintele</li>
-     */
+
+    private void navigateTo(Pane newPane) {
+        int existingIndex = Userpane.getChildren().indexOf(newPane);
+        if (existingIndex >= 0) {
+            while (Userpane.getChildren().size() > existingIndex + 1) {
+                Userpane.getChildren().remove(Userpane.getChildren().size() - 1);
+            }
+        } else {
+
+            Userpane.getChildren().add(newPane);
+
+        }
+
+
+        if (newPane == Home) {
+            initializeScrollPanel();
+        }
+    }
+
     private void handleUserSpecificPanes() {
         String query = "SELECT * FROM userpref WHERE user_idUser = ?";
-        Boolean havePreferences=dbComands.USER_ARE_PREF(query,DB_URL,DB_USER,DB_PASSWORD,this.userId);
+        Boolean havePreferences = dbComands.USER_ARE_PREF(query, DB_URL, DB_USER, DB_PASSWORD, this.userId);
         try {
-            if(this.userId != -1&&!havePreferences) {
+            if (this.userId != -1 && !havePreferences) {
                 Pane preferintePane = loadPane("/proiect/fxml/user/Preferinte.fxml");
-                Userpane.getChildren().setAll(preferintePane);
+                navigateTo(preferintePane);
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
-    /**
-     * <li>Initializeaza pane-urile</li>
-     */
+
     private Pane loadPane(String fxmlPath) throws IOException {
-        Pane pane = FXMLLoader.load(Objects.requireNonNull(Objects.requireNonNull(getClass().getResource(fxmlPath))));
+        Pane pane = FXMLLoader.load(Objects.requireNonNull(getClass().getResource(fxmlPath)));
 
         for (String buttonId : buttonIds) {
             Button button = (Button) pane.lookup("#" + buttonId);
             if (button != null) {
                 switch (buttonId) {
-                    //in switch ul asta se vor adauga restul butoanelor pentru paneluri;
                     case "inchide":
                         button.setOnAction(_ -> quit_app());
-
                         break;
+
                     case "submit":
                         button.setOnAction(_ -> {
                             preferinte = getSelectedGenres(pane);
                             trimitePreferinte(userId);
-                            Userpane.getChildren().setAll(Home);
-                            initializeScrollPanel();
+                            navigateTo(Home);
                         });
                         break;
-                        case "home":
-                            button.setOnAction(_ -> {
-                                Userpane.getChildren().setAll(Home);
-                                ScrollPane homeScrollPane = (ScrollPane) Home.lookup("#scrollPane");
-                                if (homeScrollPane != null) {
-                                    ScrollPanel scrollPanel = (ScrollPanel) homeScrollPane.getContent();
-                                    if (scrollPanel != null) {
-                                        scrollPanel.refresh();
-                                    }
+
+                    case "home":
+                        button.setOnAction(_ -> {
+                            if (Userpane.getChildren().size() > 1) {
+                                Userpane.getChildren().remove(Userpane.getChildren().size() - 1);
+                            }
+                        });
+                        break;
+
+                    case "search":
+                        button.setOnAction(_ -> ReturnResults(Home));
+                        break;
+
+                    case "search1":
+                        button.setOnAction(_ -> ReturnResults(SearchResults));
+                        break;
+
+                    case "search2":
+                        button.setOnAction(_ -> ReturnResults(Search));
+                        break;
+
+                    case "myreads":
+                        button.setOnAction(_ -> {
+                            initializeMyReads();
+                            ImageView trashMyReads = (ImageView) Myreads.lookup("#trashMyReads");
+                            trashMyReads.setOnMouseClicked(e -> {
+                                myreads.deleteBooks();
+                                myreads.refresh();
+                            });
+                            navigateTo(Myreads);
+                        });
+                        break;
+
+                    case "imreading":
+                        button.setOnAction(_ -> {
+                            GridPane booksGrid = (GridPane) Imreading.lookup("#booksGrid");
+                            ImReading imReading1 = new ImReading(userId, booksGrid);
+                            imReading1.setOnCoverClick(coverUrl -> {
+                                try {
+                                    book = book.initializare(coverUrl);
+                                    updateBookDetails(book);
+                                    navigateTo(Search);
+                                } catch (Exception e) {
+                                    System.err.println("Error loading book details: " + e.getMessage());
+                                    showAlert("Error loading book details");
                                 }
                             });
-
-                        break;
-                    case "search":
-                        button.setOnAction(_ -> {
-                            ReturnResults(Home);
-
-
-                        });
-                        break;
-                    case "search1":
-                        button.setOnAction(_ -> {
-                            ReturnResults(SearchResults);
-                        });
-                        break;
-                        case "myreads":
-                            button.setOnAction(_ -> {
-                                initializeMyReads();
-                                ImageView trashMyReads = (ImageView) Myreads.lookup("#trashMyReads");
-                                trashMyReads.setOnMouseClicked(e -> {
-                                    myreads.deleteBooks();
-                                    myreads.refresh();
-
-                                    });
-                                Userpane.getChildren().setAll(Myreads);
+                            ImageView trashImReading = (ImageView) Imreading.lookup("#trashImReading");
+                            trashImReading.setOnMouseClicked(e -> {
+                                imReading1.deleteBooks();
+                                imReading1.refresh();
                             });
-
-                        break;
-                        case "imreading":
-                            button.setOnAction(_ ->{
-                                GridPane booksGrid = (GridPane) Imreading.lookup("#booksGrid");
-                               ImReading imReading1= new ImReading(userId, booksGrid);
-                               imReading1.setOnCoverClick(coverUrl -> {
-                                   try {
-                                       book = book.initializare(coverUrl);
-                                       updateBookDetails(book);
-                                       Userpane.getChildren().setAll(Search);
-                                   } catch (Exception e) {
-                                       System.err.println("Error loading book details: " + e.getMessage());
-                                       showAlert("Error loading book details");
-                                   }
-                               });
-                                ImageView trashImReading = (ImageView) Imreading.lookup("#trashImReading");
-                                trashImReading.setOnMouseClicked(e -> {imReading1.deleteBooks();
-                                                              imReading1.refresh();  });
-                                Userpane.getChildren().setAll(Imreading);
-                            } );
-                        break;
-                    case "rezerva":
-                        button.setOnAction(_ -> {
-                            REZERVA();
-
+                            navigateTo(Imreading);
                         });
                         break;
+
+                    case "rezerva":
+                        button.setOnAction(_ -> REZERVA());
+                        break;
+
                     case "plus":
                         button.setOnAction(_ -> {
                             try {
-
                                 myReads = new MyReads(userId, coverImagine);
                                 myReads.addBook(myReads);
-                                DBComands dbComands=new DBComands();
+                                showAlert("The book has been saved in MyReads section!");
 
-
-                                Platform.runLater(() ->
-                                        showAlert("The book has been saved in MyReads section!")
-                                );
+                                int genre = dbComands.SEARCH_BY_COVER(DB_URL, DB_USER, DB_PASSWORD, coverImagine);
+                                dbComands.INSERT_INTO_USERPREF_GEN(DB_URL, DB_USER, DB_PASSWORD, 2, userId, genre);
                             } catch (Exception e) {
                                 System.err.println("Error saving to MyReads: " + e.getMessage());
-                                Platform.runLater(() ->
-                                        showAlert("Error saving book to MyReads")
-                                );
+                                showAlert("Error saving book to MyReads");
                             }
-
-                            int  genre=dbComands.SEARCH_BY_COVER(DB_URL,DB_USER,DB_PASSWORD,coverImagine);
-                            dbComands.INSERT_INTO_USERPREF_GEN(DB_URL,DB_USER,DB_PASSWORD,2,userId,genre);});
+                        });
                         break;
+
                     case "reviews":
                         button.setOnAction(_ -> {
                             try {
                                 if (reviewScroll != null && !reviewScroll.isShowing()) {
                                     reviewScroll.show();
                                 } else {
-
                                     book.initializare(coverImagine);
                                     initializeReviewsDisplay();
+                                    reviewScroll.show();
                                 }
                             } catch (SQLException e) {
                                 throw new RuntimeException(e);
                             }
                         });
                         break;
-
                 }
-           }
-       }
+            }
+        }
         return pane;
     }
-    /**
-     * <li>Initializeaza scrollPanel ul din pagina Review.fxml care contine toate review-urile</li>
-     */
-    private void initializeReviewsDisplay() throws SQLException {
-        if (book == null || book.getId() == 0) {
-            System.err.println("No book selected for reviews");
-            showAlert("Please select a book first");
-            return;
-        }
 
-        ScrollPane reviewsContainer = (ScrollPane) Search.lookup("#reviews1");
-        if (reviewsContainer == null) {
-            System.err.println("Reviews container not found");
-            return;
-        }
 
-        if (reviewScroll != null && reviewScroll.getBookId() == book.getId()) {
-            if (!reviewScroll.isShowing()) {
-                reviewScroll.show();
+    private void initializeMyReads() {
+        myreads = new myReadsScroll(userId);
+        myreads.setOnCoverClick(coverUrl -> {
+            try {
+                book = book.initializare(coverUrl);
+                updateBookDetails(book);
+                navigateTo(Search);
+            } catch (Exception e) {
+                System.err.println("Error handling book click: " + e.getMessage());
+                showAlert("Error loading book details");
             }
-            return;
+        });
+
+        ScrollPane myReadsScrollPane = (ScrollPane) Myreads.lookup("#myReadsPane");
+        if (myReadsScrollPane != null) {
+            myReadsScrollPane.setContent(myreads);
+            myReadsScrollPane.setFitToWidth(true);
+            myReadsScrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+            myReadsScrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+        } else {
+            ((Pane) Myreads).getChildren().add(myreads);
         }
-
-        reviewScroll = new ReviewScroll(book.getId(), reviewsContainer);
-        reviewsContainer.setHbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
-        reviewsContainer.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
-        reviewsContainer.setFitToWidth(true);
-        reviewsContainer.setVisible(true);
-        reviewScroll.show();
-    } /**
-     * <li>functionalitate cand fac rezervarea cartii</li>
-     */
-    private void REZERVA(){
-        Label titlu =(Label) Search.lookup("#titlu");
-        DBComands dbComands=new DBComands();
-        dbComands.insertIntoImprumuturi(DB_URL,DB_USER,DB_PASSWORD,userId,titlu.getText());
-
     }
-    /**
-     * <li>metoda care returneaza rezultatele cautarii dupa ce am dat search</li>
-     */
+
     private void ReturnResults(Pane pane) {
         TextField searchField = (TextField) pane.lookup("#searchField");
 
@@ -388,7 +317,6 @@ public class ControllerUser {
                 return;
             }
 
-            // Preload images in background
             new Thread(() -> {
                 List<String> urls = new ArrayList<>();
                 for (Book book : results) {
@@ -403,27 +331,26 @@ public class ControllerUser {
             searchResults.setOnCoverClick(coverUrl -> {
                 try {
                     book = book.initializare(coverUrl);
-                    this.coverImagine = coverUrl;
+                    coverImagine = coverUrl;
                     updateBookDetails(book);
-                    Userpane.getChildren().setAll(Search);
+                    navigateTo(Search);
                 } catch (Exception e) {
                     System.err.println("Error loading book details: " + e.getMessage());
                     showAlert("Error loading book details");
                 }
             });
+
             ScrollPane resultsScrollPane = (ScrollPane) SearchResults.lookup("#resultsScrollPane");
             if (resultsScrollPane != null) {
                 resultsScrollPane.setContent(searchResults);
             }
 
-            Userpane.getChildren().setAll(SearchResults);
+            navigateTo(SearchResults);
         } else {
             showAlert("Search field not found");
         }
     }
-    /**
-     * <li>afiseaza detaliile cartii(Search.fxml) </li>
-     */
+
     private void updateBookDetails(Book book) {
         try {
             Label author = (Label) Search.lookup("#autor");
@@ -439,9 +366,7 @@ public class ControllerUser {
 
             if (pane != null && book.getCoverUrl() != null) {
                 try {
-                    Image coverImage = new Image(book.getCoverUrl(), true); // true for async loading
-
-
+                    Image coverImage = new Image(book.getCoverUrl(), true);
                     BackgroundImage bgImage = new BackgroundImage(
                             coverImage,
                             BackgroundRepeat.NO_REPEAT,
@@ -459,55 +384,12 @@ public class ControllerUser {
             System.err.println("Error updating book details: " + e.getMessage());
         }
     }
-    /**
-     * <li>Initializeaza scrollPanel ul din pagina de MyReads</li>
-     */
-    private void initializeMyReads() {
-        myreads = new myReadsScroll(userId);
-        myreads.setOnCoverClick(coverUrl -> {
-            try {
-                Label author = (Label) Search.lookup("#autor");
-                Label title = (Label) Search.lookup("#titlu");
-                Label description = (Label) Search.lookup("#descriere");
-                Label genre = (Label) Search.lookup("#gen");
-                Pane pane = (Pane) Search.lookup("#imagine");
 
-                book = book.initializare(coverUrl);
-                author.setText(book.getAuthor());
-                title.setText(book.getTitle());
-                description.setText(book.getDescription());
-                genre.setText(book.getGenre());
-                Image coverImage = ScrollPanel.getCachedImage(coverUrl);
-                BackgroundImage bgImage = new BackgroundImage(
-                        coverImage,
-                        BackgroundRepeat.NO_REPEAT,
-                        BackgroundRepeat.NO_REPEAT,
-                        BackgroundPosition.CENTER,
-                        new BackgroundSize(BackgroundSize.AUTO, BackgroundSize.AUTO, false, false, true, true)
-                );
-                pane.setBackground(new Background(bgImage));
-
-                Platform.runLater(() -> Userpane.getChildren().setAll(Search));
-
-            } catch (Exception e) {
-                System.err.println("Error handling book click: " + e.getMessage());
-                showAlert("Error loading book details");
-            }
-        });
-
-        ScrollPane myReadsScrollPane = (ScrollPane) Myreads.lookup("#myReadsPane");
-        if (myReadsScrollPane != null) {
-            myReadsScrollPane.setContent(myreads);
-            myReadsScrollPane.setFitToWidth(true);
-            myReadsScrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
-            myReadsScrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
-        } else {
-            ((Pane)Myreads).getChildren().add(myreads);
-        }
+    private void REZERVA() {
+        Label titlu = (Label) Search.lookup("#titlu");
+        dbComands.insertIntoImprumuturi(DB_URL, DB_USER, DB_PASSWORD, userId, titlu.getText());
     }
-    /**
-     * <li>Checkbox urile din pagina de Preferinte.fxml </li>
-     */
+
     private List<String> getSelectedGenres(Pane pane) {
         List<String> selectedGenres = new ArrayList<>();
         Map<String, String> genreMap = Map.ofEntries(
@@ -541,9 +423,7 @@ public class ControllerUser {
         }
         return selectedGenres;
     }
-    /**
-     * <li>Se trimit preferintele in baza de date</li>
-     */
+
     private void trimitePreferinte(int userId) {
         if (preferinte.isEmpty()) {
             showAlert("No genres selected");
@@ -551,7 +431,7 @@ public class ControllerUser {
         }
 
         String query = "SELECT idpreferinte, genuri FROM genuri";
-        Map<String, Integer> validGenres = dbComands.SELECT_FROM_GENURI(query,DB_URL,DB_USER,DB_PASSWORD);
+        Map<String, Integer> validGenres = dbComands.SELECT_FROM_GENURI(query, DB_URL, DB_USER, DB_PASSWORD);
         List<String> invalidGenres = new ArrayList<>();
         List<Integer> validGenreIds = new ArrayList<>();
 
@@ -567,21 +447,16 @@ public class ControllerUser {
             showAlert("Invalid genre");
             return;
         }
-         query = "INSERT INTO userpref(number, user_idUser, preferinte_idpreferinte) VALUES(?, ?, ?)";
-        dbComands.INSERT_INTO_USERPREF(query,DB_URL,DB_USER,DB_PASSWORD,userId,validGenreIds);
 
+        query = "INSERT INTO userpref(number, user_idUser, preferinte_idpreferinte) VALUES(?, ?, ?)";
+        dbComands.INSERT_INTO_USERPREF(query, DB_URL, DB_USER, DB_PASSWORD, userId, validGenreIds);
     }
-    /**
-     * <li>Inchide aplicatia</li>
-     */
+
     @FXML
     public void quit_app() {
         System.exit(0);
     }
 
-    /**
-     * <li>Afiseaza orice tip de atentionare</li>
-     */
     private void showAlert(String message) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Attention!");
@@ -668,6 +543,36 @@ public class ControllerUser {
         popupStage.showAndWait();
     }
     public void setMainController(ControllerMain controllerMain) {
+    }
+    /**
+     * <li>Initializeaza scrollPanel ul din pagina Review.fxml care contine toate review-urile</li>
+     */
+    private void initializeReviewsDisplay() throws SQLException {
+        if (book == null || book.getId() == 0) {
+            System.err.println("No book selected for reviews");
+            showAlert("Please select a book first");
+            return;
+        }
+
+        ScrollPane reviewsContainer = (ScrollPane) Search.lookup("#reviews1");
+        if (reviewsContainer == null) {
+            System.err.println("Reviews container not found");
+            return;
+        }
+
+        if (reviewScroll != null && reviewScroll.getBookId() == book.getId()) {
+            if (!reviewScroll.isShowing()) {
+                reviewScroll.show();
+            }
+            return;
+        }
+
+        reviewScroll = new ReviewScroll(book.getId(), reviewsContainer);
+        reviewsContainer.setHbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+        reviewsContainer.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+        reviewsContainer.setFitToWidth(true);
+        reviewsContainer.setVisible(true);
+        reviewScroll.show();
     }
 
 }
