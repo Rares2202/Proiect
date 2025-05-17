@@ -313,6 +313,7 @@ public class ControllerLibrarian{
         ResultSet rs = connection.executeQuery("SELECT idCarte\n, titluCarti\n, autorCarte\n, numarCarte\n, genCarte\n" +
                 "FROM carte\n" +
                 "WHERE UPPER(titluCarti) LIKE '%" + text + "%'\n" +
+                "OR UPPER(autorCarte) LIKE '%" + text + "%' \n" +
                 "OR UPPER(idCarte) LIKE '%" + text + "%' \n" +
                 "ORDER BY idCarte LIMIT 100;");
         while(rs.next()){
@@ -1130,17 +1131,32 @@ public class ControllerLibrarian{
         }
 
         //barchart
+        CategoryAxis_statistics_authors.getCategories().clear();
         XYChart.Series<Number, String> series1 = new XYChart.Series<>();
+        series1.getData().clear();
         int i=0;
         for(i=0; i<index; i++)
+        {
+            System.err.println(String.format("%d: series1: <%d, %s>", i, nr_authors[i], labels_authors[i]));
             series1.getData().add(new XYChart.Data<>(nr_authors[i], labels_authors[i]+"   ---"));
-        NumberAxis_statistics_authors.setUpperBound(nr_authors[index-1]);
-        NumberAxis_statistics_authors.setTickUnit(nr_authors[index-1] < 5 ? 1 : nr_authors[index-1]/index);
+        }
+
+        if(index>0)
+        {
+            NumberAxis_statistics_authors.setUpperBound(nr_authors[index-1]);
+            NumberAxis_statistics_authors.setTickUnit(nr_authors[index-1] < 5 ? 1 : nr_authors[index-1]/index);
+        }
+        else
+        {
+            NumberAxis_statistics_authors.setUpperBound(10);
+            NumberAxis_statistics_authors.setTickUnit(1);
+        }
         NumberAxis_statistics_authors.setTickLabelFill(Paint.valueOf("black"));
         NumberAxis_statistics_authors.setTickLabelFont(Font.font("Arial", FontWeight.BOLD, 11));
 
+        statistics_authors.getData().clear();
         statistics_authors.getData().setAll(series1);
-        cssBarChart(statistics_authors);
+        cssBarChart(statistics_authors, index);
         CategoryAxis_statistics_authors.setTickLabelFont(Font.font("Arial", FontWeight.BOLD, 12));
         CategoryAxis_statistics_authors.setTickLabelFill(Paint.valueOf("black"));
         CategoryAxis_statistics_authors.lookup(".axis-tick-mark").setStyle("-fx-stroke: transparent;");
@@ -1192,9 +1208,9 @@ public class ControllerLibrarian{
             paneLegend.getChildren().add(box);
         }
     }
-    private void cssBarChart(BarChart barChart) {
+    private void cssBarChart(BarChart barChart, int size) {
         XYChart.Series<String, Number> series = (XYChart.Series<String, Number>) barChart.getData().get(0);
-            for (int i = 0; i < 5; i++) {
+            for (int i = 0; i < size; i++) {
                 XYChart.Data<String, Number> data = series.getData().get(i);
                 if (data.getNode() != null) {
                     switch (i) {

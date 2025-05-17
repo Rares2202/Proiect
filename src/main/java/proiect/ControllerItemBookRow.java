@@ -4,6 +4,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.input.MouseEvent;
 
 import java.sql.*;
 
@@ -19,6 +20,8 @@ public class ControllerItemBookRow extends book {
 
     @FXML
     void initialize() {
+        addBook.setVisible(false);
+        removeBook.setVisible(false);
     }
 
     @FXML
@@ -44,4 +47,13 @@ public class ControllerItemBookRow extends book {
         }
     }
 
+    public void onMouseEntered(MouseEvent mouseEvent) {
+        addBook.setVisible(true);
+        removeBook.setVisible(true);
+    }
+
+    public void onMouseExited(MouseEvent mouseEvent) {
+        addBook.setVisible(false);
+        removeBook.setVisible(false);
+    }
 }

@@ -253,9 +253,9 @@
                   <Label text="Editare" GridPane.columnIndex="5" />
                </children>
             </GridPane>
-            <ScrollPane layoutX="62.0" layoutY="129.0" prefHeight="381.0" prefWidth="616.0" stylesheets="@../css/style.css">
+            <ScrollPane hbarPolicy="NEVER" layoutX="62.0" layoutY="129.0" prefHeight="381.0" prefWidth="616.0" stylesheets="@../css/style.css">
                <content>
-                  <VBox fx:id="list_search_carti" prefHeight="378.0" prefWidth="613.0" />
+                  <VBox fx:id="list_search_carti" prefHeight="377.0" prefWidth="612.0" />
                </content>
             </ScrollPane>
             <Button fx:id="addBase" layoutX="695.0" layoutY="129.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="74.0" styleClass="btn-accept" stylesheets="@../css/style.css" text="Adauga" />

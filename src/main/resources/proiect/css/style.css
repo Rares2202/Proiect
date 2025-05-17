@@ -221,6 +221,17 @@
 
 }
 
+.row{
+    -fx-background-color: #f4f4f4;
+    -fx-border-color: #8c8c8c;
+    -fx-border-style: solid;
+    -fx-border-width: 1;
+}
+
+.row:hover{
+    -fx-background-color: #d1d1d1;
+}
+
 
 
 
