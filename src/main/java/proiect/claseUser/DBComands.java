@@ -80,10 +80,10 @@ public Boolean USER_ARE_PREF(String query, String DB_URL, String DB_USER, String
     /**
      * <li>Nu are usage dar las o pentru un eventual debugging</li>
      */
-public List<Book> SELECT_ALL_FROM_BOOKS(String query, String DB_URL, String DB_USER, String DB_PASS)
+public List<Book> SELECT_ALL_FROM_BOOKS(String DB_URL, String DB_USER, String DB_PASS)
 {
     List<Book> books = new ArrayList<>();
-         query = "SELECT idCarte, titluCarti, autorCarte, descriere, genCarte, numarCarte, coverCarte FROM carte WHERE coverCarte IS NOT NULL";
+        String query = "SELECT idCarte, titluCarti, autorCarte, descriere, genCarte, numarCarte, coverCarte FROM carte WHERE coverCarte IS NOT NULL";
 
         try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASS);
              Statement stmt = connection.createStatement();
@@ -96,7 +96,6 @@ public List<Book> SELECT_ALL_FROM_BOOKS(String query, String DB_URL, String DB_U
                         rs.getString("autorCarte"),
                         rs.getString("descriere"),
                         rs.getString("genCarte"),
-                        rs.getInt("numarCarte"),
                         rs.getString("coverCarte")
                 );
                 books.add(book);
@@ -153,7 +152,7 @@ public List<String>SELECT_COVER_FROM_MYREADS( String DB_URL, String DB_USER, Str
                             rs.getString("autorCarte"),
                             rs.getString("descriere"),
                             rs.getString("genCarte"),
-                            rs.getInt("numarCarte"),
+
                             rs.getString("coverCarte")
                     );
                     books.add(book);
@@ -209,7 +208,7 @@ public List<String>SELECT_COVER_FROM_MYREADS( String DB_URL, String DB_USER, Str
             // Proceed with insertion if checks pass
             Date date = new Date();
             String status = "REZERVAT";
-            int carteId = -1;
+            int carteId;
 
             // Get book ID
             String query = "SELECT idCarte FROM carte WHERE titluCarti = ?";
@@ -270,8 +269,8 @@ public List<String>SELECT_COVER_FROM_MYREADS( String DB_URL, String DB_USER, Str
                 while (resultSet.next()) {
                     String coverUrl = resultSet.getString("coverCarte");
                     String status = resultSet.getString("status");
-                    String title = resultSet.getString("titluCarti");
-                    Book book=new Book(0,null,null,null,null,0,null).initializare(coverUrl);
+
+                    Book book=new Book(0,null,null,null,null,null).initializare(coverUrl);
                     books.add(new BookInfo(book, status));
                 }
             }
@@ -320,13 +319,14 @@ public List<String>SELECT_COVER_FROM_MYREADS( String DB_URL, String DB_USER, Str
     }
 
     public List<Book> SELECT_ALL_FROM_USERPREF(String DB_URL, String DB_USER, String DB_PASS, int userId) {
-        String query = "SELECT c.* \n" +
-                "FROM mydb.carte c \n" +
-                "JOIN mydb.genuri g ON c.genCarte = g.genuri \n" +
-                "JOIN mydb.userpref u ON g.idpreferinte = u.preferinte_idpreferinte\n" +
-                "WHERE u.user_idUser = ?\n" +
-                "AND c.coverCarte NOT IN (SELECT coverCarte FROM mydb.myreads WHERE user_idUser=? )\n" +
-                "ORDER BY u.number DESC";
+        String query = """
+                SELECT c.*\s
+                FROM mydb.carte c\s
+                JOIN mydb.genuri g ON c.genCarte = g.genuri\s
+                JOIN mydb.userpref u ON g.idpreferinte = u.preferinte_idpreferinte
+                WHERE u.user_idUser = ?
+                AND c.coverCarte NOT IN (SELECT coverCarte FROM mydb.myreads WHERE user_idUser=? )
+                ORDER BY u.number DESC""";
 
         List<Book> books = new ArrayList<>();
 
@@ -345,7 +345,7 @@ public List<String>SELECT_COVER_FROM_MYREADS( String DB_URL, String DB_USER, Str
                                 rs.getString("autorCarte"),
                                 rs.getString("descriere"),
                                 rs.getString("genCarte"),
-                                rs.getInt("numarCarte"),
+
                                 rs.getString("coverCarte")
                         );
                         books.add(book);
@@ -418,7 +418,6 @@ public List<String>SELECT_COVER_FROM_MYREADS( String DB_URL, String DB_USER, Str
 
                         if (rowsAffected > 0) {
                             showAlert("Ati introdus un nou gen!");
-                            exists=false;
                         }
                         else
                         {

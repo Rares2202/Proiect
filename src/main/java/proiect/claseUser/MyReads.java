@@ -11,8 +11,7 @@ public class MyReads {
         this.user_idUser = user_idUser;
         this.URL = carte_idCarte;
     }
-    public int getUser_idUser() {return user_idUser;}
-    public String getCarte_idCarte() {return URL;}
+
     public void addBook(MyReads myReads) {
         String DB_URL = "jdbc:mysql://localhost:3306/mydb";
         String DB_USER = "root";
@@ -76,7 +75,4 @@ public class MyReads {
             }
         }
     }
-//    public MyReads[] getMyReads() {
-//
-//    }
 }

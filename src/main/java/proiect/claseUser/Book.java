@@ -8,17 +8,15 @@ public class Book {
     private String author;
     private String description;
     private String genre;
-    private int copies;
     private String coverUrl;
 
     public Book(int id, String title, String author, String description,
-                String genre, int copies, String coverUrl) {
+                String genre, String coverUrl) {
         this.id = id;
         this.title = title;
         this.author = author;
         this.description = description;
         this.genre = genre;
-        this.copies = copies;
         this.coverUrl = coverUrl;
     }
 
@@ -28,6 +26,7 @@ public class Book {
     public String getDescription() { return description; }
     public String getGenre() { return genre; }
     public String getCoverUrl() { return coverUrl; }
+
     public Book initializare(String URL)
     {
 
@@ -46,8 +45,7 @@ public class Book {
                    this.author = resultSet.getString("autorCarte");
                    this.description = resultSet.getString("descriere");
                    this.genre = resultSet.getString("genCarte");
-                   this.copies = resultSet.getInt("numarCarte");
-                   this.coverUrl = resultSet.getString("coverCarte");
+                    this.coverUrl = resultSet.getString("coverCarte");
 
                 }
             }

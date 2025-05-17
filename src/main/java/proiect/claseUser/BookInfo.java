@@ -2,9 +2,9 @@ package proiect.claseUser;
 
 public class BookInfo {
 
-    private String status;
+    private final String status;
 
-    private Book book;
+    private final Book book;
 
     public BookInfo(Book book, String status) {
         this.book = book;

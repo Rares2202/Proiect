@@ -5,7 +5,6 @@ import javafx.geometry.VPos;
 import javafx.scene.control.CheckBox;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
  import java.util.function.Consumer;
@@ -22,7 +21,7 @@ public class ImReading {
     private final int cellWidth = 125;
     private final int cellHeight = 130;
     private Consumer<String> onCoverClickHandler;
-    private List<Book> selectedBooks = new ArrayList<>();
+    private final List<Book> selectedBooks = new ArrayList<>();
 
     public ImReading(int userId, GridPane gridPane) {
         this.userId = userId;
@@ -84,7 +83,7 @@ public class ImReading {
 
 
                 checkBox.setStyle("-fx-background-color: transparent; -fx-opacity: 0.5;");
-                cell.setAlignment(checkBox, Pos.BOTTOM_RIGHT);
+                StackPane.setAlignment(checkBox, Pos.BOTTOM_RIGHT);
                 cell.setOnMouseClicked(e -> {
                     if (onCoverClickHandler != null) {
                         onCoverClickHandler.accept(book.getBook().getCoverUrl());
@@ -92,7 +91,7 @@ public class ImReading {
 
                 });
                 cell.getChildren().add(checkBox);
-                checkBox.selectedProperty().addListener((obs, wasSelected, isNowSelected) -> {
+                checkBox.selectedProperty().addListener((o, b, isNowSelected) -> {
                     if (isNowSelected) {
                         selectedBooks.add(book.getBook());
                     } else {
@@ -125,15 +124,6 @@ public class ImReading {
         }
 
 
-
-
-        private ImageView createImageView(String url) {
-        Image image = new Image(url, true);
-        ImageView imageView = new ImageView(image);
-        imageView.setFitWidth(120);
-        imageView.setFitHeight(130);
-        return imageView;
-    }
     private StackPane createCell(String URL) {
         StackPane cell = new StackPane();
         cell.setPrefSize(cellWidth, cellHeight);
@@ -142,7 +132,7 @@ public class ImReading {
         cell.getChildren().add(background);
 
 
-            cell.setOnMouseClicked(event -> {
+            cell.setOnMouseClicked(e -> {
                 if (onCoverClickHandler != null) {
                     onCoverClickHandler.accept(URL);
                 }
@@ -152,12 +142,7 @@ public class ImReading {
 
         return cell;
     }
-    private StackPane createEmptyCell() {
-        StackPane cell = new StackPane();
-        cell.setPrefSize(cellWidth, cellHeight);
-        cell.setStyle("-fx-background-color: transparent;");
-        return cell;
-    }
+
     public void setOnCoverClick(Consumer<String> handler) {
         this.onCoverClickHandler = handler;
     }
@@ -170,9 +155,6 @@ public class ImReading {
         DBComands dbComands = new DBComands();
         books = dbComands.IS_IN_USE(DB_URL, DB_USER, DB_PASSWORD, userId);
     }
-//    private boolean isValidCoverIndex(int index) {
-//        return index < coverUrls.size() && coverUrls.get(index) != null && !coverUrls.get(index).isEmpty();
-//    }
 private Region createCellBackground(String URL) {
     Region background = new Region();
     background.setPrefSize(cellWidth, cellHeight);

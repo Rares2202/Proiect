@@ -23,10 +23,10 @@ public class ControllerUser {
     private Pane Home;
     private Pane Imreading;
     private Pane SearchResults;
-    private GridPane booksGrid;
+
     private Pane Myreads;
-    private Pane Review;
-    Book book=new Book(0,null,null,null,null,0,null);
+ 
+    Book book=new Book(0,null,null,null,null,null);
     Review review=new Review(null,0,0,0);
     MyReads myReads;
     private static String coverImagine;
@@ -169,11 +169,11 @@ public class ControllerUser {
             if (button != null) {
                 switch (buttonId) {
                     case "inchide":
-                        button.setOnAction(_ -> quit_app());
+                        button.setOnAction(e -> quit_app());
                         break;
 
                     case "submit":
-                        button.setOnAction(_ -> {
+                        button.setOnAction(e -> {
                             preferinte = getSelectedGenres(pane);
                             trimitePreferinte(userId);
                             navigateTo(Home);
@@ -181,7 +181,7 @@ public class ControllerUser {
                         break;
 
                     case "home":
-                        button.setOnAction(_ -> {
+                        button.setOnAction(e -> {
                             if (Userpane.getChildren().size() > 1) {
                                 Userpane.getChildren().remove(Userpane.getChildren().size() - 1);
                             }
@@ -189,22 +189,22 @@ public class ControllerUser {
                         break;
 
                     case "search":
-                        button.setOnAction(_ -> ReturnResults(Home));
+                        button.setOnAction(e -> ReturnResults(Home));
                         break;
 
                     case "search1":
-                        button.setOnAction(_ -> ReturnResults(SearchResults));
+                        button.setOnAction(e -> ReturnResults(SearchResults));
                         break;
 
                     case "search2":
-                        button.setOnAction(_ -> ReturnResults(Search));
+                        button.setOnAction(e -> ReturnResults(Search));
                         break;
 
                     case "myreads":
-                        button.setOnAction(_ -> {
+                        button.setOnAction(e -> {
                             initializeMyReads();
                             ImageView trashMyReads = (ImageView) Myreads.lookup("#trashMyReads");
-                            trashMyReads.setOnMouseClicked(e -> {
+                            trashMyReads.setOnMouseClicked(j -> {
                                 myreads.deleteBooks();
                                 myreads.refresh();
                             });
@@ -213,21 +213,11 @@ public class ControllerUser {
                         break;
 
                     case "imreading":
-                        button.setOnAction(_ -> {
+                        button.setOnAction(e -> {
                             GridPane booksGrid = (GridPane) Imreading.lookup("#booksGrid");
-                            ImReading imReading1 = new ImReading(userId, booksGrid);
-                            imReading1.setOnCoverClick(coverUrl -> {
-                                try {
-                                    book = book.initializare(coverUrl);
-                                    updateBookDetails(book);
-                                    navigateTo(Search);
-                                } catch (Exception e) {
-                                    System.err.println("Error loading book details: " + e.getMessage());
-                                    showAlert("Error loading book details");
-                                }
-                            });
+                            ImReading imReading1 = getImReading(booksGrid);
                             ImageView trashImReading = (ImageView) Imreading.lookup("#trashImReading");
-                            trashImReading.setOnMouseClicked(e -> {
+                            trashImReading.setOnMouseClicked(j -> {
                                 imReading1.deleteBooks();
                                 imReading1.refresh();
                             });
@@ -236,11 +226,11 @@ public class ControllerUser {
                         break;
 
                     case "rezerva":
-                        button.setOnAction(_ -> REZERVA());
+                        button.setOnAction(e -> REZERVA());
                         break;
 
                     case "plus":
-                        button.setOnAction(_ -> {
+                        button.setOnAction(j -> {
                             try {
                                 myReads = new MyReads(userId, coverImagine);
                                 myReads.addBook(myReads);
@@ -256,15 +246,14 @@ public class ControllerUser {
                         break;
 
                     case "reviews":
-                        button.setOnAction(_ -> {
+                        button.setOnAction(j -> {
                             try {
-                                if (reviewScroll != null && !reviewScroll.isShowing()) {
-                                    reviewScroll.show();
-                                } else {
+
                                     book.initializare(coverImagine);
                                     initializeReviewsDisplay();
                                     reviewScroll.show();
-                                }
+
+
                             } catch (SQLException e) {
                                 throw new RuntimeException(e);
                             }
@@ -274,6 +263,21 @@ public class ControllerUser {
             }
         }
         return pane;
+    }
+
+    private ImReading getImReading(GridPane booksGrid) {
+        ImReading imReading1 = new ImReading(userId, booksGrid);
+        imReading1.setOnCoverClick(coverUrl -> {
+            try {
+                book = book.initializare(coverUrl);
+                updateBookDetails(book);
+                navigateTo(Search);
+            } catch (Exception e) {
+                System.err.println("Error loading book details: " + e.getMessage());
+                showAlert("Error loading book details");
+            }
+        });
+        return imReading1;
     }
 
 
@@ -480,7 +484,7 @@ public class ControllerUser {
 
         for (int i = 0; i < 5; i++) {
             Star star = new Star(i + 1);
-            star.setOnAction(_ -> handleStarClick(star));
+            star.setOnAction(e -> handleStarClick(star));
             stars.add(star);
             starContainer.getChildren().add(star);
         }
@@ -520,11 +524,16 @@ public class ControllerUser {
         reviewTextArea.setPrefRowCount(5);
 
         Button submitButton = new Button("Submit Review");
-        submitButton.setOnAction(_ -> {
+        submitButton.setOnAction(j -> {
             String reviewText = reviewTextArea.getText();
             review=new Review(reviewText,currentRating,userId,book.getId());
             //System.out.println("Review submitted: " + review.getReviewText()+" "+review.getUser_idUser()+" "+review.getCarte_idCarte()+" "+review.getReviewRating());
             review.trimiteReview(review);
+            try {
+                reviewScroll.refresh();
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
             popupStage.close();
         });
 

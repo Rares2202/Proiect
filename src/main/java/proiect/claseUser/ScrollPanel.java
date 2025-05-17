@@ -12,15 +12,13 @@ import java.util.*;
 import java.util.function.Consumer;
 
 public class ScrollPanel extends ScrollPane {
-    private final int cols = 4;
     private final int cellWidth = 170;
     private final int cellHeight = 250;
     private final int gap = 10;
-    private final int maxVisibleRows = 3;
 
     private GridPane gridPane;
     private List<String> coverUrls;
-    private int userId;
+    private final int userId;
     private static final String DB_URL = "jdbc:mysql://localhost:3306/mydb";
     private static final String DB_USER = "root";
     private static final String DB_PASSWORD = "simone";
@@ -43,6 +41,7 @@ public class ScrollPanel extends ScrollPane {
         this.setHbarPolicy(ScrollBarPolicy.NEVER);
         this.setVbarPolicy(ScrollBarPolicy.NEVER);
         this.setFitToWidth(true);
+        int maxVisibleRows = 3;
         this.setPrefViewportHeight(maxVisibleRows * (cellHeight + gap) + gap);
 
         gridPane = new GridPane();
@@ -89,9 +88,6 @@ public class ScrollPanel extends ScrollPane {
 
         return null;
     }
-    public static void clearImageCache() {
-        imageCache.clear();
-    }
 
     public static void preloadImages(List<String> urls) {
         for (String url : urls) {
@@ -123,6 +119,7 @@ public class ScrollPanel extends ScrollPane {
         Image plusImage = loadPlusIcon();
         int coverIndex = 0;
         int totalBooks = coverUrls.size();
+        int cols = 4;
         int requiredRows = (int) Math.ceil((double) totalBooks / cols);
 
         gridPane.setPrefWidth(cols * (cellWidth + gap) + gap);
@@ -149,7 +146,7 @@ public class ScrollPanel extends ScrollPane {
         cell.getChildren().addAll(background, saveButton);
 
         if (isValidCoverIndex(coverIndex)) {
-            cell.setOnMouseClicked(event -> {
+            cell.setOnMouseClicked(e -> {
                 if (onCoverClickHandler != null) {
                     onCoverClickHandler.accept(coverUrls.get(coverIndex));
                 }
@@ -201,7 +198,7 @@ public class ScrollPanel extends ScrollPane {
         saveButton.setTranslateY(-5);
 
         if (isValidCoverIndex(coverIndex)) {
-            saveButton.setOnAction(event -> {
+            saveButton.setOnAction(e -> {
                 if (onPlusButtonClickHandler != null) {
                     onPlusButtonClickHandler.accept(coverUrls.get(coverIndex));
                 }

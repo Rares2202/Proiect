@@ -13,19 +13,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ReviewScroll extends ScrollPane {
-    private int cellWidth = 500;
     private List<Review> reviews;
     private static final String DB_URL = "jdbc:mysql://localhost:3306/mydb";
     private static final String DB_USER = "root";
     private static final String DB_PASSWORD = "simone";
-    private final int verticalGap = 20;
-    private final int horizontalGap = 10;
-    private int idCarte = -1;
-    private List<Star> stars;
+    private final int idCarte;
     private VBox mainContainer;
-    private List<String> numeUser;
-    private Button closeButton;
-    private ScrollPane parentScrollPane;
+    private final ScrollPane parentScrollPane;
     private boolean isVisible = true;
 
     public ReviewScroll(int idCarte, ScrollPane parentScrollPane) throws SQLException {
@@ -40,7 +34,7 @@ public class ReviewScroll extends ScrollPane {
         this.setFitToWidth(true);
 
         // Initialize the close button
-        closeButton = new Button("X");
+        Button closeButton = new Button("X");
         closeButton.setStyle("-fx-background-color: transparent; -fx-text-fill: #888; -fx-font-weight: bold;");
         closeButton.setOnAction(e -> {
             // Close both this ReviewScroll and the parent ScrollPane
@@ -58,6 +52,7 @@ public class ReviewScroll extends ScrollPane {
 
         // Create the main content container
         mainContainer = new VBox();
+        int verticalGap = 20;
         mainContainer.setSpacing(verticalGap);
         mainContainer.setPadding(new Insets(15));
         mainContainer.setFillWidth(true);
@@ -82,7 +77,7 @@ public class ReviewScroll extends ScrollPane {
 
     private void populateContainer() throws SQLException {
         mainContainer.getChildren().clear();
-        String nume = "";
+        String nume;
 
         for (Review review : reviews) {
             nume = review.SELECT_USER_FROM_REVIEWS(DB_URL, DB_USER, DB_PASSWORD, review.getUser_idUser());
@@ -93,6 +88,7 @@ public class ReviewScroll extends ScrollPane {
 
     private StackPane createReviewPane(Review review, String usr) {
         StackPane pane = new StackPane();
+        int cellWidth = 500;
         pane.setPrefWidth(cellWidth);
 
         VBox contentBox = new VBox(10);
@@ -109,7 +105,7 @@ public class ReviewScroll extends ScrollPane {
 
         HBox starContainer = new HBox(5);
         starContainer.setAlignment(Pos.CENTER);
-        stars = new ArrayList<>();
+        List<Star> stars = new ArrayList<>();
         for (int i = 0; i < review.getReviewRating(); i++) {
             Star star = new Star(i + 1);
             star.setFilled(star.getRatingValue() <= review.getReviewRating());
@@ -138,24 +134,11 @@ public class ReviewScroll extends ScrollPane {
         return Math.max(80, (lineCount + 1) * lineHeight);
     }
 
-    public void refresh() throws SQLException {
-        loadReviews();
-        populateContainer();
-    }
-
-    private void loadReviews() throws SQLException {
+    private void loadReviews() {
         reviews = new ArrayList<>();
         DBComands dbComands = new DBComands();
         reviews = dbComands.SELECT_ALL_FROM_REVIEWS(DB_URL, DB_USER, DB_PASSWORD, idCarte);
-        numeUser = new ArrayList<>();
     }
-
-
-
-    public Button getCloseButton() {
-        return closeButton;
-    }
-
 
 
     public void close() {
@@ -180,5 +163,9 @@ public class ReviewScroll extends ScrollPane {
 
     public int getBookId() {
         return this.idCarte;
+    }
+    public void refresh() throws SQLException {
+        loadReviews();
+        populateContainer();
     }
 }

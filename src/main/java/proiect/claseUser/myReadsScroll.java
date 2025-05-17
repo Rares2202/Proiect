@@ -17,15 +17,14 @@ public class myReadsScroll extends ScrollPane {
     private int rows;
     private final int cellWidth = 170;
     private final int cellHeight = 250;
-    private final int gap = 10;
     private GridPane gridPane;
     private List<String> coverUrls;
-    private int userId;
+    private final int userId;
     private static final String DB_URL = "jdbc:mysql://localhost:3306/mydb";
     private static final String DB_USER = "root";
     private static final String DB_PASSWORD = "simone";
     private Consumer<String> onCoverClickHandler;
-    private List<String> selectedBooks = new ArrayList<>();
+    private final List<String> selectedBooks = new ArrayList<>();
     public myReadsScroll(int userId) {
         this.userId = userId;
         initialize();
@@ -42,6 +41,7 @@ public class myReadsScroll extends ScrollPane {
         this.setFitToWidth(true);
 
         gridPane = new GridPane();
+        int gap = 10;
         gridPane.setHgap(gap);
         gridPane.setVgap(gap);
 
@@ -80,16 +80,15 @@ public class myReadsScroll extends ScrollPane {
     private StackPane createCell(int coverIndex) {
         StackPane cell = new StackPane();
         cell.setPrefSize(cellWidth, cellHeight);
-        Book book = new Book(0,null,null,null,null,0,null);
 
         Region background = createCellBackground(coverIndex);
         cell.getChildren().add(background);
         CheckBox checkBox = new CheckBox();
         checkBox.setStyle("-fx-background-color: transparent; -fx-opacity: 0.5;");
-        cell.setAlignment(checkBox, Pos.BOTTOM_RIGHT);
+        StackPane.setAlignment(checkBox, Pos.BOTTOM_RIGHT);
         cell.getChildren().add(checkBox);
 
-        checkBox.selectedProperty().addListener((obs, wasSelected, isNowSelected) -> {
+        checkBox.selectedProperty().addListener((observableValue, b, isNowSelected) -> {
             if (isNowSelected) {
                 this.selectedBooks.add(coverUrls.get(coverIndex));
 
@@ -101,7 +100,7 @@ public class myReadsScroll extends ScrollPane {
         });
 
         if (isValidCoverIndex(coverIndex)) {
-            cell.setOnMouseClicked(event -> {
+            cell.setOnMouseClicked(e -> {
                 if (onCoverClickHandler != null) {
                     onCoverClickHandler.accept(coverUrls.get(coverIndex));
                 }

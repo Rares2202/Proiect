@@ -19,7 +19,7 @@ public class Review {
         return reviewRating;
     }
     public int getUser_idUser() {return User_idUser;}
-    public int getCarte_idCarte() {return Carte_idCarte;}
+
     public String getReviewText() {return reviewText;}
 
 

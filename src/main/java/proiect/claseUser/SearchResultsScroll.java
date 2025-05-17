@@ -8,7 +8,7 @@ import java.util.function.Consumer;
 
 public class SearchResultsScroll extends ScrollPane {
     private GridPane gridPane;
-    private List<Book> books;
+    private final List<Book> books;
     private Consumer<String> onCoverClickHandler;
 
     public SearchResultsScroll(List<Book> books) {
@@ -39,16 +39,12 @@ public class SearchResultsScroll extends ScrollPane {
                 paneCarte.setPrefWidth(600);
 
                 // Adaugă efecte la hover
-                paneCarte.setOnMouseEntered(e -> {
-                    paneCarte.setStyle("-fx-background-color: #f0f0f0; -fx-border-color: #bbb;");
-                });
-                paneCarte.setOnMouseExited(e -> {
-                    paneCarte.setStyle("-fx-background-color: #f9f9f9; -fx-border-color: #ddd;");
-                });
+                paneCarte.setOnMouseEntered(e -> paneCarte.setStyle("-fx-background-color: #f0f0f0; -fx-border-color: #bbb;"));
+                paneCarte.setOnMouseExited(e -> paneCarte.setStyle("-fx-background-color: #f9f9f9; -fx-border-color: #ddd;"));
 
                 // Handler pentru click
                 int finalI = i;
-                paneCarte.setOnMouseClicked(event -> {
+                paneCarte.setOnMouseClicked(e -> {
                     if (onCoverClickHandler != null) {
                         onCoverClickHandler.accept(books.get(finalI).getCoverUrl());
                     }
