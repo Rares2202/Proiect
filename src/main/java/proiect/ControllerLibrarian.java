@@ -40,7 +40,18 @@ public class ControllerLibrarian{
     @FXML AnchorPane statistici_menu;
     @FXML AnchorPane popup_menu_validation;
     @FXML AnchorPane popup_menu_add_book;
+    @FXML AnchorPane popup_menu_add_carte;
+    @FXML AnchorPane popup_error;
+    @FXML AnchorPane menu_increase;
+    @FXML AnchorPane menu_decrease;
+    @FXML AnchorPane popup_info;
     public List<AnchorPane> listMenu = new ArrayList<>();
+
+    //popups
+    @FXML Label label_popup_info;
+    @FXML Label label_popup_error;
+    enum popup_info_case {ADD_BOOK, REMOVE_BOOK, NEW_BOOK, DELETE_BOOK};
+    popup_info_case info_case;
 
     //Meniu Clienti
     @FXML VBox list_search_clients;
@@ -74,6 +85,42 @@ public class ControllerLibrarian{
     @FXML Button btn_anuleaza_tranzactie;
 
     //Meniu Carti
+    //Meniu Carti
+    @FXML VBox list_search_carti;
+    @FXML TextField textField_bookTitle;
+    @FXML Button addBase;
+    public String book_id;
+    public String book_name;
+    @FXML Button btn_delete_book;
+
+    //Popup adaugare cu success
+    @FXML Button btn_error_OK;
+
+    //Popup stergere cu success
+    @FXML Button btn_info_OK;
+
+    //Meniu adauga cantitate carte
+    @FXML TextField numberUp;
+    public Label title_book;
+    public Button addIncrease;
+    public Button cancelIncrease;
+
+    //Meniu stergere cantitate/carte
+    @FXML TextField numberDown;
+    public Label title_book1;
+    public Button removeDecrease;
+    public Button cancelDecrease;
+
+
+    //Popup meniu adaugare carte in baza de date
+    @FXML TextField titleBar;
+    @FXML TextField authorBar;
+    @FXML TextField genreBar;
+    @FXML TextField numberBar;
+    @FXML TextField coverBar;
+    @FXML Button bookAddBase;
+    @FXML Button cancel;
+//
 
     //Meniu Statistici
     @FXML VBox vbox_statistics_top_books;
@@ -109,6 +156,11 @@ public class ControllerLibrarian{
         listMenu.add(popup_menu_add_book);
         listMenu.add(popup_menu_tranzactie);
         listMenu.add(popup_menu_validation);
+        listMenu.add(popup_info);
+        listMenu.add(popup_menu_add_carte);
+        listMenu.add(popup_error);
+        listMenu.add(menu_increase);
+        listMenu.add(menu_decrease);
 
         //initailizare TableView pentru tranzactionarea imprumuturilor/retururilor
         ObservableList<TableColumn<ObservableList<Label>, ?>> rawCols = tableView_transaction.getColumns();
@@ -126,11 +178,12 @@ public class ControllerLibrarian{
         }
         tableView_transaction.setSelectionModel(null);
 
-        //nu e deshis niciun meniu la deschiderea aplicatiei
-        setOnlyMenu(null);
-
         //Crearea conexiune
         connection = new DatabaseConnection(url, user, pass, this);
+
+        //nu e deshis niciun meniu la deschiderea aplicatiei
+        initialize_statistics_menu();
+        setOnlyMenu(statistici_menu);
     }
     public void quit_app(MouseEvent mouseEvent) {
         connection.close();
@@ -217,17 +270,106 @@ public class ControllerLibrarian{
             }
         }
     }
-    @FXML void OnCartiButtonClicked(MouseEvent mouseEvent) {
+    @FXML void OnCartiButtonClicked(MouseEvent mouseEvent) throws SQLException {
+        if(books_menu.isVisible())
+            return;
+
+        //verificam conexiunea pentru afisarea meniului cu carti
+        if(connection.getConnection()==null)
+        {
+            connection.setFailed(err_connection_null);
+            return;
+        }
         setOnlyMenu(books_menu);
+        update_list_books("");
+
+        textField_bookTitle.setOnKeyPressed(event -> {
+            if(event.getCode().equals(KeyCode.ENTER))
+                try{
+                    System.out.print("ENTER");
+                    update_list_books(textField_bookTitle.getText());
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+        });
+
+        addBase.setOnMouseClicked(event -> {
+            try {
+                initialize_popup_menu_carte();
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        });
+    }
+    void update_list_books(String text) throws SQLException {
+        if(connection.getConnection()==null)
+        {
+            connection.setFailed(err_connection_null);
+            return;
+        }
+
+        text=text.toUpperCase();
+        list_search_carti.getChildren().clear();
+        ResultSet rs = connection.executeQuery("SELECT idCarte\n, titluCarti\n, autorCarte\n, numarCarte\n, genCarte\n" +
+                "FROM carte\n" +
+                "WHERE UPPER(titluCarti) LIKE '%" + text + "%'\n" +
+                "OR UPPER(idCarte) LIKE '%" + text + "%' \n" +
+                "ORDER BY idCarte LIMIT 100;");
+        while(rs.next()){
+            int id = rs.getInt("idCarte");
+            String _titlu = rs.getString("titluCarti");
+            String _author = rs.getString("autorCarte");
+            String _genre = rs.getString("genCarte");
+            String _num = rs.getString("numarCarte");
+            int numar = Integer.parseInt(_num);
+            int reserved = connection.getQueryCount("SELECT * FROM cartiimprumutate WHERE Carte_idCarte = '" + id + "'");
+            int stoc = numar - reserved;
+
+            try{
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("fxml/ItemBookRow.fxml"));
+                Node node = loader.load();
+                ControllerItemBookRow controller = loader.getController();
+
+                controller.id = String.valueOf(id);
+                controller.bookTitle.setText(_titlu);
+                controller.authorBook.setText(_author);
+                controller.genreBook.setText(_genre);
+                controller.quantityBook.setText(_num);
+                controller.availableBook.setText(String.valueOf(stoc));
+
+                controller.book_name = _titlu;
+
+                controller.mainController = this;
+                list_search_carti.getChildren().add(node);
+            }
+            catch (Exception e) {
+                System.err.print("\nNu s-a putut genera book(FXML)");
+                e.printStackTrace();
+            }
+        }
     }
     @FXML void OnStatisticiButtonClicked(MouseEvent mouseEvent) throws SQLException {
         initialize_statistics_menu();
+    }
+
+    // POPUPS
+    void show_popup_info(String message, popup_info_case newCase) {
+        label_popup_info.setText(message);
+        info_case = newCase;
+        popup_info.setVisible(true);
+    }
+    void show_popup_error(String message){
+        label_popup_error.setText(message);
+        popup_error.setVisible(true);
     }
 
     // CLIENT_DETAILS MENU FUNCTIONS
     void initialize_menu_client_detalii(String userID) throws SQLException, IOException {
         setOnlyMenu(client_menu_details);
         btn_efectueaza.setDisable(true);
+        btn_efectueaza.setOnMouseClicked(mouseEvent -> {
+            popup_menu_validation.setVisible(true);
+        });
 
         //resetarea datelor
         vbox_books_reserved.getChildren().clear();
@@ -454,6 +596,215 @@ public class ControllerLibrarian{
             popup_menu_tranzactie.setVisible(false);
         }
 
+//
+// BOOKS MENU FUNCTIONS
+@FXML void initialize_popup_menu_carte() throws SQLException {
+    //Verificam conexiunea
+    if(connection.getConnection()==null)
+    {
+        connection.setFailed(err_connection_null);
+        return;
+    }
+    popup_menu_add_carte.setVisible(true);
+    books_menu.setVisible(false);
+    cancel.setOnMouseClicked(event -> {
+        popup_menu_add_carte.setVisible(false);
+        books_menu.setVisible(true);
+        titleBar.setText("");
+        authorBar.setText("");
+        genreBar.setText("");
+        numberBar.setText("");
+        coverBar.setText("");
+    });
+    bookAddBase.setOnMouseClicked(event -> {
+        popup_menu_validation.setVisible(true);
+    });
+}
+
+
+    public void initialize_increase_button(String book_id) throws SQLException {
+        // Șterge handler-ul vechi, pentru a evita acumularea de acțiuni multiple
+        addIncrease.setOnMouseClicked(null);
+        cancelIncrease.setOnMouseClicked(null);
+
+        if (addIncrease != null && addIncrease.getOnMouseClicked() == null) {
+            addIncrease.setOnMouseClicked(actionEvent -> {
+                String numarText = numberUp.getText();
+                if (numarText.isEmpty()) return;
+
+                int number;
+                try {
+                    number = Integer.parseInt(numarText);
+                    if (number <= 0) return;
+                } catch (NumberFormatException e) {
+                    return;
+                }
+
+                try {
+                    increase(book_id, number);
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            });
+        }
+
+        if (cancelIncrease != null && cancelIncrease.getOnMouseClicked() == null) {
+            cancelIncrease.setOnMouseClicked(actionEvent -> {
+                menu_increase.setVisible(false);
+                books_menu.setVisible(true);
+                numberUp.setText("");
+            });
+        }
+    }
+    @FXML void increase(String bookID, int number) throws SQLException {
+        if(connection.getConnection()==null){
+            connection.setFailed(err_connection_null);
+            return;
+        }
+
+        book_id = bookID;
+
+        // Verificam daca exista book id
+        if(book_id == null || book_id.isEmpty()) {
+            System.out.println("Eroare: ID carte neconfigurat!");
+            return;
+        }
+
+        try {
+            // Obtinem cantitatea curenta
+            ResultSet rs = connection.executeQuery("SELECT numarCarte FROM carte WHERE idCarte = " + book_id);
+
+            if(rs.next()){
+                int cantitate = rs.getInt("numarCarte");
+                cantitate += number;
+
+                // Actualizam cantitatea in baza de date
+                connection.executeUpdate("UPDATE carte SET numarCarte = numarCarte + " + number + " WHERE idCarte = " + book_id);
+
+                // Verificam daca actualizarea a avut loc
+                ResultSet checkRs = connection.executeQuery("SELECT numarCarte FROM carte WHERE idCarte = " + book_id);
+                if(checkRs.next() && checkRs.getInt("numarCarte")==cantitate){
+                    update_list_books("");
+                    show_popup_info("Cartea a fost adaugata cu succes!", popup_info_case.ADD_BOOK);
+                    //menu_increase.setVisible(false);
+                    /*
+                    btn_info_OK.setOnMouseClicked(event1 -> {
+                        popup_info.setVisible(false);
+                        books_menu.setVisible(true);
+                        numberUp.setText("");
+                    });
+
+                     */
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void initialize_decrease_button(String book_id) throws SQLException {
+        // Sterge handle-uri vechi, pentru a evita acumularea de actiuni multiple
+        //removeDecrease.setOnMouseClicked(null);
+        cancelDecrease.setOnMouseClicked(null);
+        btn_delete_book.setOnMouseClicked(mouseEvent -> {
+            if(connection.getConnection()==null){
+                connection.setFailed(err_connection_null);
+                return;
+            }
+            popup_menu_validation.setVisible(true);
+        });
+
+        if (removeDecrease != null && removeDecrease.getOnMouseClicked() == null) {
+            removeDecrease.setOnMouseClicked(actionEvent -> {
+                String numarText = numberDown.getText();
+                if (numarText.isEmpty()) return;
+
+                int number;
+
+                try{
+                    number = Integer.parseInt(numarText);
+                    if (number <= 0) return;
+                } catch (NumberFormatException e) {
+                    show_popup_error("Numar invalid!");
+                    return;
+                }
+                try{
+                    decrease(book_id,number);
+                } catch (SQLException e){
+                    e.printStackTrace();
+                }
+            });
+        }
+
+        if (cancelDecrease != null && cancelDecrease.getOnMouseClicked() == null) {
+            cancelDecrease.setOnMouseClicked(actionEvent -> {
+                menu_decrease.setVisible(false);
+                books_menu.setVisible(true);
+                numberDown.setText("");
+            });
+        }
+    }
+
+
+
+    @FXML void decrease(String bookID, int number) throws SQLException {
+
+        System.out.println("number: "+number);
+        if (connection.getConnection() == null) {
+            connection.setFailed(err_connection_null);
+            return;
+        }
+
+        book_id = bookID;
+
+        // Verificam daca exista book id
+        if (book_id == null || book_id.isEmpty()) {
+            System.out.println("Eroare: ID carte neconfigurat!");
+            return;
+        }
+
+
+
+        try {
+            // Obtinem cantitatea curenta
+            ResultSet rs = connection.executeQuery("SELECT numarCarte FROM carte WHERE idCarte = " + book_id);
+
+            if (rs.next()) {
+                int cantitate = rs.getInt("numarCarte");
+                cantitate = cantitate - number;
+
+                if (cantitate >= 0) {
+                    // Actualizam cantitatea in baza de date
+                    connection.executeUpdate("UPDATE carte SET numarCarte = numarCarte - " + number + " WHERE idCarte = " + book_id);
+
+                    // Verificam daca actualizarea a avut loc
+                    ResultSet checkRs = connection.executeQuery("SELECT numarCarte FROM carte WHERE idCarte = " + book_id);
+                    if (checkRs.next() && checkRs.getInt("numarCarte") == cantitate) {
+
+                        show_popup_info("Cartea a fost stearsa cu succes!", popup_info_case.REMOVE_BOOK);
+                        //menu_decrease.setVisible(false);
+                        /*
+                        btn_info_OK.setOnMouseClicked(event1 -> {
+                            try {
+                                update_list_books("");
+                                popup_info.setVisible(false);
+                                books_menu.setVisible(true);
+                            } catch (SQLException e) {
+                                throw new RuntimeException(e);
+                            }
+                        });
+
+                         */
+                    }
+                } else {
+                    show_popup_error("Cantitate prea mare!");
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     // POPUP VALIDATION (Esti sigur?)
     @FXML void AreYouSureYes(MouseEvent mouseEvent) {
         //confirmare tranzactie imprumut/retur
@@ -472,9 +823,12 @@ public class ControllerLibrarian{
                             "User_idUser = " + transaction_user_id + " AND Carte_idCarte = " + book.id + ';');
 
                     //statement pentru stergerea cu o unitate a cartii din stoc
+                    /*
                     connection.executeUpdate("UPDATE carte\n" +
                             "SET numarCarte = numarCarte-1\n" +
                             "WHERE idCarte = " + book.id + ';');
+
+                     */
                 }
 
                 //RETUR
@@ -482,9 +836,11 @@ public class ControllerLibrarian{
                 for(ControllerItemBookInventoryRow book : list_selected_inventory_books)
                 {
                     //statement pentru adaugarea cu o unitate a cartii in stoc
+                    /*
                     connection.executeUpdate("UPDATE carte\n" +
                             "SET numarCarte = numarCarte+1\n" +
                             "WHERE idCarte = " + book.id + ';');
+                     */
 
                     //statement pentru stergerea cartii din inventar
                     connection.executeUpdate("DELETE FROM cartiimprumutate\n" +
@@ -519,9 +875,131 @@ public class ControllerLibrarian{
                 throw new RuntimeException(e);
             }
         }
+        //confirmare stergere carte din stoc
+        if(menu_decrease.isVisible()) {
+            try{
+                int nr_borrowed_books = connection.getQueryCount("SELECT * FROM cartiimprumutate\n" +
+                        "WHERE UPPER(statusImprumut)='INVENTAR' AND Carte_idCarte = " + book_id);
+                if(nr_borrowed_books > 0){
+                    show_popup_error("Unii utilizatori detin cartea!");
+                }
+                else {
+                    connection.executeUpdate("DELETE FROM cartiimprumutate WHERE Carte_idCarte = " + book_id);
+                    connection.executeUpdate("DELETE FROM carte WHERE idCarte = " + book_id);
+                    update_list_books("");
+                    show_popup_info("Stoc sters cu succes!", popup_info_case.DELETE_BOOK);
+                    /*
+                    btn_info_OK.setOnMouseClicked(event2 -> {
+                        popup_info.setVisible(false);
+                        books_menu.setVisible(true);
+                        numberDown.setText("");
+                    });
+                     */
+                }
+
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        //confirmare adaugare carte noua in stoc
+        if(popup_menu_add_carte.isVisible()) {
+            String title = titleBar.getText();
+            String author = authorBar.getText();
+            String genre = genreBar.getText();
+            String number = numberBar.getText();
+            int numar = Integer.parseInt(number);
+            String cover = coverBar.getText();
+
+            if(title.isEmpty() || author.isEmpty() || genre.isEmpty() || numar==0  ){ // || cover.isEmpty()
+                System.out.print("Trebuie ca toate campurile sa fie scrise");
+            }
+
+            try{
+                PreparedStatement prep = connection.getConnection().prepareStatement("INSERT INTO carte(" +
+                        "titluCarti, autorCarte, numarCarte, genCarte, coverCarte)" +
+                        "VALUES (?,?,?,?,?)",Statement.RETURN_GENERATED_KEYS);
+                prep.setString(1, title);
+                prep.setString(2,author);
+                prep.setInt(3,numar);
+                prep.setString(4,genre);
+                prep.setString(5,cover);
+
+                int insertrow = prep.executeUpdate();
+                if (insertrow > 0) {
+                    ResultSet key = prep.getGeneratedKeys();
+                    if(key.next()){
+                        int generatedId = key.getInt(1);
+                        show_popup_info("Ai introdus o noua carte!", popup_info_case.NEW_BOOK);
+                        //popup_menu_add_carte.setVisible(false);
+                        /*
+                        btn_info_OK.setOnMouseClicked(event1 -> {
+                            try {
+                                update_list_books("");
+                                books_menu.setVisible(true);
+                                popup_info.setVisible(false);
+                            } catch (SQLException e) {
+                                throw new RuntimeException(e);
+                            }
+                        });
+                         */
+                    }
+                }
+            }
+            catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+
+        popup_menu_validation.setVisible(false);
     }
     @FXML void AreYouSureNo(MouseEvent mouseEvent) {
         popup_menu_validation.setVisible(false);
+    }
+
+    //POPUP ERROR
+    @FXML void popup_error_OK_clicked(MouseEvent mouseEvent) {
+        popup_error.setVisible(false);
+    }
+
+    //POPUP INFO
+    @FXML void popup_info_OK_clicked(MouseEvent mouseEvent) {
+        popup_info.setVisible(false);
+
+        //mesaj confirmare adaugare carte
+        if(info_case==popup_info_case.NEW_BOOK) {
+            System.out.println("inchide meniu hatz");
+            try {
+                update_list_books("");
+                popup_menu_add_carte.setVisible(false);
+                books_menu.setVisible(true);
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+            popup_menu_add_carte.setVisible(false);
+        }
+        //mesaj confirmare stergere cantitate carti
+        if(info_case==popup_info_case.REMOVE_BOOK){
+            try {
+                update_list_books("");
+                menu_decrease.setVisible(false);
+                books_menu.setVisible(true);
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        //mesaj confirmare adaugare cantitate carti
+        if(info_case==popup_info_case.ADD_BOOK){
+            books_menu.setVisible(true);
+            menu_increase.setVisible(false);
+            numberUp.setText("");
+        }
+        //mesaj confirmare eliminare carte din stoc
+        if(info_case==popup_info_case.DELETE_BOOK){
+            books_menu.setVisible(true);
+            menu_decrease.setVisible(false);
+            numberDown.setText("");
+        }
+
     }
 
     // MENU STATISTICS

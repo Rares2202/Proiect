@@ -147,9 +147,17 @@
     -fx-background-color: rgba(0,0,0,0.75);
 }
 
+
+
 .menu-small-content{
     -fx-background-color: white;
     -fx-border-color: green;
+    -fx-border-width: 3px;
+}
+
+.menu-small-error{
+    -fx-background-color: white;
+    -fx-border-color: rgb(200,0,0);
     -fx-border-width: 3px;
 }
 
