@@ -1,0 +1,1 @@
+packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"m":"Biblioteca","l":"proiect"},{"m":"Biblioteca","l":"proiect.claseUser"},{"m":"Biblioteca","l":"proiect.controller"}];updateSearchResults();

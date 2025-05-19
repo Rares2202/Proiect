@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.text.*?>
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon?>
+
+<Pane styleClass="background" xmlns="http://javafx.com/javafx/17.0.12"
+      xmlns:fx="http://javafx.com/fxml/1"
+      prefHeight="564.0" prefWidth="802.0">
+
+    <VBox layoutX="20" layoutY="20" spacing="15" prefWidth="350">
+        <!-- Search Bar -->
+        <HBox spacing="10" styleClass="search-bar">
+            <FontAwesomeIcon glyphName="SEARCH" size="15" fill="#00831f" />
+            <TextField promptText="Cauta client" prefWidth="300.0" />
+        </HBox>
+        <Pane fx:id="showClientDetails" prefHeight="40.0" prefWidth="434.0"
+              styleClass="list_item" xmlns="http://javafx.com/javafx/17.0.12"
+              xmlns:fx="http://javafx.com/fxml/1">
+
+            <children>
+                <Text fx:id="clientName" layoutX="9.0" layoutY="24.0"
+                      text="Client Name" styleClass="client-text"/>
+
+                <Label layoutX="260.0" layoutY="4.0" text="100">
+                    <graphic>
+                        <FontAwesomeIcon glyphName="ARROW_UP" />
+                    </graphic>
+                </Label>
+
+                <Label layoutX="312.0" layoutY="4.0" text="100">
+                    <graphic>
+                        <FontAwesomeIcon glyphName="ARROW_DOWN" />
+                    </graphic>
+                </Label>
+
+                <Label layoutX="362.0" layoutY="4.0" text="100">
+                    <graphic>
+                        <FontAwesomeIcon glyphName="BRIEFCASE" />
+                    </graphic>
+                </Label>
+            </children>
+        </Pane>
+
+        <!-- Client List -->
+        <ScrollPane hbarPolicy="NEVER" vbarPolicy="ALWAYS"
+                    prefViewportHeight="400" fitToWidth="true">
+            <VBox fx:id="list_search_clients" styleClass="vbox" />
+        </ScrollPane>
+
+
+    </VBox>
+
+
+
+    <!-- Right Section - Client Details -->
+    <VBox layoutX="432" layoutY="20" spacing="20" prefWidth="300">
+        <!-- Client Header -->
+        <HBox spacing="15" alignment="CENTER_LEFT">
+            <FontAwesomeIcon glyphName="USER" size="40" />
+            <Text fx:id="clienti_menu_clientName" styleClass="client-name"
+                  text="Nume Client" />
+        </HBox>
+
+        <!-- Contact Details -->
+        <VBox spacing="10" layoutX="0" layoutY="60">
+            <HBox spacing="10" alignment="CENTER_LEFT">
+                <FontAwesomeIcon glyphName="PHONE" size="15" />
+                <Label fx:id="clienti_menu_phone" text="0712 345 678" />
+            </HBox>
+            <HBox spacing="10" alignment="CENTER_LEFT">
+                <FontAwesomeIcon glyphName="ENVELOPE" size="15" />
+                <Label fx:id="clienti_menu_mail" text="email@example.com" />
+            </HBox>
+        </VBox>
+
+        <!-- Transaction Button -->
+        <Button text="Tranzactie Noua" styleClass="btn-green-white"
+                layoutY="150" prefWidth="350">
+            <graphic>
+                <FontAwesomeIcon glyphName="EXCHANGE" fill="WHITE" />
+            </graphic>
+        </Button>
+    </VBox>
+
+</Pane>

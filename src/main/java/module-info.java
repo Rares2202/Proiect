@@ -1,12 +1,17 @@
 module Biblioteca {
     requires javafx.controls;
     requires javafx.fxml;
-    requires javafx.web;
-    requires java.desktop;
     requires java.sql;
+
+    requires javafx.swing;
+    requires java.desktop;
     requires fontawesomefx;
     requires java.naming;
 
     opens proiect to javafx.fxml;
     exports proiect;
+    exports proiect.controller;
+    opens proiect.controller to javafx.fxml;
+    exports proiect.claseUser;
+    opens proiect.claseUser to javafx.fxml;
 }

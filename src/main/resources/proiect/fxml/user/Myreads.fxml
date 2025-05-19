@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.text.Text?>
+<Pane xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+
+      prefHeight="600.0" prefWidth="1030.0"
+styleClass="white">
+    <children>
+        <HBox fx:id="topNav" layoutX="0" layoutY="0" prefWidth="1030" styleClass="topnav">
+            <children>
+
+
+                <Button fx:id="home" styleClass="search-button" translateX="230">
+                    <graphic>
+                        <ImageView fitHeight="30" fitWidth="30" preserveRatio="true">
+                            <image>
+                                <Image url="@../../css/back.png" />
+                            </image>
+                        </ImageView>
+                    </graphic>
+                </Button>
+
+            </children>
+        </HBox>
+        <Button fx:id="inchide"  layoutX="964.0"  mnemonicParsing="false"  layoutY="5"  prefHeight="30.0" prefWidth="66.0" styleClass="exit" textFill="WHITE">
+            <font>
+                <Font name="Arial" size="11.0" />
+            </font>
+            <cursor>
+                <Cursor fx:constant="HAND" />
+            </cursor>
+            <graphic>
+                <FontAwesomeIcon fill="black" glyphName="CLOSE" size="17">
+                    <font>
+                        <Font size="5.0" />
+                    </font>
+                </FontAwesomeIcon>
+            </graphic>
+        </Button>
+        <Pane  styleClass="user_rectangle"  prefHeight="600.0" prefWidth="227.0">
+            <ImageView fitHeight="124.0" fitWidth="126.0" layoutX="52.0" layoutY="25.0" pickOnBounds="true" preserveRatio="true" styleClass="white">
+                <image>
+                    <Image url="@../../css/logo.png" />
+                </image></ImageView>
+            <Text fill="WHITE" layoutX="61.0" layoutY="175.0" stroke="BLACK" strokeDashOffset="10.0" strokeType="OUTSIDE" strokeWidth="0.0" text="MyReads">
+                <font>
+                    <Font name="System Bold" size="24.0" />
+                </font>
+            </Text>
+
+        </Pane>
+<ScrollPane  fx:id="myReadsPane"
+             fitToWidth="false"
+             fitToHeight="false"
+             layoutY="70" layoutX="250"
+             style="-fx-background-color: white; -fx-border-color: white;"></ScrollPane>
+        <ImageView fx:id="trashMyReads" fitHeight="42.0" fitWidth="38.0" layoutX="982.0" layoutY="535.0"
+                   pickOnBounds="true" preserveRatio="true" >
+            <image>
+                <Image url="@../../css/trash.png" />
+            </image>
+        </ImageView>
+    </children>
+
+</Pane>

@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import de.jensd.fx.glyphs.fontawesome.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<Pane layoutX="430" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1">
+    <children>
+        <HBox fx:id="topNav" styleClass="topnav" layoutX="0" layoutY="0" prefWidth="1030">
+            <children>
+                <HBox styleClass="search-container"  translateX="400">
+                    <TextField fx:id="searchField" styleClass="search-field" promptText="Caută..." prefWidth="200"/>
+                    <Button fx:id="search" styleClass="search-button">
+                        <graphic>
+                            <ImageView fitHeight="20" fitWidth="20" preserveRatio="true">
+                                <image>
+                                    <Image url="@../../css/search.png"/>
+                                </image>
+                            </ImageView>
+                        </graphic>
+                    </Button>
+                </HBox>
+            </children>
+        </HBox>
+
+        <!-- Restul conținutului... -->
+        <Pane  styleClass="user_rectangle"  prefHeight="600.0" prefWidth="227.0">
+            <ImageView fitHeight="124.0" fitWidth="126.0" layoutX="52.0" layoutY="25.0" pickOnBounds="true" preserveRatio="true" styleClass="white">
+                <image>
+                    <Image url="@../../css/logo.png" />
+                </image></ImageView>
+            <Text fill="WHITE" layoutX="51.0" layoutY="175.0" stroke="BLACK" strokeDashOffset="10.0" strokeType="OUTSIDE" strokeWidth="0.0" text="LibraryApp">
+                <font>
+                    <Font name="System Bold" size="24.0" />
+                </font>
+            </Text>
+            <Button fx:id="imreading" layoutX="35" layoutY="200" text="I'm reading" styleClass="menu-button"/>
+            <Button fx:id="myreads" layoutX="35" layoutY="250" text="MyReads" styleClass="menu-button"/>
+
+        </Pane>
+        <Button fx:id="inchide" layoutX="964.0" layoutY="10" mnemonicParsing="false" prefHeight="30.0" prefWidth="66.0" styleClass="exit" textFill="WHITE">
+            <font>
+                <Font name="Arial" size="11.0" />
+            </font>
+            <cursor>
+                <Cursor fx:constant="HAND" />
+            </cursor>
+            <graphic>
+                <FontAwesomeIcon fill="black" glyphName="CLOSE" size="17">
+                    <font>
+                        <Font size="5.0" />
+                    </font>
+                </FontAwesomeIcon>
+            </graphic>
+        </Button>
+
+
+
+
+    </children>
+
+
+    <ScrollPane fx:id="scrollPane"
+                fitToWidth="false"
+                fitToHeight="false"
+               prefHeight="500"
+                prefWidth="750"
+                layoutY="70" layoutX="250"
+                style="-fx-background-color: transparent; -fx-border-color: transparent;">
+    </ScrollPane>
+
+
+
+
+</Pane>
+
