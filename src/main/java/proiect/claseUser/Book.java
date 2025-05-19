@@ -2,6 +2,11 @@ package proiect.claseUser;
 
 import java.sql.*;
 
+/**
+ * Represents a Book with various attributes such as id, title, author, description, genre,
+ * and a cover image URL. This class provides methods to retrieve book attributes and
+ * initialize the book with data from a database based on a cover URL.
+ */
 public class Book {
     private int id;
     private String title;
@@ -27,12 +32,18 @@ public class Book {
     public String getGenre() { return genre; }
     public String getCoverUrl() { return coverUrl; }
 
+    /**
+     * Fetches book data from the database using the given cover URL and initializes the book instance with the retrieved values.
+     *
+     * @param URL the cover URL used to query the database for book information.
+     * @return the current instance of the Book initialized with the retrieved data, or partially initialized if an error occurs or no data exists for the provided URL.
+     */
     public Book initializare(String URL)
     {
 
         String DB_URL = "jdbc:mysql://localhost:3306/mydb";
         String DB_USER = "root";
-        String DB_PASSWORD = "simone";
+        String DB_PASSWORD = "root";
         String query = "SELECT idCarte, titluCarti, autorCarte, descriere, genCarte, numarCarte, coverCarte FROM carte WHERE coverCarte=?";
         try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
              PreparedStatement preparedStatement = connection.prepareStatement(query)) {

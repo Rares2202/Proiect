@@ -17,6 +17,12 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * The ControllerClient class extends the ControllerLibrarian class and is responsible
+ * for managing client-related menus and operations within the library management system.
+ * This class handles displaying and interacting with client reservation and inventory
+ * data, along with providing functionality for book selection and management.
+ */
 public class ControllerClient extends ControllerLibrarian{
     //Meniu Clienti
     @FXML VBox list_search_clients;
@@ -39,7 +45,14 @@ public class ControllerClient extends ControllerLibrarian{
     public List<ControllerItemBookReservedRow> list_selected_reserved_books = new ArrayList<>();
     public List<ControllerItemBookInventoryRow> list_selected_inventory_books = new ArrayList<>();
 
-    // CLIENT_DETAILS MENU FUNCTIONS
+    /**
+     * Initializes the client details menu by resetting the data, checking database connection,
+     * and populating the reserved and inventory book lists based on the user ID provided.
+     *
+     * @param userID The unique identifier of the client whose data is being initialized
+     * @throws SQLException if a database access error occurs
+     * @throws IOException if an I/O error occurs during loading FXML resources
+     */
     void initialize_menu_client_detalii(String userID) throws SQLException, IOException {
         setOnlyMenu(client_menu_details);
         btn_efectueaza.setDisable(true);
@@ -94,6 +107,16 @@ public class ControllerClient extends ControllerLibrarian{
 
         }
     }
+
+    /**
+     * Handles the selection of all reserved books by toggling their visibility and enabling associated
+     * UI actions. This method iterates through all reserved book items, sets their button icon visibility
+     * to true, adds them to the selected list if not already present, and updates their status to enabled.
+     * Additionally, it ensures that the action button is enabled if there are any selected items in either
+     * the reserved or inventory lists.
+     *
+     * @param mouseEvent The mouse event that triggered the selection of all reserved books.
+     */
     @FXML void SelectAllFromRezervari(MouseEvent mouseEvent) {
         for(ControllerItemBookReservedRow reserved : list_books_reserved)
         {
@@ -105,6 +128,15 @@ public class ControllerClient extends ControllerLibrarian{
         if(list_selected_reserved_books.size()!=0 || list_selected_inventory_books.size()!=0)
             btn_efectueaza.setDisable(false);
     }
+
+    /**
+     * Deselects all reserved books in the reservation list by hiding associated icons,
+     * updating their status to disabled, and removing them from the list of selected books.
+     * If no books remain selected in either the reserved list or the inventory list,
+     * the action button is disabled.
+     *
+     * @param mouseEvent The mouse event that triggered the deselection of reserved books.
+     */
     @FXML void SelectNoneFromRezervari(MouseEvent mouseEvent) {
         for(ControllerItemBookReservedRow reserved : list_books_reserved)
         {
@@ -117,6 +149,16 @@ public class ControllerClient extends ControllerLibrarian{
         if(list_selected_inventory_books.size()==0 && list_selected_reserved_books.size()==0)
             btn_efectueaza.setDisable(true);
     }
+
+    /**
+     * Handles the selection of all items from the inventory list. This method iterates
+     * through all book items in the inventory, makes their add button icon visible,
+     * adds them to the selected inventory books list if they are not already present,
+     * and updates their status to enabled. Additionally, the action button is enabled
+     * if any books are selected in either the reserved or inventory lists.
+     *
+     * @param mouseEvent The mouse event that triggered the selection of all inventory books.
+     */
     @FXML void SelectAllFromInventar(MouseEvent mouseEvent) {
         for(ControllerItemBookInventoryRow borrowed : list_books_inventory)
         {
@@ -128,6 +170,14 @@ public class ControllerClient extends ControllerLibrarian{
         if(list_selected_reserved_books.size()!=0 || list_selected_inventory_books.size()!=0)
             btn_efectueaza.setDisable(false);
     }
+
+    /**
+     * Deselects all items in the inventory list by hiding associated icons, updating their status
+     * to disabled, and removing them from the list of selected inventory books. If no books remain
+     * selected in either the reserved or inventory lists, the action button is disabled.
+     *
+     * @param mouseEvent The mouse event that triggered the deselection of inventory items.
+     */
     @FXML void SelectNoneFromInventar(MouseEvent mouseEvent) {
         for(ControllerItemBookInventoryRow borrowed : list_books_inventory)
         {
@@ -139,6 +189,17 @@ public class ControllerClient extends ControllerLibrarian{
         if(list_selected_inventory_books.size()==0 && list_selected_reserved_books.size()==0)
             btn_efectueaza.setDisable(true);
     }
+
+    /**
+     * Adds a book to the reservation list by initializing and displaying
+     * the popup menu for adding books. This method checks the database
+     * connection before allowing the user to search and select books to add.
+     *
+     * @param mouseEvent The mouse event that triggers the action of
+     *                   adding a book to the reservation list.
+     * @throws SQLException If a database access error occurs during the
+     *                      initialization of the popup menu or book update.
+     */
     @FXML void AddBookToRezervari(MouseEvent mouseEvent) throws SQLException {
         initialize_popup_menu_add_book();
     }

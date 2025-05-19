@@ -23,16 +23,42 @@ import java.sql.*;
 import java.util.*;
 
 
-
+/**
+ * The ControllerLibrarian class is responsible for managing the user interface and backend logic
+ * of a library management system for a librarian role. It facilitates interactions with
+ * various menus, popups, and functionalities such as client management, book inventory,
+ * reservations, statistical analysis, transactions, and related UI components.
+ *
+ * This class handles the initialization of different components, updates of lists,
+ * button actions, popup display, and execution of database-dependent operations
+ * like searching, reserving, or updating book inventories.
+ *
+ * It provides methods to interact with reserved and inventory books, as well as to:
+ * - Initialize and toggle main menus like client details, book management, and statistics.
+ * - Handle user interactions such as adding or removing books, performing transactions,
+ *   and validating the performed actions using popup confirmations.
+ * - Generate and display statistical data related to library usage and inventory trends.
+ *
+ * The ControllerLibrarian ensures proper coordination between UI components and backend
+ * operations, including database connectivity and error handling.
+ */
 public class ControllerLibrarian{
 
     //SQL
     public DatabaseConnection connection;
     String url = "jdbc:mysql://localhost:3306/mydb";
+    /**
+     * Represents the username for the database connection utilized by the librarian controller.
+     * This variable stores the default username required for authentication within
+     * the system and is primarily used to facilitate connections to the database.
+     */
     String user = "root";
+    /**
+     * Represents the password used for authentication in the application.
+     * It is initialized with the default value "root".
+     */
     String pass = "root";
 
-    //Meniuri
     @FXML AnchorPane connectionFailed_menu;
     @FXML AnchorPane client_menu;
     @FXML AnchorPane client_menu_details;
@@ -145,7 +171,18 @@ public class ControllerLibrarian{
     //Mesaje pentru erori
     String err_connection_null = "Nu exista conexiune. (ControllerLibrarian.connection = null)";
 
-
+    /**
+     * Initializes the necessary components and configurations for the application.
+     *
+     * - Prepares and organizes the menu elements into the `listMenu` for visibility management.
+     * - Configures the `TableView` component (`tableView_transaction`) to properly handle
+     *   transaction records with custom column settings.
+     * - Establishes the database connection using the provided credentials and URL.
+     * - Ensures the initial state of the application by loading the statistics menu and
+     *   making it visible, while hiding other menus.
+     *
+     * @throws SQLException if a database access error occurs during initialization.
+     */
     @FXML void initialize() throws SQLException {
         //initializare lista cu toate meniurile aplicatiei
         listMenu.add(connectionFailed_menu);
@@ -185,11 +222,26 @@ public class ControllerLibrarian{
         initialize_statistics_menu();
         setOnlyMenu(statistici_menu);
     }
+
+    /**
+     * Handles the application quit event, ensuring proper resource cleanup and termination.
+     * This method closes the active database connection, prints a shutdown message to
+     * the console, and terminates the application.
+     *
+     * @param mouseEvent the MouseEvent that triggers the application quit action.
+     */
     public void quit_app(MouseEvent mouseEvent) {
         connection.close();
         System.out.print("\nInchidere aplicatie.");
         System.exit(0);
     }
+
+    /**
+     * Sets the visibility of all menus in the application to false, except for the specified menu.
+     * If the specified menu is not null, it will be made visible.
+     *
+     * @param newMenu the AnchorPane to be made visible. If null, all menus remain invisible.
+     */
     public void setOnlyMenu(AnchorPane newMenu) {
         for(AnchorPane menu: listMenu)
             menu.setVisible(false);
@@ -197,6 +249,15 @@ public class ControllerLibrarian{
             newMenu.setVisible(true);
     }
 
+    /**
+     * Handles the client's menu button click event.
+     * Opens the client menu, verifies database connection, and configures the
+     * functionality related to the client search text field. If the client menu
+     * is already visible or if the database connection is null, the method terminates early.
+     *
+     * @param mouseEvent the MouseEvent that triggers the client menu button click action.
+     * @throws SQLException if a database access error occurs.
+     */
     // MAIN MENU BUTTONS FUNCTIONS
     @FXML void OnClientiButtonClicked(MouseEvent mouseEvent) throws SQLException {
         if(client_menu.isVisible())
@@ -222,6 +283,18 @@ public class ControllerLibrarian{
                 }
         });
     }
+
+    /**
+     * Updates the list of clients displayed in the interface by fetching and filtering records
+     * from the database based on the input text. Clears the current client list, fetches matching
+     * results, loads the corresponding FXML components, and displays the updated list.
+     *
+     * The method uses the supplied search text to query the database for clients whose names or
+     * IDs match the text (case-insensitive). It limits the number of results to 100.
+     *
+     * @param text the input search text used to filter client records from the database.
+     * @throws SQLException if a database access error occurs during the query execution.
+     */
     void update_list_clients(String text) throws SQLException {
         if(connection.getConnection()==null)
         {
@@ -270,6 +343,21 @@ public class ControllerLibrarian{
             }
         }
     }
+
+    /**
+     * Handles the click event for the books menu button and manages the visibility and functionality of the books menu.
+     *
+     * This method performs the following actions:
+     * - Checks if the books menu (`books_menu`) is already visible. If yes, it exits early.
+     * - Verifies the database connection. If the connection is null, triggers a failure action through `connection.setFailed`.
+     * - Makes the books menu visible by calling `setOnlyMenu` and initializes the book list display.
+     * - Configures key press events on the books search text field (`textField_bookTitle`)
+     *   to update the list of books when the Enter key is pressed.
+     * - Configures mouse click events for adding a new book by initializing the popup menu for adding books.
+     *
+     * @param mouseEvent the MouseEvent that triggers the books menu button click action.
+     * @throws SQLException if a database access error occurs during menu initialization or book updates.
+     */
     @FXML void OnCartiButtonClicked(MouseEvent mouseEvent) throws SQLException {
         if(books_menu.isVisible())
             return;
@@ -301,6 +389,22 @@ public class ControllerLibrarian{
             }
         });
     }
+
+    /**
+     * Updates the list of books displayed in the interface by fetching and filtering records
+     * from the database based on the input text. This method clears the current book list,
+     * executes a case-insensitive query for books whose titles, authors, or IDs match the
+     * provided text, and limits the result set to a maximum of 100 records.
+     *
+     * For each result, it initializes an FXML component for the book row, populates
+     * its details using the corresponding database record, and adds it to the display list.
+     *
+     * If the database connection is null, the method sets a failure state and stops execution.
+     *
+     * @param text the input search text used to filter the book records from the database.
+     *             This value is automatically converted to uppercase for case-insensitive matching.
+     * @throws SQLException if a database access error occurs during query execution.
+     */
     void update_list_books(String text) throws SQLException {
         if(connection.getConnection()==null)
         {
@@ -349,21 +453,60 @@ public class ControllerLibrarian{
             }
         }
     }
+
+    /**
+     * Handles the click event for the "Statistici" button and initializes the statistics menu.
+     *
+     * This method performs the following actions:
+     * - Calls `initialize_statistics_menu` to configure and load various panes
+     *   (such as clients, books, genres, authors, and top books) in the statistics menu.
+     * - Makes the statistics menu visible while hiding other menus.
+     *
+     * @param mouseEvent the MouseEvent that triggers the "Statistici" button click action.
+     * @throws SQLException if a database access error occurs during the initialization process.
+     */
     @FXML void OnStatisticiButtonClicked(MouseEvent mouseEvent) throws SQLException {
         initialize_statistics_menu();
     }
 
+    /**
+     * Displays a popup with an informational message and sets the context for the information type.
+     *
+     * This method updates the popup label with the provided message, configures the specific
+     * informational context using the given enum value, and makes the popup visible to the user.
+     *
+     * @param message the message to be displayed in the popup.
+     * @param newCase the context or type of information, specified as a value of the {@code popup_info_case} enum.
+     */
     // POPUPS
     void show_popup_info(String message, popup_info_case newCase) {
         label_popup_info.setText(message);
         info_case = newCase;
         popup_info.setVisible(true);
     }
+
+    /**
+     * Displays a popup with an error message.
+     *
+     * This method updates the popup's label with the provided error message,
+     * and makes the error popup visible to the user.
+     *
+     * @param message the error message to be displayed in the popup.
+     */
     void show_popup_error(String message){
         label_popup_error.setText(message);
         popup_error.setVisible(true);
     }
 
+    /**
+     * Initializes the "Client Details" menu by setting up the UI components, clearing previous data,
+     * fetching the relevant book details for the user, and populating the reserved and inventory sections
+     * of the menu with the retrieved data.
+     *
+     * @param userID The unique identifier of the user whose book data is to be displayed.
+     * @throws SQLException If a database access error occurs while querying book details.
+     * @throws IOException If there is an error loading UI components or FXML files.
+     */
     // CLIENT_DETAILS MENU FUNCTIONS
     void initialize_menu_client_detalii(String userID) throws SQLException, IOException {
         setOnlyMenu(client_menu_details);
@@ -421,6 +564,16 @@ public class ControllerLibrarian{
 
         }
     }
+
+    /**
+     * Handles the UI interaction to select all items in the reservation list when triggered by a mouse event.
+     * Each reserved item in the list becomes enabled, and its corresponding "add" icon is made visible.
+     * Items that are not already included in the selected reserved books list are added to it.
+     * Additionally, enables the action button if there are selected items in either
+     * the reserved books list or inventory books list.
+     *
+     * @param mouseEvent the MouseEvent that triggers this method, typically a click event
+     */
     @FXML
     void SelectAllFromRezervari(MouseEvent mouseEvent) {
         for(ControllerItemBookReservedRow reserved : list_books_reserved)
@@ -433,6 +586,15 @@ public class ControllerLibrarian{
         if(list_selected_reserved_books.size()!=0 || list_selected_inventory_books.size()!=0)
             btn_efectueaza.setDisable(false);
     }
+
+    /**
+     * Deselects all items from the list of reserved books and disables the associated UI elements.
+     * This method hides the add button for each reserved book, removes the book from the selection list,
+     * and disables the selection functionality for these books. If no books are selected in both
+     * the inventory and reserved lists, the confirm button is disabled.
+     *
+     * @param mouseEvent The MouseEvent triggered by interacting with the UI element that calls this method.
+     */
     @FXML void SelectNoneFromRezervari(MouseEvent mouseEvent) {
         for(ControllerItemBookReservedRow reserved : list_books_reserved)
         {
@@ -445,6 +607,14 @@ public class ControllerLibrarian{
         if(list_selected_inventory_books.size()==0 && list_selected_reserved_books.size()==0)
             btn_efectueaza.setDisable(true);
     }
+
+    /**
+     * Handles the selection of all items from the inventory when a mouse event occurs.
+     * Updates the visibility and state of the respective inventory items and adjusts
+     * the enabled state of related UI components accordingly.
+     *
+     * @param mouseEvent the MouseEvent triggered by the user's interaction
+     */
     @FXML void SelectAllFromInventar(MouseEvent mouseEvent) {
         for(ControllerItemBookInventoryRow borrowed : list_books_inventory)
         {
@@ -456,6 +626,15 @@ public class ControllerLibrarian{
         if(list_selected_reserved_books.size()!=0 || list_selected_inventory_books.size()!=0)
             btn_efectueaza.setDisable(false);
     }
+
+    /**
+     * Deselects all items in the inventory by hiding their associated 'add' icons,
+     * removing them from the selected inventory books list, and disabling them.
+     * If no items remain selected in both the inventory and reserved lists,
+     * a button action is disabled.
+     *
+     * @param mouseEvent the mouse event that triggers the deselection operation
+     */
     @FXML void SelectNoneFromInventar(MouseEvent mouseEvent) {
         for(ControllerItemBookInventoryRow borrowed : list_books_inventory)
         {
@@ -467,10 +646,28 @@ public class ControllerLibrarian{
         if(list_selected_inventory_books.size()==0 && list_selected_reserved_books.size()==0)
             btn_efectueaza.setDisable(true);
     }
+
+    /**
+     * Handles the event of adding a book to the reservations list.
+     * Initializes the popup menu associated with adding a book.
+     *
+     * @param mouseEvent the mouse event that triggered this method
+     * @throws SQLException if a database access error occurs
+     */
     @FXML void AddBookToRezervari(MouseEvent mouseEvent) throws SQLException {
         initialize_popup_menu_add_book();
     }
 
+    /**
+     * Initializes the popup menu for adding books.
+     *
+     * This method sets up the functionality for a popup menu that allows users
+     * to search for and add books. It checks the database connection, sets up
+     * the search functionality to react on a 'Enter' key press, and makes the
+     * popup menu visible.
+     *
+     * @throws SQLException if a database access error occurs while updating the book list.
+     */
         // POPUP ADD BOOK
         @FXML void initialize_popup_menu_add_book() throws SQLException {
             //verificam conexiunea
@@ -491,7 +688,17 @@ public class ControllerLibrarian{
 
             popup_menu_add_book.setVisible(true);
         }
-        void update_list_add_book(String text) throws SQLException {
+
+    /**
+     * Updates the list of books displayed in the UI based on the search text provided.
+     * The method retrieves book data from the database, filters it by the provided text,
+     * and dynamically updates a visual VBox element with matching books along with their availability status.
+     *
+     * @param text A string containing the search keyword. The search is case-insensitive
+     *             and matches book titles, authors, and genres that contain the keyword.
+     * @throws SQLException If a database access error occurs while executing queries.
+     */
+    void update_list_add_book(String text) throws SQLException {
             //initializare
             list_search_books.getChildren().clear();
             text = text.toUpperCase();
@@ -553,10 +760,22 @@ public class ControllerLibrarian{
                 list_search_books.getChildren().add(item);
             }
         }
-        @FXML void CancelAddBook(MouseEvent mouseEvent) {
+
+    /**
+     * Cancels the process of adding*/
+    @FXML void CancelAddBook(MouseEvent mouseEvent) {
             popup_menu_add_book.setVisible(false);
         }
 
+    /**
+     * Displays the transaction popup with details of borrowed and returned books.
+     * The method generates a structured list of data for borrowed books (IMPRUMUTURI)
+     * and returned books (RETURURI), then populates the table view and makes the
+     * popup visible.
+     *
+     * @param mouseEvent the MouseEvent object that triggers the popup display,
+     *                   typically triggered by a mouse click or interaction.
+     */
         // POPUP TRANSACTION
         @FXML void ShowPopupTransaction(MouseEvent mouseEvent) {
             ObservableList<ObservableList<Label>> data = FXCollections.observableArrayList();
@@ -590,14 +809,39 @@ public class ControllerLibrarian{
             tableView_transaction.setItems(data);
             popup_menu_tranzactie.setVisible(true);
         }
-        @FXML void ConfirmTransaction(MouseEvent mouseEvent) {
+
+    /**
+     * Handles the confirmation of a transaction when the associated event is triggered by the user.
+     * This method makes a validation pop-up menu visible.
+     *
+     * @param mouseEvent the MouseEvent triggered by the user's interaction, such as a mouse click
+     */
+    @FXML void ConfirmTransaction(MouseEvent mouseEvent) {
             popup_menu_validation.setVisible(true);
         }
-        @FXML void CancelTransaction(MouseEvent mouseEvent) {
+
+    /**
+     * Cancels the transaction and hides the transaction popup menu.
+     *
+     * @param mouseEvent the MouseEvent instance that triggered the cancel operation
+     */
+    @FXML void CancelTransaction(MouseEvent mouseEvent) {
             popup_menu_tranzactie.setVisible(false);
         }
 
-//
+    /**
+     * Initializes the popup menu for adding books in the application.
+     * This method sets the visibility of the popup menu and manages user interactions
+     * within the menu, including cancel and submission actions.
+     *
+     * @throws SQLException if there is an error while verifying the database connection.
+     *
+     * Functionalities:
+     * 1. Validates the database connection before processing.
+     * 2. Displays the popup menu for adding a book and hides the main books menu.
+     * 3. Resets input fields and restores main menu visibility upon cancel action.
+     * 4. Displays a validation popup when attempting to add a book.
+     */
 // BOOKS MENU FUNCTIONS
 @FXML void initialize_popup_menu_carte() throws SQLException {
     //Verificam conexiunea
@@ -622,7 +866,14 @@ public class ControllerLibrarian{
     });
 }
 
-
+    /**
+     * Initializes the increase button and sets the appropriate event handlers for
+     * the provided book ID. The method handles the behavior for increasing a
+     * value associated with the book and resets the UI state when the action is cancelled.
+     *
+     * @param book_id the identifier of the book for which the increase button is being initialized
+     * @throws SQLException if a database access error occurs during the increase operation
+     */
     public void initialize_increase_button(String book_id) throws SQLException {
         // Șterge handler-ul vechi, pentru a evita acumularea de acțiuni multiple
         addIncrease.setOnMouseClicked(null);
@@ -657,6 +908,14 @@ public class ControllerLibrarian{
             });
         }
     }
+
+    /**
+     * Increases the quantity of a specific book in the database by a given number.
+     *
+     * @param bookID the unique identifier of the book whose quantity is to be increased
+     * @param number the amount to add to the current quantity of the book
+     * @throws SQLException if a database access error occurs or the SQL query fails
+     */
     @FXML void increase(String bookID, int number) throws SQLException {
         if(connection.getConnection()==null){
             connection.setFailed(err_connection_null);
@@ -703,6 +962,14 @@ public class ControllerLibrarian{
         }
     }
 
+    /**
+     * Initializes the decrease button's functionality, setting up event handlers for
+     * user actions such as decreasing a book count or cancelling the decrease action.
+     * This method ensures old event handlers are removed to prevent accumulation of redundant actions.
+     *
+     * @param book_id The unique identifier of the book whose count is to be decreased.
+     * @throws SQLException If a database access error occurs during the decrease operation.
+     */
     public void initialize_decrease_button(String book_id) throws SQLException {
         // Sterge handle-uri vechi, pentru a evita acumularea de actiuni multiple
         //removeDecrease.setOnMouseClicked(null);
@@ -745,6 +1012,14 @@ public class ControllerLibrarian{
             });
         }
     }
+
+    /**
+     * Decreases the quantity of a specific book in the database by the specified amount.
+     *
+     * @param bookID the unique identifier of the book whose quantity is to be decreased
+     * @param number the number to decrease the quantity of the specified book by
+     * @throws SQLException if a database access error occurs during the operation
+     */
     @FXML void decrease(String bookID, int number) throws SQLException {
 
         System.out.println("number: "+number);
@@ -803,6 +1078,16 @@ public class ControllerLibrarian{
         }
     }
 
+    /**
+     * Handles user confirmation for various popup validation scenarios.
+     * This method performs the following actions based on different popup menus:
+     * - Confirms borrowing or returning books.
+     * - Confirms adding a new book to inventory.
+     * - Confirms deleting a book from stock.
+     * - Confirms adding a new book record to the library database.
+     *
+     * @param mouseEvent The mouse event triggered by interacting with the confirmation button.
+     */
     // POPUP VALIDATION (Esti sigur?)
     @FXML void AreYouSureYes(MouseEvent mouseEvent) {
         //confirmare tranzactie imprumut/retur
@@ -950,15 +1235,35 @@ public class ControllerLibrarian{
 
         popup_menu_validation.setVisible(false);
     }
+
+    /**
+     * Handles the event triggered when the "No" option is selected in a confirmation popup menu.
+     * This method hides the popup menu when the "No" button is clicked.
+     *
+     * @param mouseEvent The MouseEvent triggered by clicking the "No" option.
+     */
     @FXML void AreYouSureNo(MouseEvent mouseEvent) {
         popup_menu_validation.setVisible(false);
     }
 
+    /**
+     * Handles the action event when the "OK" button is clicked on an error popup.
+     * This method hides the error popup by setting its visibility to false.
+     *
+     * @param mouseEvent The MouseEvent instance containing details about the clicked event.
+     */
     //POPUP ERROR
     @FXML void popup_error_OK_clicked(MouseEvent mouseEvent) {
         popup_error.setVisible(false);
     }
 
+    /**
+     * Handles the click event on the "OK" button in the popup information dialog.
+     * The method performs different actions based on the current context (info_case)
+     * such as updating the book list, closing menus, or resetting input fields.
+     *
+     * @param mouseEvent The mouse event triggered by clicking the "OK" button in the popup dialog.
+     */
     //POPUP INFO
     @FXML void popup_info_OK_clicked(MouseEvent mouseEvent) {
         popup_info.setVisible(false);
@@ -1000,6 +1305,9 @@ public class ControllerLibrarian{
 
     }
 
+    /**
+     * Initializes the statistics menu by setting it as the active menu and loading the different
+     * statistical panes.*/
     // MENU STATISTICS
     void initialize_statistics_menu() throws SQLException {
         setOnlyMenu(statistici_menu);
@@ -1009,6 +1317,18 @@ public class ControllerLibrarian{
         load_pane_statistics_top_authors();
         load_pane_statistics_top_books();
     }
+
+    /**
+     * Loads and displays client statistics in a graphical user interface pane.
+     *
+     * This method fetches data from the database to populate a pie chart and a legend
+     * in the `pane_statistics_clients` container, indicating the proportion of active
+     * and inactive clients relative to the total number of clients. The method modifies
+     * and clears existing content in `pane_statistics_clients` before adding new components.
+     *
+     * The data includes:
+     * - Total number of clients from the "user" database table.
+     * - Number of active clients from the "*/
     private void load_pane_statistics_clients() throws SQLException {
         //Clienti
         pane_statistics_clients.getChildren().clear();
@@ -1036,6 +1356,17 @@ public class ControllerLibrarian{
             }
         }
     }
+
+    /**
+     * Loads and updates the pane containing statistics related to books.
+     *
+     * This method clears the existing content of the statistics pane, retrieves and calculates
+     * the necessary data for total books, reserved books, borrowed books, and available books
+     * in stock from the database queries. The data is then used to populate a pie chart and its
+     * corresponding legend to visually represent the book statistics.
+     *
+     * @throws SQLException if a database access error occurs or the SQL queries fail.
+     */
     private void load_pane_statistics_books() throws SQLException {
         //Carti
         pane_statistics_books.getChildren().clear();
@@ -1071,6 +1402,17 @@ public class ControllerLibrarian{
             }
         }
     }
+
+    /**
+     * Loads and displays statistics for the top genres based on borrowed books into the pane.
+     *
+     * This method retrieves data about the top 5 most borrowed book genres from the database,
+     * and visualizes the information using a pie chart and a legend. The retrieved data consists
+     * of the genre names and the corresponding number of borrowed books. Each genre is assigned
+     * a specific color for visual distinction.
+     *
+     * @throws SQLException if there is an error in executing the database query or
+     *                      processing the result set*/
     private void load_pane_statistics_top_genres() throws SQLException {
         //Top genuri
         pane_top_genre.getChildren().clear();
@@ -1111,6 +1453,14 @@ public class ControllerLibrarian{
             }
         }
     }
+
+    /**
+     * Loads and displays statistics for the top authors based on the number of borrowed books,
+     * retrieving data from the database and rendering it in a bar chart using JavaFX components.
+     *
+     * This method retrieves data for the top five authors who have the highest number of borrowed books.
+     * The result is displayed in a bar chart with the number of borrowed books on the horizontal axis
+     * and the authors' names on the vertical axis. If there are no borrowed books in the*/
     private void load_pane_statistics_top_authors() throws SQLException{
         //data
         ResultSet rs = connection.executeQuery("SELECT autorCarte, COUNT(autorCarte) AS nr_author\n" +
@@ -1158,6 +1508,10 @@ public class ControllerLibrarian{
         CategoryAxis_statistics_authors.setTickLabelFill(Paint.valueOf("black"));
         CategoryAxis_statistics_authors.lookup(".axis-tick-mark").setStyle("-fx-stroke: transparent;");
     }
+
+    /**
+     * Loads and displays the top borrowed books in a statistics pane.
+     * The method retrieves data from the database to find the top 8*/
     private void load_pane_statistics_top_books() throws SQLException {
         vbox_statistics_top_books.getChildren().clear();
         ResultSet rs = connection.executeQuery("SELECT titluCarti, idCarte, COUNT(titluCarti) AS nr_books\n" +
@@ -1182,6 +1536,12 @@ public class ControllerLibrarian{
             cnt++;
         }
     }
+
+    /**
+     * Adds a legend to the provided pane, where each entry consists of a colored circle and a label
+     * describing an item. The number of items in the legend is determined by the nr_items parameter.
+     *
+     * @param paneLegend The pane*/
     private void statisticsBoxAddLegend(Pane paneLegend, String[] string_arr, Color[] color_arr, int nr_items){
         int height = 20;
         for(int i=0; i<nr_items; i++)
@@ -1205,6 +1565,15 @@ public class ControllerLibrarian{
             paneLegend.getChildren().add(box);
         }
     }
+
+    /**
+     * Applies CSS styling to the bars of a given BarChart based on their position index.
+     * Each bar in the chart is colored differently according to a predefined set of colors.
+     * The number of bars to style is determined by the specified size parameter.
+     *
+     * @param barChart the BarChart object whose bars will be styled
+     * @param size the number of bars to style in the chart
+     */
     private void cssBarChart(BarChart barChart, int size) {
         XYChart.Series<String, Number> series = (XYChart.Series<String, Number>) barChart.getData().get(0);
             for (int i = 0; i < size; i++) {
