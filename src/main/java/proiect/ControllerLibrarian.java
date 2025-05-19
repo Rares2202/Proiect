@@ -745,9 +745,6 @@ public class ControllerLibrarian{
             });
         }
     }
-
-
-
     @FXML void decrease(String bookID, int number) throws SQLException {
 
         System.out.println("number: "+number);
