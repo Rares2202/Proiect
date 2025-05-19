@@ -145,9 +145,9 @@
             </Pane>
          </children>
       </AnchorPane>
-      <AnchorPane fx:id="client_menu_details" layoutX="227.0" layoutY="25.0" prefHeight="564.0" prefWidth="802.0" visible="false">
+      <AnchorPane fx:id="client_menu_details" layoutX="227.0" layoutY="25.0" prefHeight="564.0" prefWidth="802.0">
          <children>
-            <TabPane layoutX="35.0" layoutY="56.0" prefHeight="486.0" prefWidth="748.0" tabClosingPolicy="UNAVAILABLE">
+            <TabPane fx:id="tab_menu_client" layoutX="35.0" layoutY="56.0" prefHeight="486.0" prefWidth="748.0" tabClosingPolicy="UNAVAILABLE">
               <tabs>
                 <Tab text="IMPRUMUT">
                   <content>
@@ -175,6 +175,16 @@
                                  <graphic>
                                     <FontAwesomeIcon fill="WHITE" glyphName="PLUS" size="15" />
                                  </graphic>
+                              </Button>
+                              <Button layoutX="137.0" layoutY="409.0" mnemonicParsing="false" prefHeight="28.0" prefWidth="74.0" styleClass="btn-tab" stylesheets="@../css/style.css" text="REVIEWS">
+                                 <font>
+                                    <Font name="System Bold" size="12.0" />
+                                 </font>
+                              </Button>
+                              <Button fx:id="btn_delete_user" layoutX="531.0" layoutY="409.0" mnemonicParsing="false" onMouseClicked="#DeleteUser" prefHeight="28.0" prefWidth="65.0" styleClass="btn-tab-remove" stylesheets="@../css/style.css" text="DELETE">
+                                 <font>
+                                    <Font name="System Bold" size="12.0" />
+                                 </font>
                               </Button>
                            </children>
                         </AnchorPane>
@@ -220,7 +230,7 @@
                </font>
             </Text>
          </children></AnchorPane>
-      <AnchorPane fx:id="books_menu" layoutX="227.0" layoutY="25.0" prefHeight="564.0" prefWidth="802.0">
+      <AnchorPane fx:id="books_menu" layoutX="227.0" layoutY="25.0" prefHeight="564.0" prefWidth="802.0" visible="false">
          <children>
             <Pane layoutX="29.0" layoutY="14.0" prefHeight="54.0" prefWidth="124.0">
                <children>
@@ -520,13 +530,14 @@
                         <Font name="System Bold" size="24.0" />
                      </font>
                   </Label>
-                  <TextField fx:id="titleBar" layoutX="170.0" layoutY="128.0" prefHeight="25.0" prefWidth="370.0" promptText="Titlu Carte" styleClass="search-bar" stylesheets="@../css/style.css" />
-                  <TextField fx:id="authorBar" layoutX="170.0" layoutY="169.0" prefHeight="27.0" prefWidth="370.0" promptText="Autor Carte" styleClass="search-bar" stylesheets="@../css/style.css" />
+                  <TextField fx:id="titleBar" layoutX="170.0" layoutY="100.0" prefHeight="25.0" prefWidth="370.0" promptText="Titlu Carte" styleClass="search-bar" stylesheets="@../css/style.css" />
+                  <TextField fx:id="authorBar" layoutX="170.0" layoutY="139.0" prefHeight="27.0" prefWidth="370.0" promptText="Autor Carte" styleClass="search-bar" stylesheets="@../css/style.css" />
                   <TextField fx:id="genreBar" layoutX="170.0" layoutY="211.0" prefHeight="27.0" prefWidth="370.0" promptText="Gen Carte" styleClass="search-bar" stylesheets="@../css/style.css" />
                   <TextField fx:id="numberBar" layoutX="170.0" layoutY="251.0" prefHeight="27.0" prefWidth="370.0" promptText="Numar Carti" styleClass="search-bar" stylesheets="@../css/style.css" />
                   <TextField fx:id="coverBar" layoutX="170.0" layoutY="289.0" prefHeight="27.0" prefWidth="370.0" promptText="Coperta Carte" styleClass="search-bar" stylesheets="@../css/style.css" />
                   <Button fx:id="bookAddBase" layoutX="244.0" layoutY="357.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="86.0" styleClass="btn-green-white" stylesheets="@../css/style.css" text="Adauga" />
                   <Button fx:id="cancel" layoutX="362.0" layoutY="358.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="85.0" styleClass="btn-green-white" stylesheets="@../css/style.css" text="Cancel" />
+                  <TextField fx:id="describeBar" layoutX="170.0" layoutY="175.0" prefHeight="18.0" prefWidth="370.0" promptText="Descriere carte" styleClass="search-bar" stylesheets="@../css/style.css" />
                </children>
             </AnchorPane>
          </children>

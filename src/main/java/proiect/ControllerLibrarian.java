@@ -50,7 +50,7 @@ public class ControllerLibrarian{
     //popups
     @FXML Label label_popup_info;
     @FXML Label label_popup_error;
-    enum popup_info_case {ADD_BOOK, REMOVE_BOOK, NEW_BOOK, DELETE_BOOK};
+    enum popup_info_case {ADD_BOOK, REMOVE_BOOK, NEW_BOOK, DELETE_BOOK, DELETE_USER};
     popup_info_case info_case;
 
     //Meniu Clienti
@@ -67,6 +67,7 @@ public class ControllerLibrarian{
     @FXML Button btn_inventar_all;
     @FXML Button btn_inventar_clear;
     @FXML Button btn_add_book;
+    @FXML Button btn_delete_user;
     public String transaction_user_id = "";
     public String add_book_id = "";
     public ObservableList<ControllerItemBookReservedRow> list_books_reserved = FXCollections.observableArrayList();
@@ -84,7 +85,6 @@ public class ControllerLibrarian{
     @FXML Button btn_confirma_tranzactie;
     @FXML Button btn_anuleaza_tranzactie;
 
-    //Meniu Carti
     //Meniu Carti
     @FXML VBox list_search_carti;
     @FXML TextField textField_bookTitle;
@@ -118,6 +118,7 @@ public class ControllerLibrarian{
     @FXML TextField genreBar;
     @FXML TextField numberBar;
     @FXML TextField coverBar;
+    @FXML TextField describeBar;
     @FXML Button bookAddBase;
     @FXML Button cancel;
 //
@@ -470,6 +471,41 @@ public class ControllerLibrarian{
     @FXML void AddBookToRezervari(MouseEvent mouseEvent) throws SQLException {
         initialize_popup_menu_add_book();
     }
+    @FXML void DeleteUser(MouseEvent mouseEvent) throws SQLException {
+        ResultSet rs = connection.executeQuery("SELECT u.idUser, c.Carte_idCarte " +
+                "FROM user u, cartiimprumutate c " +
+                "WHERE u.idUser = " + transaction_user_id);
+        try{
+            String book_id = null;
+            if(rs.next()){
+                book_id = rs.getString("c.Carte_idCarte");
+            }
+            int reserved_book = connection.getQueryCount("SELECT * FROM cartiimprumutate WHERE User_idUser = " + transaction_user_id + " AND UPPER(status)='INVENTAR'");
+            if(reserved_book!=0){
+                show_popup_error("Utilizatorul are o carte rezervata!");
+            }
+            else{
+                connection.executeUpdate("DELETE FROM cartiimprumutate WHERE Carte_idCarte = " + book_id + " AND User_idUser = " + transaction_user_id);
+                connection.executeUpdate("DELETE FROM review WHERE User_idUser = " + transaction_user_id);
+                connection.executeUpdate("DELETE FROM user WHERE idUser = " + transaction_user_id);
+                update_list_clients("");
+                show_popup_info("Utilizatorul a fost sters cu succes!",popup_info_case.DELETE_USER);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        /*
+        ALTER TABLE cartiimprumutate
+        DROP FOREIGN KEY fk_CartiImprumutate_User;
+
+        ALTER TABLE cartiimprumutate
+        ADD CONSTRAINT fk_CartiImprumutate_User
+        FOREIGN KEY (User_idUser) REFERENCES user(idUser)
+        ON DELETE CASCADE;
+         */
+    }
+
+
 
         // POPUP ADD BOOK
         @FXML void initialize_popup_menu_add_book() throws SQLException {
@@ -539,7 +575,7 @@ public class ControllerLibrarian{
                 genre.setStyle(style);
                 genre.setLayoutX(400);
 
-                Label avalabile_books = new Label(""+(nr_books-nr_reserved_books));
+                Label avalabile_books = new Label(""+(nr_avalabile_books));
                 if(nr_user_books!=0)
                     avalabile_books.setText("exista deja");
 
@@ -761,8 +797,6 @@ public class ControllerLibrarian{
             return;
         }
 
-
-
         try {
             // Obtinem cantitatea curenta
             ResultSet rs = connection.executeQuery("SELECT numarCarte FROM carte WHERE idCarte = " + book_id);
@@ -907,20 +941,22 @@ public class ControllerLibrarian{
             String number = numberBar.getText();
             int numar = Integer.parseInt(number);
             String cover = coverBar.getText();
+            String descriere = describeBar.getText();
 
-            if(title.isEmpty() || author.isEmpty() || genre.isEmpty() || numar==0  ){ // || cover.isEmpty()
+            if(title.isEmpty() || author.isEmpty() || genre.isEmpty() || numar==0 || descriere.isEmpty()){ // || cover.isEmpty()
                 System.out.print("Trebuie ca toate campurile sa fie scrise");
             }
 
             try{
                 PreparedStatement prep = connection.getConnection().prepareStatement("INSERT INTO carte(" +
-                        "titluCarti, autorCarte, numarCarte, genCarte, coverCarte)" +
-                        "VALUES (?,?,?,?,?)",Statement.RETURN_GENERATED_KEYS);
+                        "titluCarti, autorCarte, numarCarte, genCarte, coverCarte, descriere)" +
+                        "VALUES (?,?,?,?,?,?)",Statement.RETURN_GENERATED_KEYS);
                 prep.setString(1, title);
                 prep.setString(2,author);
                 prep.setInt(3,numar);
                 prep.setString(4,genre);
                 prep.setString(5,cover);
+                prep.setString(6,descriere);
 
                 int insertrow = prep.executeUpdate();
                 if (insertrow > 0) {
@@ -996,6 +1032,11 @@ public class ControllerLibrarian{
             books_menu.setVisible(true);
             menu_decrease.setVisible(false);
             numberDown.setText("");
+        }
+        //mesaj confirmare stergere user
+        if(info_case==popup_info_case.DELETE_USER){
+            client_menu.setVisible(true);
+            client_menu_details.setVisible(false);
         }
 
     }
