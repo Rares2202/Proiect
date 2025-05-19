@@ -1,10 +1,5 @@
 package proiect;
 
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
-
-import java.io.IOException;
-
 public abstract class book {
     String id;
     public String book_name;

@@ -25,9 +25,11 @@ import java.util.*;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ForkJoinPool;
 
-public class ControllerItemClientRow extends user{
+public class ControllerItemClientRow{
 
     @FXML Text clientName;
+    public String id;
+    public String name;
     public Label label_books_reserved;
     public Label label_books_inventory;
     public ControllerLibrarian mainController;

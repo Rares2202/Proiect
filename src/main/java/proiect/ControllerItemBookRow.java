@@ -20,6 +20,8 @@ public class ControllerItemBookRow extends book {
 
     @FXML
     void initialize() {
+        addBook.setVisible(false);
+        removeBook.setVisible(false);
     }
 
     @FXML
@@ -29,7 +31,6 @@ public class ControllerItemBookRow extends book {
             String currentBookTitle = book_name;
             mainController.title_book.setText(currentBookTitle);
             mainController.menu_increase.setVisible(true);
-            mainController.books_menu.setVisible(false);
             mainController.initialize_increase_button(currentBookId);
         }
     }
@@ -41,9 +42,18 @@ public class ControllerItemBookRow extends book {
             String currentBookTitle = book_name;
             mainController.title_book1.setText(currentBookTitle);
             mainController.menu_decrease.setVisible(true);
-            mainController.books_menu.setVisible(false);
             mainController.initialize_decrease_button(currentBookId);
+            mainController.book_id = currentBookId;
         }
     }
 
+    public void onMouseEntered(MouseEvent mouseEvent) {
+        addBook.setVisible(true);
+        removeBook.setVisible(true);
+    }
+
+    public void onMouseExited(MouseEvent mouseEvent) {
+        addBook.setVisible(false);
+        removeBook.setVisible(false);
+    }
 }
