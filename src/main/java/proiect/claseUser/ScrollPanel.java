@@ -11,6 +11,9 @@ import java.net.URL;
 import java.util.*;
 import java.util.function.Consumer;
 
+/**
+ * The type Scroll panel.
+ */
 public class ScrollPanel extends ScrollPane {
     private final int cellWidth = 170;
     private final int cellHeight = 250;
@@ -21,7 +24,7 @@ public class ScrollPanel extends ScrollPane {
     private final int userId;
     private static final String DB_URL = "jdbc:mysql://localhost:3306/mydb";
     private static final String DB_USER = "root";
-    private static final String DB_PASSWORD = "simone";
+    private static final String DB_PASSWORD = "root";
     private static final Image DEFAULT_COVER_IMAGE = createDefaultCoverImage();
     // hashmap care pastreaza imaginile
     private static final Map<String, Image> imageCache = new HashMap<>();
@@ -29,6 +32,11 @@ public class ScrollPanel extends ScrollPane {
     private Consumer<String> onCoverClickHandler;
     private Consumer<String> onPlusButtonClickHandler;
 
+    /**
+     * Instantiates a new Scroll panel.
+     *
+     * @param userId the user id
+     */
     public ScrollPanel(int userId) {
         this.userId = userId;
         initialize();
@@ -52,7 +60,13 @@ public class ScrollPanel extends ScrollPane {
         this.setContent(gridPane);
     }
 
-    // adauga in hashmap
+    /**
+     * Gets cached image.
+     *
+     * @param url the url
+     * @return the cached image
+     */
+// adauga in hashmap
     public static Image getCachedImage(String url) {
         if (url == null) {
             return DEFAULT_COVER_IMAGE;
@@ -89,6 +103,11 @@ public class ScrollPanel extends ScrollPane {
         return null;
     }
 
+    /**
+     * Preload images.
+     *
+     * @param urls the urls
+     */
     public static void preloadImages(List<String> urls) {
         for (String url : urls) {
             getCachedImage(url);
@@ -242,16 +261,22 @@ public class ScrollPanel extends ScrollPane {
 
     /**
      * <li>Handler pentru apasare pe imagine</li>
+     *
+     * @param handler the handler
      */
     public void setOnCoverClick(Consumer<String> handler) {
         this.onCoverClickHandler = handler;
     }
+
     /**
      * <li>Handler pentru apasare +</li>
+     *
+     * @param handler the handler
      */
     public void setOnPlusButtonClick(Consumer<String> handler) {
         this.onPlusButtonClickHandler = handler;
     }
+
     /**
      * <li>Da refresh la homeScrollPane</li>
      */

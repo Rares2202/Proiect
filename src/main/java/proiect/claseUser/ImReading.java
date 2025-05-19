@@ -11,18 +11,36 @@ import javafx.scene.paint.Color;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * The type Im reading.
+ */
 public class ImReading {
+    /**
+     * The User id.
+     */
     int userId;
+    /**
+     * The Books.
+     */
     List<BookInfo> books = new ArrayList<>();
+    /**
+     * The Grid.
+     */
     GridPane grid;
     private static final String DB_URL = "jdbc:mysql://localhost:3306/mydb";
     private static final String DB_USER = "root";
-    private static final String DB_PASSWORD = "simone";
+    private static final String DB_PASSWORD = "root";
     private final int cellWidth = 125;
     private final int cellHeight = 130;
     private Consumer<String> onCoverClickHandler;
     private final List<Book> selectedBooks = new ArrayList<>();
 
+    /**
+     * Instantiates a new Im reading.
+     *
+     * @param userId   the user id
+     * @param gridPane the grid pane
+     */
     public ImReading(int userId, GridPane gridPane) {
         this.userId = userId;
         this.grid = gridPane;
@@ -30,11 +48,17 @@ public class ImReading {
         System.out.println(selectedBooks);
     }
 
+    /**
+     * Delete books.
+     */
     public void deleteBooks() {
         DBComands dbComands = new DBComands();
         dbComands.DELETE_FROM_IMREADING(DB_URL,DB_USER,DB_PASSWORD,userId,selectedBooks);
     }
 
+    /**
+     * Initialize.
+     */
     public void initialize() {
         grid.setHgap(5);
         grid.setVgap(60);
@@ -143,10 +167,18 @@ public class ImReading {
         return cell;
     }
 
+    /**
+     * Sets on cover click.
+     *
+     * @param handler the handler
+     */
     public void setOnCoverClick(Consumer<String> handler) {
         this.onCoverClickHandler = handler;
     }
 
+    /**
+     * Refresh.
+     */
     public void refresh() {
         loadCoverUrls();
         generateGridContent();

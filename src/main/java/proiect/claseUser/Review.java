@@ -2,31 +2,75 @@ package proiect.claseUser;
 
 import java.sql.*;
 
+/**
+ * The type Review.
+ */
 public class Review {
+    /**
+     * The Review text.
+     */
     String reviewText;
+    /**
+     * The Review rating.
+     */
     int reviewRating;
+    /**
+     * The User id user.
+     */
     int User_idUser;
+    /**
+     * The Carte id carte.
+     */
     int Carte_idCarte;
 
-  public  Review(String review, int rating, int idUser, int idCarte) {
+    /**
+     * Instantiates a new Review.
+     *
+     * @param review  the review
+     * @param rating  the rating
+     * @param idUser  the id user
+     * @param idCarte the id carte
+     */
+    public  Review(String review, int rating, int idUser, int idCarte) {
         this.reviewText = review;
         this.reviewRating = rating;
         this.User_idUser = idUser;
         this.Carte_idCarte = idCarte;
     }
 
+    /**
+     * Gets review rating.
+     *
+     * @return the review rating
+     */
     public int getReviewRating() {
         return reviewRating;
     }
+
+    /**
+     * Gets user id user.
+     *
+     * @return the user id user
+     */
     public int getUser_idUser() {return User_idUser;}
 
+    /**
+     * Gets review text.
+     *
+     * @return the review text
+     */
     public String getReviewText() {return reviewText;}
 
 
+    /**
+     * Trimite review.
+     *
+     * @param review the review
+     */
     public void trimiteReview(Review review) {
         String DB_URL = "jdbc:mysql://localhost:3306/mydb";
         String DB_USER = "root";
-        String DB_PASSWORD = "simone";
+        String DB_PASSWORD = "root";
 
         String insertQuery = "INSERT INTO review (reviewText, reviewRating, User_idUser, Carte_idCarte) VALUES (?, ?, ?, ?)";
         String updateQuery = "UPDATE review SET reviewText = ?, reviewRating = ? WHERE User_idUser = ? AND Carte_idCarte = ?";
@@ -92,7 +136,16 @@ public class Review {
     }
 
 
-  public boolean existaReview(Connection conn, int userId, int carteId) throws SQLException {
+    /**
+     * Exista review boolean.
+     *
+     * @param conn    the conn
+     * @param userId  the user id
+     * @param carteId the carte id
+     * @return the boolean
+     * @throws SQLException the sql exception
+     */
+    public boolean existaReview(Connection conn, int userId, int carteId) throws SQLException {
         String query = "SELECT 1 FROM review WHERE User_idUser = ? AND Carte_idCarte = ?";
         try (PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setInt(1, userId);
@@ -102,6 +155,17 @@ public class Review {
             }
         }
     }
+
+    /**
+     * Select user from reviews string.
+     *
+     * @param DB_URL  the db url
+     * @param DB_USER the db user
+     * @param DB_PASS the db pass
+     * @param userId  the user id
+     * @return the string
+     * @throws SQLException the sql exception
+     */
     public String SELECT_USER_FROM_REVIEWS(String DB_URL, String DB_USER, String DB_PASS, int userId) throws SQLException {
         Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASS);
       String query = "SELECT userName FROM user WHERE idUser = ?";

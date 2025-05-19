@@ -6,9 +6,22 @@ import java.sql.*;
 import java.util.*;
 import java.util.Date;
 
+/**
+ * The type Db comands.
+ */
 public class DBComands {
 
-        public void INSERT_INTO_USERPREF(String query, String DB_URL, String DB_USER, String DB_PASS,
+    /**
+     * Insert into userpref.
+     *
+     * @param query         the query
+     * @param DB_URL        the db url
+     * @param DB_USER       the db user
+     * @param DB_PASS       the db pass
+     * @param userId        the user id
+     * @param validGenreIds the valid genre ids
+     */
+    public void INSERT_INTO_USERPREF(String query, String DB_URL, String DB_USER, String DB_PASS,
                                          int userId, List<Integer> validGenreIds) {
 
             try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASS)) {
@@ -44,6 +57,16 @@ public class DBComands {
                 showAlert("Database connection error: " + e.getMessage());
             }
         }
+
+    /**
+     * Select from genuri map.
+     *
+     * @param query   the query
+     * @param DB_URL  the db url
+     * @param DB_USER the db user
+     * @param DB_PASS the db pass
+     * @return the map
+     */
     public Map<String, Integer> SELECT_FROM_GENURI(String query, String DB_URL, String DB_USER, String DB_PASS)
     {
         Map<String, Integer> genreMap = new HashMap<>();
@@ -60,7 +83,18 @@ public class DBComands {
         }
         return genreMap;
     }
-public Boolean USER_ARE_PREF(String query, String DB_URL, String DB_USER, String DB_PASS,int id)
+
+    /**
+     * User are pref boolean.
+     *
+     * @param query   the query
+     * @param DB_URL  the db url
+     * @param DB_USER the db user
+     * @param DB_PASS the db pass
+     * @param id      the id
+     * @return the boolean
+     */
+    public Boolean USER_ARE_PREF(String query, String DB_URL, String DB_USER, String DB_PASS,int id)
 {
     try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASS)) {
 
@@ -77,10 +111,16 @@ public Boolean USER_ARE_PREF(String query, String DB_URL, String DB_USER, String
     }
     return false;
 }
+
     /**
      * <li>Nu are usage dar las o pentru un eventual debugging</li>
+     *
+     * @param DB_URL  the db url
+     * @param DB_USER the db user
+     * @param DB_PASS the db pass
+     * @return the list
      */
-public List<Book> SELECT_ALL_FROM_BOOKS(String DB_URL, String DB_USER, String DB_PASS)
+    public List<Book> SELECT_ALL_FROM_BOOKS(String DB_URL, String DB_USER, String DB_PASS)
 {
     List<Book> books = new ArrayList<>();
         String query = "SELECT idCarte, titluCarti, autorCarte, descriere, genCarte, numarCarte, coverCarte FROM carte WHERE coverCarte IS NOT NULL";
@@ -109,7 +149,16 @@ public List<Book> SELECT_ALL_FROM_BOOKS(String DB_URL, String DB_USER, String DB
         return books;
 }
 
-public List<String>SELECT_COVER_FROM_MYREADS( String DB_URL, String DB_USER, String DB_PASS,int userId)
+    /**
+     * Select cover from myreads list.
+     *
+     * @param DB_URL  the db url
+     * @param DB_USER the db user
+     * @param DB_PASS the db pass
+     * @param userId  the user id
+     * @return the list
+     */
+    public List<String>SELECT_COVER_FROM_MYREADS( String DB_URL, String DB_USER, String DB_PASS,int userId)
 {
     List<String> covers = new ArrayList<>();
     String query = "SELECT coverCarte FROM myreads WHERE user_idUser=?";
@@ -132,6 +181,17 @@ public List<String>SELECT_COVER_FROM_MYREADS( String DB_URL, String DB_USER, Str
 
     return covers;
 }
+
+    /**
+     * Rezultate list.
+     *
+     * @param DB_URL  the db url
+     * @param DB_USER the db user
+     * @param DB_PASS the db pass
+     * @param titlu   the titlu
+     * @param autor   the autor
+     * @return the list
+     */
     public List<Book> REZULTATE(String DB_URL, String DB_USER, String DB_PASS, String titlu, String autor) {
         List<Book> books = new ArrayList<>();
         // Folosim PreparedStatement cu parametri corecți pentru LIKE
@@ -165,6 +225,16 @@ public List<String>SELECT_COVER_FROM_MYREADS( String DB_URL, String DB_USER, Str
         System.out.println(books.size() + " books found");
         return books;
     }
+
+    /**
+     * Insert into imprumuturi.
+     *
+     * @param DB_URL  the db url
+     * @param DB_USER the db user
+     * @param DB_PASS the db pass
+     * @param userId  the user id
+     * @param titlu   the titlu
+     */
     public void insertIntoImprumuturi(String DB_URL, String DB_USER, String DB_PASS, int userId, String titlu) {
         // First check if user already has this book
         String duplicateCheckQuery = "SELECT COUNT(*) AS count FROM cartiimprumutate " +
@@ -251,6 +321,16 @@ public List<String>SELECT_COVER_FROM_MYREADS( String DB_URL, String DB_USER, Str
             showAlert("Eroare la conexiunea cu baza de date: " + e.getMessage());
         }
     }
+
+    /**
+     * Is in use list.
+     *
+     * @param DB_URL  the db url
+     * @param DB_USER the db user
+     * @param DB_PASS the db pass
+     * @param userId  the user id
+     * @return the list
+     */
     public List<BookInfo> IS_IN_USE(String DB_URL, String DB_USER, String DB_PASS, int userId) {
         List<BookInfo> books = new ArrayList<>();
         String query = "SELECT c.coverCarte, ci.status, c.titluCarti " +
@@ -285,6 +365,17 @@ public List<String>SELECT_COVER_FROM_MYREADS( String DB_URL, String DB_USER, Str
 
         return books;
     }
+
+    /**
+     * Update userpref.
+     *
+     * @param DB_URL  the db url
+     * @param DB_USER the db user
+     * @param DB_PASS the db pass
+     * @param number  the number
+     * @param userId  the user id
+     * @param genre   the genre
+     */
     public void UPDATE_USERPREF(String DB_URL, String DB_USER, String DB_PASS, int number, int userId, int genre) {
         String query = "UPDATE userpref SET number = number + ? WHERE user_idUser = ? AND preferinte_idpreferinte = ?";
 
@@ -318,6 +409,15 @@ public List<String>SELECT_COVER_FROM_MYREADS( String DB_URL, String DB_USER, Str
         }
     }
 
+    /**
+     * Select all from userpref list.
+     *
+     * @param DB_URL  the db url
+     * @param DB_USER the db user
+     * @param DB_PASS the db pass
+     * @param userId  the user id
+     * @return the list
+     */
     public List<Book> SELECT_ALL_FROM_USERPREF(String DB_URL, String DB_USER, String DB_PASS, int userId) {
         String query = """
                 SELECT c.*\s
@@ -364,6 +464,16 @@ public List<String>SELECT_COVER_FROM_MYREADS( String DB_URL, String DB_USER, Str
 
         return books;
     }
+
+    /**
+     * Search by cover int.
+     *
+     * @param DB_URL  the db url
+     * @param DB_USER the db user
+     * @param DB_PASS the db pass
+     * @param cover   the cover
+     * @return the int
+     */
     public int SEARCH_BY_COVER(String DB_URL, String DB_USER, String DB_PASS, String cover) {
         int preferinta_id = -1;
         String query = "SELECT g.idpreferinte FROM genuri g JOIN carte c ON c.genCarte = g.genuri WHERE c.coverCarte = ?";
@@ -386,6 +496,16 @@ public List<String>SELECT_COVER_FROM_MYREADS( String DB_URL, String DB_USER, Str
         return preferinta_id;
     }
 
+    /**
+     * Insert into userpref gen.
+     *
+     * @param DB_URL     the db url
+     * @param DB_USER    the db user
+     * @param DB_PASS    the db pass
+     * @param number     the number
+     * @param userId     the user id
+     * @param preferinte the preferinte
+     */
     public void INSERT_INTO_USERPREF_GEN(String DB_URL, String DB_USER, String DB_PASS,
                                          int number, int userId, int preferinte) {
 
@@ -437,6 +557,16 @@ public List<String>SELECT_COVER_FROM_MYREADS( String DB_URL, String DB_USER, Str
             showAlert("Eroare la conexiunea cu baza de date: " + e.getMessage());
         }
     }
+
+    /**
+     * Delete from myreads.
+     *
+     * @param DB_URL     the db url
+     * @param DB_USER    the db user
+     * @param DB_PASS    the db pass
+     * @param userId     the user id
+     * @param coverImage the cover image
+     */
     public void DELETE_FROM_MYREADS(String DB_URL, String DB_USER, String DB_PASS, int userId, List<String>coverImage) {
         String query = "DELETE FROM myreads WHERE user_idUser = ? AND  coverCarte = ?";
         for(String coverUrl : coverImage) {
@@ -460,6 +590,15 @@ public List<String>SELECT_COVER_FROM_MYREADS( String DB_URL, String DB_USER, Str
         }
     }
 
+    /**
+     * Delete from imreading.
+     *
+     * @param DB_URL  the db url
+     * @param DB_USER the db user
+     * @param DB_PASS the db pass
+     * @param userId  the user id
+     * @param books   the books
+     */
     public void DELETE_FROM_IMREADING(String DB_URL, String DB_USER, String DB_PASS, int userId, List<Book>books) {
         String query = "DELETE FROM cartiimprumutate WHERE User_idUser = ? AND  Carte_idCarte = ?";
         for (Book book : books) {
@@ -482,7 +621,17 @@ public List<String>SELECT_COVER_FROM_MYREADS( String DB_URL, String DB_USER, Str
             }
         }
     }
-public List<Review> SELECT_ALL_FROM_REVIEWS(String DB_URL, String DB_USER, String DB_PASS,int idCarte) {
+
+    /**
+     * Select all from reviews list.
+     *
+     * @param DB_URL  the db url
+     * @param DB_USER the db user
+     * @param DB_PASS the db pass
+     * @param idCarte the id carte
+     * @return the list
+     */
+    public List<Review> SELECT_ALL_FROM_REVIEWS(String DB_URL, String DB_USER, String DB_PASS,int idCarte) {
 
             List<Review>reviews=new ArrayList<>();
             String query="SELECT * FROM review WHERE  Carte_idCarte = ?";
@@ -515,6 +664,11 @@ public List<Review> SELECT_ALL_FROM_REVIEWS(String DB_URL, String DB_USER, Strin
 return reviews;
 }
 
+    /**
+     * Show alert.
+     *
+     * @param message the message
+     */
     public void showAlert(String message) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Atention!");

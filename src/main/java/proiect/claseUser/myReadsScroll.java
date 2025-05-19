@@ -12,6 +12,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
+/**
+ * The type My reads scroll.
+ */
 public class myReadsScroll extends ScrollPane {
     private final int cols = 4;
     private int rows;
@@ -22,19 +25,33 @@ public class myReadsScroll extends ScrollPane {
     private final int userId;
     private static final String DB_URL = "jdbc:mysql://localhost:3306/mydb";
     private static final String DB_USER = "root";
-    private static final String DB_PASSWORD = "simone";
+    private static final String DB_PASSWORD = "root";
     private Consumer<String> onCoverClickHandler;
     private final List<String> selectedBooks = new ArrayList<>();
+
+    /**
+     * Instantiates a new My reads scroll.
+     *
+     * @param userId the user id
+     */
     public myReadsScroll(int userId) {
         this.userId = userId;
         initialize();
     }
+
+    /**
+     * Delete books.
+     */
     public void deleteBooks()
     {
         DBComands dbComands = new DBComands();
         dbComands.DELETE_FROM_MYREADS(DB_URL,DB_USER,DB_PASSWORD,userId,selectedBooks);
 
     }
+
+    /**
+     * Initialize.
+     */
     public void initialize() {
         this.setHbarPolicy(ScrollBarPolicy.AS_NEEDED);
         this.setVbarPolicy(ScrollBarPolicy.NEVER);
@@ -158,10 +175,18 @@ public class myReadsScroll extends ScrollPane {
         cell.setOnMouseExited(e -> cell.setEffect(null));
     }
 
+    /**
+     * Sets on cover click.
+     *
+     * @param handler the handler
+     */
     public void setOnCoverClick(Consumer<String> handler) {
         this.onCoverClickHandler = handler;
     }
 
+    /**
+     * Refresh.
+     */
     public void refresh() {
         loadCoverUrls();
         generateGridContent();

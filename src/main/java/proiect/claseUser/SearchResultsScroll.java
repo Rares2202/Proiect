@@ -6,11 +6,19 @@ import javafx.scene.layout.GridPane;
 import java.util.List;
 import java.util.function.Consumer;
 
+/**
+ * The type Search results scroll.
+ */
 public class SearchResultsScroll extends ScrollPane {
     private GridPane gridPane;
     private final List<Book> books;
     private Consumer<String> onCoverClickHandler;
 
+    /**
+     * Instantiates a new Search results scroll.
+     *
+     * @param books the books
+     */
     public SearchResultsScroll(List<Book> books) {
         this.books = books;
         initialize();
@@ -59,6 +67,11 @@ public class SearchResultsScroll extends ScrollPane {
         }
     }
 
+    /**
+     * Sets on cover click.
+     *
+     * @param handler the handler
+     */
     public void setOnCoverClick(Consumer<String> handler) {
         this.onCoverClickHandler = handler;
     }

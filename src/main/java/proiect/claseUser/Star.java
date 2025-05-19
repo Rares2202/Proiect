@@ -6,6 +6,9 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.SVGPath;
 import javafx.util.Duration;
 
+/**
+ * The type Star.
+ */
 public class Star extends Button {
     private static final String STAR_SHAPE = "M12 .587l3.668 7.568 8.332 1.151-6.064 5.828 1.48 8.279-7.416-3.967-7.417 3.967 1.481-8.279-6.064-5.828 8.332-1.151z";
     private static final Color FILLED_COLOR = Color.BLACK;
@@ -14,10 +17,19 @@ public class Star extends Button {
     private final int ratingValue;
     private boolean isFilled = false;
 
+    /**
+     * Instantiates a new Star.
+     *
+     * @param ratingValue the rating value
+     */
     public Star(int ratingValue) {
         this.ratingValue = ratingValue;
         initializeStar();
     }
+
+    /**
+     * Reset.
+     */
     public void reset() {
         this.isFilled = false;
         animateFill(EMPTY_COLOR);
@@ -38,6 +50,11 @@ public class Star extends Button {
         setFilled(false);
     }
 
+    /**
+     * Sets filled.
+     *
+     * @param filled the filled
+     */
     public void setFilled(boolean filled) {
         this.isFilled = filled;
         animateFill(filled ? FILLED_COLOR : EMPTY_COLOR);
@@ -53,10 +70,20 @@ public class Star extends Button {
         this.setStyle("-fx-background-color: " + toHex(color) + ";");
     }
 
+    /**
+     * Gets rating value.
+     *
+     * @return the rating value
+     */
     public int getRatingValue() {
         return ratingValue;
     }
 
+    /**
+     * Is filled boolean.
+     *
+     * @return the boolean
+     */
     public boolean isFilled() {
         return isFilled;
     }

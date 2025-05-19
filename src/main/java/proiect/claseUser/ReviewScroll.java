@@ -12,16 +12,26 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * The type Review scroll.
+ */
 public class ReviewScroll extends ScrollPane {
     private List<Review> reviews;
     private static final String DB_URL = "jdbc:mysql://localhost:3306/mydb";
     private static final String DB_USER = "root";
-    private static final String DB_PASSWORD = "simone";
+    private static final String DB_PASSWORD = "root";
     private final int idCarte;
     private VBox mainContainer;
     private final ScrollPane parentScrollPane;
     private boolean isVisible = true;
 
+    /**
+     * Instantiates a new Review scroll.
+     *
+     * @param idCarte          the id carte
+     * @param parentScrollPane the parent scroll pane
+     * @throws SQLException the sql exception
+     */
     public ReviewScroll(int idCarte, ScrollPane parentScrollPane) throws SQLException {
         this.idCarte = idCarte;
         this.parentScrollPane = parentScrollPane;
@@ -141,6 +151,9 @@ public class ReviewScroll extends ScrollPane {
     }
 
 
+    /**
+     * Close.
+     */
     public void close() {
         this.isVisible = false;
         this.setVisible(false);
@@ -149,6 +162,9 @@ public class ReviewScroll extends ScrollPane {
         }
     }
 
+    /**
+     * Show.
+     */
     public void show() {
         this.isVisible = true;
         this.setVisible(true);
@@ -157,13 +173,29 @@ public class ReviewScroll extends ScrollPane {
         }
     }
 
+    /**
+     * Is showing boolean.
+     *
+     * @return the boolean
+     */
     public boolean isShowing() {
         return isVisible;
     }
 
+    /**
+     * Gets book id.
+     *
+     * @return the book id
+     */
     public int getBookId() {
         return this.idCarte;
     }
+
+    /**
+     * Refresh.
+     *
+     * @throws SQLException the sql exception
+     */
     public void refresh() throws SQLException {
         loadReviews();
         populateContainer();

@@ -16,6 +16,9 @@ import java.util.Objects;
 
 import static proiect.MainApp.ImageUtils.showImage;
 
+/**
+ * The type Main app.
+ */
 public class MainApp extends Application {
 
 
@@ -52,6 +55,14 @@ public class MainApp extends Application {
      */
     public class ImageUtils {
 
+        /**
+         * Show image.
+         *
+         * @param imagePath   the image path
+         * @param windowTitle the window title
+         * @param width       the width
+         * @param height      the height
+         */
         public static void showImage(String imagePath, String windowTitle, int width, int height) {
             javafx.application.Platform.runLater(() -> {
                 try {
@@ -78,6 +89,11 @@ public class MainApp extends Application {
         }
     }
 
+    /**
+     * Aici lansez aplicatia
+     *
+     * @param args the input arguments
+     */
     public static void main(String[] args) {
         //showImage("/proiect/css/plus.png","Title", 600, 600);
         launch(args);

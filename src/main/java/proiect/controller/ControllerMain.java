@@ -10,26 +10,38 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 
+/**
+ * Controller main.
+ */
 public class ControllerMain {
+    /**
+     * Content pane.
+     */
     @FXML
     public StackPane contentPane;
     private ControllerUser controllerUser;
-    private ControllerLibrarian controllerLibrarian;
+//    private ControllerLibrarian controllerLibrarian;
     private Pane LoginRegister;
     private Pane RegisterAuth;
     private Pane UserMain;
     private Pane LibrarianMain;
 
+    /**
+     *  usr id.
+     */
     int usrId;
     private static final String DB_URL = "jdbc:mysql://localhost:3306/mydb";
     private static final String DB_USER = "root";
-    private static final String DB_PASSWORD = "simone";
+    private static final String DB_PASSWORD = "root";
     private final String[] buttonIds = {
             "register", "login", "inchide", "submit", "register1","login1"
     };
     private static final String regex = "^[A-Za-z0-9]+$";
 
 
+    /**
+     * Initialize.
+     */
     @FXML
     public void initialize() {
         try {
@@ -38,7 +50,7 @@ public class ControllerMain {
             LoginRegister = loadPane("/proiect/fxml/LoginRegister.fxml");
             RegisterAuth = loadPane("/proiect/fxml/RegisterAuth.fxml");
             UserMain=loadSpecialPane("/proiect/fxml/user/UserMain.fxml", ControllerUser.class);
-            LibrarianMain=loadSpecialPane("/proiect/fxml/librarian/LibrarianMain.fxml", ControllerLibrarian.class);
+//            LibrarianMain=loadSpecialPane("/proiect/fxml/librarian/LibrarianMain.fxml", ControllerLibrarian.class);
             contentPane.getChildren().setAll(wellcome);
         } catch (IOException e) {
             e.printStackTrace();
@@ -47,6 +59,15 @@ public class ControllerMain {
 
     }
 
+    /**
+     * Loads and returns a Pane from the specified FXML file path. This method also
+     * sets up action event handlers for specific buttons within the loaded Pane
+     * based on their IDs.
+     *
+     * @param fxmlPath the path to the FXML file to load
+     * @return the loaded Pane object
+     * @throws IOException if there is an error loading the FXML file
+     */
     private Pane loadPane(String fxmlPath) throws IOException {
         Pane pane = FXMLLoader.load(getClass().getResource(fxmlPath));
 
@@ -92,6 +113,17 @@ public class ControllerMain {
         return pane;
     }
 
+    /**
+     * Loads a Pane from the specified FXML file path and associates it with
+     * the given controller class. Depending on the controller type, it initializes
+     * the appropriate controller and sets a reference back to the main controller.
+     *
+     * @param fxmlPath the path to the FXML file to be loaded
+     * @param controllerClass the class of the controller associated with the FXML
+     *                        file, used to determine the type of controller to initialize
+     * @return the loaded Pane
+     * @throws IOException if an error occurs while loading the FXML file
+     */
     private Pane loadSpecialPane(String fxmlPath, Class<?> controllerClass) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
         Pane pane = loader.load();
@@ -100,14 +132,21 @@ public class ControllerMain {
         if (controllerClass == ControllerUser.class) {
             controllerUser = loader.getController();
             controllerUser.setMainController(this);
-        } else if (controllerClass == ControllerLibrarian.class) {
-            controllerLibrarian = loader.getController();
-            controllerLibrarian.setMainController(this);
         }
+//        else if (controllerClass == ControllerLibrarian.class) {
+//            controllerLibrarian = loader.getController();
+//            controllerLibrarian.setMainController(this);
+//        }
 
         return pane;
     }
 
+    /**
+     * Updates the contents of the application's main display to show the registration authentication screen.
+     *
+     * This method replaces all child nodes of the contentPane with the RegisterAuth Pane,
+     * effectively navigating the UI to the registration interface.
+     */
     private void register() {
         contentPane.getChildren().setAll(RegisterAuth);
     }
@@ -115,9 +154,6 @@ public class ControllerMain {
     private void login1() {
         contentPane.getChildren().setAll(LoginRegister);
     }
-
-
-
     private void login() throws IOException {
         int id=-1;
         TextField userField = (TextField) LoginRegister.lookup("#username_log");
@@ -146,16 +182,7 @@ public class ControllerMain {
         {
             showAlert("Username or password too short.");
             newUserId=-1;
-
         }
-        if(!matcher.matches())
-        {
-            newUserId=-1;
-            showAlert("Invalid password.");
-            return;
-        }
-
-
         if (newUserId != -1) {
             usrId = newUserId;
             showAlert("Registration successful!");
@@ -249,6 +276,9 @@ public class ControllerMain {
     }
 
 
+    /**
+     * Quit app.
+     */
     public void quit_app() {
         System.exit(0);
     }

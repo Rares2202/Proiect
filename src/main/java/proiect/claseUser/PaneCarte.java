@@ -8,11 +8,19 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.text.Font;
 
+/**
+ * The type Pane carte.
+ */
 public class PaneCarte extends HBox { // Folosim HBox pentru layout orizontal
     private final Book book;
     private final ImageView coverImageView;
     private final VBox textContainer;
 
+    /**
+     * Instantiates a new Pane carte.
+     *
+     * @param book the book
+     */
     public PaneCarte(Book book) {
         this.book = book;
         this.coverImageView = new ImageView();

@@ -16,8 +16,14 @@ import java.sql.SQLException;
 import java.util.*;
 import java.io.IOException;
 
+/**
+ * The type Controller user.
+ */
 public class ControllerUser {
 
+    /**
+     * The Myreads.
+     */
     @FXML
    myReadsScroll myreads;
     private Pane Home;
@@ -25,20 +31,41 @@ public class ControllerUser {
     private Pane SearchResults;
 
     private Pane Myreads;
- 
+
+    /**
+     * The Book.
+     */
     Book book=new Book(0,null,null,null,null,null);
+    /**
+     * The Review.
+     */
     Review review=new Review(null,0,0,0);
+    /**
+     * The My reads.
+     */
     MyReads myReads;
     private static String coverImagine;
+    /**
+     * The Search results.
+     */
     SearchResultsScroll searchResults;
+    /**
+     * The Review scroll.
+     */
     ReviewScroll reviewScroll;
     private Pane Search;
+    /**
+     * The Userpane.
+     */
     public StackPane Userpane;
     private boolean isInitialized = false;
+    /**
+     * The User id.
+     */
     int userId=-1;
     private static final String DB_URL = "jdbc:mysql://localhost:3306/mydb";
     private static final String DB_USER = "root";
-    private static final String DB_PASSWORD = "simone";
+    private static final String DB_PASSWORD = "root";
     private final DBComands dbComands=new DBComands();
     private final String[] buttonIds = {
             "myreads", "imreading", "inchide", "submit", "search","home","review","rezerva","search1","plus","reviews","search2"
@@ -52,6 +79,7 @@ public class ControllerUser {
     };
     private  List<String> preferinte = new ArrayList<>();
     private ScrollPanel homeScrollPanel;
+
     /**
      * <li>Initializeaza controller User</li>
      */
@@ -76,6 +104,11 @@ public class ControllerUser {
         }
     }
 
+    /**
+     * Sets user id.
+     *
+     * @param userId the user id
+     */
     public void setUserId(int userId) {
         this.userId = userId;
         if (!isInitialized) {
@@ -84,7 +117,11 @@ public class ControllerUser {
         }
         handleUserSpecificPanes();
     }
-
+    /**
+     * Sets user id.
+     *
+     *<li>Initializeaza homeScrollPane in functie de user </li>
+     */
     private void initializeScrollPanel() {
         homeScrollPanel = new ScrollPanel(userId);
         ScrollPane homeScrollPane = (ScrollPane) Home.lookup("#scrollPane");
@@ -456,6 +493,9 @@ public class ControllerUser {
         dbComands.INSERT_INTO_USERPREF(query, DB_URL, DB_USER, DB_PASSWORD, userId, validGenreIds);
     }
 
+    /**
+     * Quit app.
+     */
     @FXML
     public void quit_app() {
         System.exit(0);
@@ -470,8 +510,13 @@ public class ControllerUser {
     }
 
 
-
+    /**
+     * The Stars.
+     */
     List<Star> stars = new ArrayList<>();
+    /**
+     * The Current rating.
+     */
     int currentRating = 0;
 
     private void initializeReviewPane() {
@@ -503,6 +548,10 @@ public class ControllerUser {
             star.setFilled(star.getRatingValue() <= currentRating);
         }
     }
+
+    /**
+     * Reset all stars.
+     */
     public void resetAllStars() {
         currentRating = 0;
         for (Star star : stars) {
@@ -551,6 +600,12 @@ public class ControllerUser {
         // Show the popup
         popupStage.showAndWait();
     }
+
+    /**
+     * Sets main controller.
+     *
+     * @param controllerMain the controller main
+     */
     public void setMainController(ControllerMain controllerMain) {
     }
     /**
