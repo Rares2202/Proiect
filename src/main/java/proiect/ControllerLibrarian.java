@@ -252,12 +252,12 @@ public class ControllerLibrarian{
                 controller.label_books_inventory.setText("b");
                 controller.label_books_reserved.setText("a");
 
-                controller.label_books_reserved.setText(""+connection.getQueryCount("SELECT statusImprumut \n" +
+                controller.label_books_reserved.setText(""+connection.getQueryCount("SELECT status \n" +
                                                                                     "FROM cartiimprumutate\n" +
-                                                                                    "WHERE User_idUser = " + userId + " AND UPPER(statusImprumut) = 'REZERVAT';"));
-                controller.label_books_inventory.setText(""+connection.getQueryCount("SELECT statusImprumut \n" +
+                                                                                    "WHERE User_idUser = " + userId + " AND UPPER(status) = 'REZERVAT';"));
+                controller.label_books_inventory.setText(""+connection.getQueryCount("SELECT status \n" +
                                                                                     "FROM cartiimprumutate\n" +
-                                                                                    "WHERE User_idUser = " + userId + " AND UPPER(statusImprumut) = 'INVENTAR';"));
+                                                                                    "WHERE User_idUser = " + userId + " AND UPPER(status) = 'INVENTAR';"));
 
 
                 controller.setName(String.format("%s (#%s)", _name, userId));
@@ -386,7 +386,7 @@ public class ControllerLibrarian{
             return;
         }
 
-        ResultSet rs = connection.executeQuery("SELECT carte.idCarte, carte.titluCarti, carte.autorCarte, carte.genCarte, borrow.statusImprumut\n" +
+        ResultSet rs = connection.executeQuery("SELECT carte.idCarte, carte.titluCarti, carte.autorCarte, carte.genCarte, borrow.status\n" +
                 "FROM mydb.carte carte, mydb.cartiimprumutate borrow\n" +
                 "WHERE carte.idCarte = borrow.Carte_idCarte AND borrow.User_idUser = " + userID + " LIMIT 100;");
         while(rs.next())
@@ -395,7 +395,7 @@ public class ControllerLibrarian{
             String bookTitle = rs.getString("titluCarti");
             String bookAuthor = rs.getString("autorCarte");
             String bookGenre = rs.getString("genCarte");
-            String borrowStatus = rs.getString("statusImprumut");
+            String borrowStatus = rs.getString("status");
 
             if(borrowStatus.toUpperCase().equals("REZERVAT"))
             {
@@ -506,7 +506,7 @@ public class ControllerLibrarian{
             {
                 String book_id = rs.getString("idCarte");
                 int nr_books = rs.getInt("numarCarte");
-                int nr_reserved_books = connection.getQueryCount("SELECT * FROM cartiimprumutate WHERE UPPER(statusImprumut)='REZERVAT' AND Carte_idCarte=" + book_id);
+                int nr_reserved_books = connection.getQueryCount("SELECT * FROM cartiimprumutate WHERE UPPER(status)='REZERVAT' AND Carte_idCarte=" + book_id);
                 int nr_user_books = connection.getQueryCount("SELECT * FROM cartiimprumutate WHERE User_idUser=" + transaction_user_id + " AND Carte_idCarte=" + book_id);
                 int nr_avalabile_books = nr_books - nr_reserved_books;
                 String style = "-fx-text-fill: black; -fx-font-size: 13; ";
@@ -816,8 +816,8 @@ public class ControllerLibrarian{
                 {
                     //statement pentru schimbarea statusului REZERVAT -> IMPRUMUTAT
                     connection.executeUpdate("UPDATE cartiimprumutate\n" +
-                            "SET statusImprumut = 'INVENTAR'\n" +
-                            "WHERE statusImprumut = 'REZERVAT' AND\n" +
+                            "SET status = 'INVENTAR'\n" +
+                            "WHERE status = 'REZERVAT' AND\n" +
                             "User_idUser = " + transaction_user_id + " AND Carte_idCarte = " + book.id + ';');
 
                     //statement pentru stergerea cu o unitate a cartii din stoc
@@ -842,7 +842,7 @@ public class ControllerLibrarian{
 
                     //statement pentru stergerea cartii din inventar
                     connection.executeUpdate("DELETE FROM cartiimprumutate\n" +
-                            "WHERE statusImprumut = 'INVENTAR' AND\n" +
+                            "WHERE status = 'INVENTAR' AND\n" +
                             "User_idUser = " + transaction_user_id + " AND Carte_idCarte = " + book.id + ';');
                 }
 
@@ -863,7 +863,7 @@ public class ControllerLibrarian{
         }
         //confirmare adaugare carte in inventar
         if(popup_menu_add_book.isVisible()) {
-            connection.executeUpdate("INSERT INTO mydb.cartiimprumutate(dataImprumut, dataRetur, User_idUser, Carte_idCarte, statusImprumut)\n" +
+            connection.executeUpdate("INSERT INTO mydb.cartiimprumutate(dataImprumut, dataRetur, User_idUser, Carte_idCarte, status)\n" +
                     "VALUES (CAST(sysdate() AS date), NULL, " + transaction_user_id + "," + add_book_id + ",\"REZERVAT\");");
             try {
                 initialize_menu_client_detalii(transaction_user_id);
@@ -877,7 +877,7 @@ public class ControllerLibrarian{
         if(menu_decrease.isVisible()) {
             try{
                 int nr_borrowed_books = connection.getQueryCount("SELECT * FROM cartiimprumutate\n" +
-                        "WHERE UPPER(statusImprumut)='INVENTAR' AND Carte_idCarte = " + book_id);
+                        "WHERE UPPER(status)='INVENTAR' AND Carte_idCarte = " + book_id);
                 if(nr_borrowed_books > 0){
                     show_popup_error("Unii utilizatori detin cartea!");
                 }
@@ -1041,8 +1041,8 @@ public class ControllerLibrarian{
         pane_statistics_books.getChildren().clear();
         //date
         int nr_books_total = connection.getQuerrySum("SELECT SUM(numarCarte) FROM carte;");
-        int nr_books_reserved = connection.getQueryCount("SELECT * FROM cartiimprumutate WHERE UPPER(statusImprumut)='REZERVAT';");
-        int nr_books_borrowed = connection.getQueryCount("SELECT * FROM cartiimprumutate WHERE UPPER(statusImprumut)='INVENTAR';");
+        int nr_books_reserved = connection.getQueryCount("SELECT * FROM cartiimprumutate WHERE UPPER(status)='REZERVAT';");
+        int nr_books_borrowed = connection.getQueryCount("SELECT * FROM cartiimprumutate WHERE UPPER(status)='INVENTAR';");
         int nr_books_stock = nr_books_total - nr_books_reserved - nr_books_borrowed;
         String books_stock = "In stoc";
         String books_reserved = "Rezervate";
