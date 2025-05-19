@@ -48,7 +48,7 @@ styleClass="white">
                 </FontAwesomeIcon>
             </graphic>
         </Button>
-        <Pane  styleClass="user_rectangle"  prefHeight="600.0" prefWidth="227.0">
+        <Pane  styleClass="user_rectangle1"  prefHeight="600.0" prefWidth="227.0">
             <ImageView fitHeight="124.0" fitWidth="126.0" layoutX="52.0" layoutY="25.0" pickOnBounds="true" preserveRatio="true" styleClass="white">
                 <image>
                     <Image url="@../../css/logo.png" />

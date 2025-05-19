@@ -3,7 +3,6 @@
 }
 
 
-
 .button{
     -fx-background-color: transparent;
     -fx-text-fill: white;
@@ -140,6 +139,29 @@
             rgba(62, 215, 92, 1.0)
     );
 }
+
+.user_rectangle1
+{
+
+    -fx-background-color: linear-gradient(to bottom, #032509FF, #015d20);
+    -fx-border-color: green;
+    -fx-border-width: 0 5px 0 0;
+
+
+    /*-fx-effect: dropshadow(one-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 0);*/
+}
+
+.altebutoane {
+    -fx-background-color: #ffffff;
+    -fx-border-color: transparent;
+    -fx-text-fill: black;
+    -fx-font-weight: bold;
+    -fx-pref-width: 90px;
+    -fx-pref-height: 30px;
+    -fx-background-radius: 5;
+
+}
+
 .user_rectangle {
 
     -fx-background-color: linear-gradient(to bottom, #032509FF, #015d20);
@@ -312,9 +334,9 @@
         -fx-border-width: 1px;
         -fx-padding: 5px;
     }
-
-    /* Câmpul de căutare */
-
+    /**
+    Camp de cautare
+     */
     .search-field {
         -fx-background-color: white;
         -fx-border-width: 0;
@@ -353,16 +375,7 @@
 
     }
 
-    .altebutoane {
-        -fx-background-color: #ffffff;
-        -fx-border-color: transparent;
-        -fx-text-fill: black;
-        -fx-font-weight: bold;
-        -fx-pref-width: 90px;
-        -fx-pref-height: 30px;
-        -fx-background-radius: 5;
 
-    }
 
     .grid-pane {
         -fx-pref-height: 1050px;

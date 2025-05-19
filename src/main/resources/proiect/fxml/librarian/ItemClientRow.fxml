@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane onMouseClicked="#showClientDetails" prefHeight="8.0" prefWidth="434.0" styleClass="list_item" stylesheets="@../css/style.css" xmlns="http://javafx.com/javafx/11.0.14-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="proiect.ControllerItemClientRow">
+<AnchorPane onMouseClicked="#showClientDetails" prefHeight="8.0" prefWidth="434.0" styleClass="list_item" stylesheets="@../../css/style.css" xmlns="http://javafx.com/javafx/11.0.14-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="proiect.ControllerItemClientRow">
    <children>
       <Text fx:id="clientName" layoutX="9.0" layoutY="14.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" wrappingWidth="200.0">
          <font>

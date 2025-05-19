@@ -15,7 +15,7 @@
 
 <AnchorPane prefHeight="564.0" prefWidth="802.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="proiect.ControllerClient">
    <children>
-      <AnchorPane id="client_menu" fx:id="client_menu" prefHeight="564.0" prefWidth="802.0" stylesheets="@../css/style.css">
+      <AnchorPane id="client_menu" fx:id="client_menu" prefHeight="564.0" prefWidth="802.0" stylesheets="@../../css/style.css">
          <children>
             <ScrollPane fx:id="ScrollPane" hbarPolicy="NEVER" layoutX="176.0" layoutY="175.0" prefHeight="355.0" prefWidth="450.0" vbarPolicy="ALWAYS">
                <content>
@@ -104,7 +104,7 @@
                   </Tab>
                </tabs>
             </TabPane>
-            <Button fx:id="btn_efectueaza" layoutX="333.0" layoutY="500.0" mnemonicParsing="false" onMousePressed="#ShowPopupTransaction" prefHeight="28.0" prefWidth="137.0" styleClass="btn-tab" stylesheets="@../css/style.css" text="EFECTUEAZA">
+            <Button fx:id="btn_efectueaza" layoutX="333.0" layoutY="500.0" mnemonicParsing="false" onMousePressed="#ShowPopupTransaction" prefHeight="28.0" prefWidth="137.0" styleClass="btn-tab" stylesheets="@../../css/style.css" text="EFECTUEAZA">
                <font>
                   <Font name="System Bold" size="12.0" />
                </font>

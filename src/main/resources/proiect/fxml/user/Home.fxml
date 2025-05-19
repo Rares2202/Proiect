@@ -28,7 +28,7 @@
         </HBox>
 
         <!-- Restul conținutului... -->
-        <Pane  styleClass="user_rectangle"  prefHeight="600.0" prefWidth="227.0">
+        <Pane  styleClass="user_rectangle1"  prefHeight="600.0" prefWidth="227.0">
             <ImageView fitHeight="124.0" fitWidth="126.0" layoutX="52.0" layoutY="25.0" pickOnBounds="true" preserveRatio="true" styleClass="white">
                 <image>
                     <Image url="@../../css/logo.png" />
@@ -38,8 +38,25 @@
                     <Font name="System Bold" size="24.0" />
                 </font>
             </Text>
-            <Button fx:id="imreading" layoutX="35" layoutY="200" text="I'm reading" styleClass="menu-button"/>
-            <Button fx:id="myreads" layoutX="35" layoutY="250" text="MyReads" styleClass="menu-button"/>
+            <Button fx:id="imreading" layoutX="35" layoutY="200" text="I'm reading" style="
+    -fx-background-color: #ffffff;
+    -fx-border-color: transparent;
+    -fx-text-fill: black;
+    -fx-font-weight: bold;
+    -fx-pref-width: 150px;
+    -fx-pref-height: 40px;
+    -fx-background-radius: 5;"
+            />
+            <Button fx:id="myreads" layoutX="35" layoutY="250" text="MyReads" style="
+    -fx-background-color: #ffffff;
+    -fx-border-color: transparent;
+    -fx-text-fill: black;
+    -fx-font-weight: bold;
+    -fx-pref-width: 150px;
+    -fx-pref-height: 40px;
+    -fx-background-radius: 5;
+
+"/>
 
         </Pane>
         <Button fx:id="inchide" layoutX="964.0" layoutY="10" mnemonicParsing="false" prefHeight="30.0" prefWidth="66.0" styleClass="exit" textFill="WHITE">
