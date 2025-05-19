@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import de.jensd.fx.glyphs.fontawesome.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane onMouseClicked="#showClientDetails" prefHeight="8.0" prefWidth="434.0" styleClass="list_item" stylesheets="@../css/style.css" xmlns="http://javafx.com/javafx/11.0.14-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="proiect.ControllerItemClientRow">
+   <children>
+      <Text fx:id="clientName" layoutX="9.0" layoutY="14.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" wrappingWidth="200.0">
+         <font>
+            <Font name="Arial Bold" size="11.0" />
+         </font></Text>
+      <Label fx:id="label_books_inventory" layoutX="362.0" layoutY="4.0" text="100">
+         <graphic>
+            <FontAwesomeIcon glyphName="ARCHIVE" />
+         </graphic>
+      </Label>
+      <Label fx:id="label_books_reserved" layoutX="312.0" layoutY="4.0" text="100">
+         <graphic>
+            <FontAwesomeIcon glyphName="BOOKMARK" />
+         </graphic>
+      </Label>
+   </children>
+   <cursor>
+      <Cursor fx:constant="HAND" />
+   </cursor>
+</AnchorPane>
