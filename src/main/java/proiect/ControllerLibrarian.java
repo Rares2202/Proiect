@@ -45,13 +45,15 @@ public class ControllerLibrarian{
     @FXML AnchorPane menu_increase;
     @FXML AnchorPane menu_decrease;
     @FXML AnchorPane popup_info;
+    @FXML AnchorPane popup_menu_review_user;
     public List<AnchorPane> listMenu = new ArrayList<>();
 
     //popups
     @FXML Label label_popup_info;
     @FXML Label label_popup_error;
-    enum popup_info_case {ADD_BOOK, REMOVE_BOOK, NEW_BOOK, DELETE_BOOK, DELETE_USER};
+    enum popup_info_case {ADD_BOOK, REMOVE_BOOK, NEW_BOOK, DELETE_BOOK, DELETE_USER, DELETE_REVIEWS, REMOVE_REVIEW};
     popup_info_case info_case;
+    public String deleteContext = "";
 
     //Meniu Clienti
     @FXML VBox list_search_clients;
@@ -68,6 +70,7 @@ public class ControllerLibrarian{
     @FXML Button btn_inventar_clear;
     @FXML Button btn_add_book;
     @FXML Button btn_delete_user;
+    @FXML Button btn_review;
     public String transaction_user_id = "";
     public String add_book_id = "";
     public ObservableList<ControllerItemBookReservedRow> list_books_reserved = FXCollections.observableArrayList();
@@ -78,6 +81,13 @@ public class ControllerLibrarian{
     //Popup meniu adaugare carti
     @FXML VBox list_search_books;
     @FXML TextField textField_add_book;
+
+    //Popup meniu review
+    @FXML VBox vbox_list_review;
+    @FXML TextField review_search;
+    @FXML Button btn_clear_review;
+    @FXML Button btn_cancel_review;
+    public String review_user_id = "";
 
     //Popup meniu de tranzactie
     @FXML AnchorPane popup_menu_tranzactie;
@@ -162,6 +172,7 @@ public class ControllerLibrarian{
         listMenu.add(popup_error);
         listMenu.add(menu_increase);
         listMenu.add(menu_decrease);
+        listMenu.add(popup_menu_review_user);
 
         //initailizare TableView pentru tranzactionarea imprumuturilor/retururilor
         ObservableList<TableColumn<ObservableList<Label>, ?>> rawCols = tableView_transaction.getColumns();
@@ -472,6 +483,7 @@ public class ControllerLibrarian{
         initialize_popup_menu_add_book();
     }
     @FXML void DeleteUser(MouseEvent mouseEvent) throws SQLException {
+        popup_menu_validation.setVisible(true);
         ResultSet rs = connection.executeQuery("SELECT u.idUser, c.Carte_idCarte " +
                 "FROM user u, cartiimprumutate c " +
                 "WHERE u.idUser = " + transaction_user_id);
@@ -505,7 +517,133 @@ public class ControllerLibrarian{
          */
     }
 
+    //Meniu reviews
+    void initialize_menu_user_review(String userID) throws SQLException {
+        setOnlyMenu(popup_menu_review_user);
 
+        if(connection.getConnection()==null){
+            connection.setFailed(err_connection_null);
+            return;
+        }
+        vbox_list_review.getChildren().clear();
+        userID = transaction_user_id;
+        ResultSet rs = connection.executeQuery("SELECT r.idReview, r.reviewText, r.reviewRating, r.User_idUser, r.Carte_idCarte, c.idCarte, c.titluCarti\n" +
+                " FROM review r, carte c\n" +
+                " WHERE r.User_idUser = " + userID + " AND c.idCarte = r.Carte_idCarte;");
+        while(rs.next()){
+            String id_review = rs.getString("r.idReview");
+            String reviewText = rs.getString("reviewText");
+            String reviewRating = rs.getString("r.reviewRating");
+            String bookTitle = rs.getString("c.titluCarti");
+            String bookId = rs.getString("r.Carte_idCarte");
+
+            try{
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("fxml/ItemReviewRow.fxml"));
+                Node node = loader.load();
+                ControllerItemReviewRow controller = loader.getController();
+
+                System.out.println("Controller: " + controller);
+
+                controller.review_id = id_review;
+                controller.review_rating = reviewRating;
+                controller.book_id = bookId;
+
+                controller.setBook(String.format("#%s", id_review));
+                controller.setUser(String.format("%s(#%s) : %s/5", bookTitle, bookId, reviewRating));
+                controller.txt_review.setText(reviewText);
+
+                controller.mainController = this;
+                vbox_list_review.getChildren().add(node);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+    }
+    @FXML void ViewReviews(MouseEvent mouseEvent) throws SQLException {
+        if(popup_menu_review_user.isVisible()){
+            return;
+        }
+
+        if(connection.getConnection()==null){
+            connection.setFailed(err_connection_null);
+            return;
+        }
+       initialize_menu_user_review(transaction_user_id);
+        popup_menu_review_user.setVisible(true);
+        review_search.setOnKeyPressed(event -> {
+            if(event.getCode().equals(KeyCode.ENTER))
+                try{
+                    System.out.print("ENTER");
+                    update_user_review(review_search.getText());
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+        });
+        btn_cancel_review.setOnMouseClicked(event -> {
+            popup_menu_review_user.setVisible(false);
+            client_menu_details.setVisible(true);
+        });
+
+    }
+    void update_user_review(String text) throws SQLException {
+        if(connection.getConnection()==null)
+        {
+            connection.setFailed(err_connection_null);
+            return;
+        }
+        text=text.toUpperCase();
+        vbox_list_review.getChildren().clear();
+        String query = "SELECT r.idReview, r.reviewText, r.reviewRating, r.User_idUser, r.Carte_idCarte, c.idCarte, c.titluCarti " +
+                "FROM review r JOIN carte c ON r.Carte_idCarte = c.idCarte " +
+                "WHERE r.User_idUser = " + transaction_user_id;
+
+        if (!text.isEmpty()) {
+            query += " AND (UPPER(c.titluCarti) LIKE '%" + text + "%' OR UPPER(r.idReview) LIKE '%" + text + "%')";
+        }
+
+        query += " ORDER BY r.idReview LIMIT 100;";
+
+        ResultSet rs = connection.executeQuery(query);
+
+        while(rs.next()){
+            String id_review = rs.getString("r.idReview");
+            String reviewText = rs.getString("reviewText");
+            String reviewRating = rs.getString("r.reviewRating");
+            String bookTitle = rs.getString("c.titluCarti");
+            String bookId = rs.getString("r.Carte_idCarte");
+
+            try{
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("fxml/ItemReviewRow.fxml"));
+                Node node = loader.load();
+                ControllerItemReviewRow controller = loader.getController();
+
+                controller.review_id = id_review;
+                controller.review_rating = reviewRating;
+                controller.book_id = bookId;
+
+                controller.setBook(String.format("#%s", id_review));
+                controller.setUser(String.format("%s(#%s) : %s/5", bookTitle, bookId, reviewRating));
+
+                controller.txt_review.setText(reviewText);
+
+                controller.mainController = this;
+                vbox_list_review.getChildren().add(node);
+            } catch (Exception e) {
+                System.err.print("\nNu s-a putut genera client(FXML)");
+                e.printStackTrace();
+            }
+        }
+
+    }
+    @FXML void ClearAllReviews(MouseEvent mouseEvent) throws SQLException {
+        deleteContext = "all_reviews";
+        popup_menu_validation.setVisible(true);
+    }
+    public void remove_review(String id_review) throws SQLException {
+        deleteContext = "review";
+        popup_menu_validation.setVisible(true);
+    }
 
         // POPUP ADD BOOK
         @FXML void initialize_popup_menu_add_book() throws SQLException {
@@ -838,7 +976,7 @@ public class ControllerLibrarian{
     }
 
     // POPUP VALIDATION (Esti sigur?)
-    @FXML void AreYouSureYes(MouseEvent mouseEvent) {
+    @FXML void AreYouSureYes(MouseEvent mouseEvent) throws SQLException {
         //confirmare tranzactie imprumut/retur
         if(popup_menu_tranzactie.isVisible()) {
             try
@@ -917,6 +1055,7 @@ public class ControllerLibrarian{
                 }
                 else {
                     connection.executeUpdate("DELETE FROM cartiimprumutate WHERE Carte_idCarte = " + book_id);
+                    connection.executeUpdate("DELETE FROM review WHERE Carte_idCarte = " + book_id);
                     connection.executeUpdate("DELETE FROM carte WHERE idCarte = " + book_id);
                     update_list_books("");
                     show_popup_info("Stoc sters cu succes!", popup_info_case.DELETE_BOOK);
@@ -983,6 +1122,35 @@ public class ControllerLibrarian{
                 e.printStackTrace();
             }
         }
+        //confrimare stergere review-uri
+        if(popup_menu_review_user.isVisible()){
+            if (deleteContext.equals("all_reviews")){
+                ResultSet rs = connection.executeQuery("SELECT * FROM review WHERE user_idUser = " + transaction_user_id);
+                try{
+                    while(rs.next()){
+                        connection.executeUpdate("DELETE FROM review WHERE user_idUser = " + transaction_user_id);
+                        update_user_review("");
+                        show_popup_info("Review-urile au fost sterse cu succes!", popup_info_case.DELETE_REVIEWS);
+                    }
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            else if(deleteContext.equals("review")){
+                ResultSet rs = connection.executeQuery("SELECT * FROM review WHERE user_idUser = " + transaction_user_id
+                                                    + " AND idReview = " + review_user_id);
+                try {
+                    if(rs.next()){
+                        connection.executeUpdate("DELETE FROM review WHERE idReview = " + review_user_id);
+                        update_user_review("");
+                        show_popup_info("Review-ul a fost sters cu succes!", popup_info_case.REMOVE_REVIEW);
+                    }
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        deleteContext = "";
+        }
 
         popup_menu_validation.setVisible(false);
     }
@@ -1037,6 +1205,18 @@ public class ControllerLibrarian{
         if(info_case==popup_info_case.DELETE_USER){
             client_menu.setVisible(true);
             client_menu_details.setVisible(false);
+        }
+        //mesaj confirmare stergere review-uri
+        if(info_case==popup_info_case.DELETE_REVIEWS){
+            popup_menu_review_user.setVisible(false);
+            client_menu_details.setVisible(false);
+            client_menu.setVisible(true);
+        }
+        //mesaj confirmare stergere review
+        if(info_case==popup_info_case.REMOVE_REVIEW){
+            popup_menu_review_user.setVisible(false);
+            client_menu_details.setVisible(false);
+            client_menu.setVisible(true);
         }
 
     }
