@@ -57,7 +57,7 @@ public class ControllerLibrarian{
      * Represents the password used for authentication in the application.
      * It is initialized with the default value "root".
      */
-    String pass = "root";
+    String pass = "simone";
 
     @FXML AnchorPane connectionFailed_menu;
     @FXML AnchorPane client_menu;
@@ -1417,19 +1417,20 @@ public class ControllerLibrarian{
         //Top genuri
         pane_top_genre.getChildren().clear();
         //date
-        ResultSet rs_top_5_genres = connection.executeQuery("SELECT genCarte, COUNT(genCarte) AS nr_books\n" +
-                "FROM cartiimprumutate borrow, carte book\n" +
-                "WHERE book.idCarte = borrow.Carte_idCarte\n" +
-                "GROUP BY genCarte\n" +
-                "ORDER BY nr_books DESC LIMIT 5;");
+        ResultSet rs_top_5_genres = connection.executeQuery("SELECT g.genuri, SUM(up.number) AS numar\n" +
+                "FROM userpref up\n" +
+                "         JOIN genuri g ON up.preferinte_idpreferinte = g.idpreferinte\n" +
+                "GROUP BY g.genuri\n" +
+                "ORDER BY numar DESC\n" +
+                "LIMIT 5;");
         //legenda
         String[] labels_genres = new String[5];
         int[] nr_genres = new int[5];
         int index = 0;
         while(rs_top_5_genres.next())
         {
-            String gen_carte = rs_top_5_genres.getString("genCarte");
-            nr_genres[index] = rs_top_5_genres.getInt("nr_books");
+            String gen_carte = rs_top_5_genres.getString("genuri");
+            nr_genres[index] = rs_top_5_genres.getInt("numar");
             labels_genres[index] = String.format("%s - %d", gen_carte, nr_genres[index]);
             index++;
         }
