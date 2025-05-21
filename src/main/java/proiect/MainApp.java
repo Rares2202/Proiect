@@ -3,6 +3,7 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.Parent;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
@@ -61,7 +62,8 @@ public class MainApp extends Application {
             mainStage.setY(event.getScreenY() - yOffset);
         });
 
-
+        mainStage.getIcons().add(new Image(getClass().getResourceAsStream("/logo-app.png")));
+        mainStage.setTitle("LibraryApp");
         mainStage.initStyle(StageStyle.UNDECORATED);
         mainStage.setScene(scene);
         mainStage.show();
