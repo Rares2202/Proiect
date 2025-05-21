@@ -9,6 +9,7 @@ import proiect.LibrarianMain;
 
 import javax.swing.*;
 import java.io.IOException;
+import java.net.ConnectException;
 import java.sql.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -214,12 +215,13 @@ public class ControllerMain {
                 currentStage.close();
             }
             else {
-                showAlert("Login successful!");
+                //showAlert("Login successful!");
                 initializeUserController(id);
                 contentPane.getChildren().setAll(UserMain);
             }
         }
     }
+
 
     /**
      * Handles the registration process for a new user.
@@ -302,6 +304,7 @@ public class ControllerMain {
             }
 
         } catch (SQLException e) {
+            showAlert("Nu exista conexiune la baza de date");
             e.printStackTrace();
         }
         return userId;
@@ -317,7 +320,7 @@ public class ControllerMain {
      */
     private void showAlert(String message) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Pane Changed");
+        alert.setTitle("ERROR");
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();
