@@ -60,7 +60,9 @@ public class ControllerMain {
             UserMain=loadSpecialPane("/proiect/fxml/user/UserMain.fxml", ControllerUser.class);
             LibrarianMain=loadSpecialPane("/proiect/fxml/librarian/LibrarianMain.fxml", ControllerLibrarian.class);
             contentPane.getChildren().setAll(wellcome);
+            
         } catch (IOException e) {
+            System.out.println("Error loading FXML files");
             e.printStackTrace();
         }
 
