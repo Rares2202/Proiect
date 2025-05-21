@@ -24,7 +24,7 @@ public class ImReading {
     GridPane grid;
     private static final String DB_URL = "jdbc:mysql://localhost:3306/mydb";
     private static final String DB_USER = "root";
-    private static final String DB_PASSWORD = "simone";
+    private static final String DB_PASSWORD = "root";
     private final int cellWidth = 125;
     private final int cellHeight = 130;
     private Consumer<String> onCoverClickHandler;

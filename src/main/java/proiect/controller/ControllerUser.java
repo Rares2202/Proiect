@@ -47,7 +47,7 @@ public class ControllerUser {
     int userId=-1;
     private static final String DB_URL = "jdbc:mysql://localhost:3306/mydb";
     private static final String DB_USER = "root";
-    private static final String DB_PASSWORD = "simone";
+    private static final String DB_PASSWORD = "root";
     private final DBComands dbComands=new DBComands();
     private final String[] buttonIds = {
             "myreads", "imreading", "inchide", "submit", "search","home","review","rezerva","search1","plus","reviews","search2"

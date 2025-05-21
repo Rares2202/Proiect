@@ -1,16 +1,31 @@
 package proiect.controller;
 
 import javafx.application.Platform;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class InitializeTest {
-    @Test
-    void TestInitialize() {
+
+    @BeforeAll
+    static void initJfxRuntime() {
         Platform.startup(() -> {
-        }); // Initialize JavaFX toolkit
+        });
+    }
+
+    @Test
+    void testInitialize() {
+        // Given
         ControllerMain controller = new ControllerMain();
-        assertDoesNotThrow(controller::initialize);
+
+        // When/Then
+
+        assertDoesNotThrow(controller::initialize, "Initialize method should not throw any exceptions");
+        assertNotNull(controller, "Controller should be initialized");
+    }
+
+    @AfterAll
+    static void cleanup() {
+        Platform.exit();
     }
 }
