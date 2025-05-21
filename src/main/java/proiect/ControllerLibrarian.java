@@ -1658,7 +1658,7 @@ public class ControllerLibrarian{
         Color[] colors_genres  = {color1,color2,color3,color4,color5};
         statisticsBoxAddLegend(pane_top_genre,labels_genres,colors_genres,index);
 
-        //piechart genres
+        //pie-chart genres
         ObservableList<PieChart.Data> data_genres = FXCollections.observableArrayList();
         for(int i=0; i<index; i++)
             data_genres.add(new PieChart.Data("", nr_genres[i]));

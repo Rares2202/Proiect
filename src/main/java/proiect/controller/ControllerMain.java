@@ -5,6 +5,7 @@ import javafx.scene.control.*;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
+import proiect.ControllerLibrarian;
 import proiect.LibrarianMain;
 
 import javax.swing.*;
@@ -28,7 +29,7 @@ public class ControllerMain {
     private Pane LoginRegister;
     private Pane RegisterAuth;
     private Pane UserMain;
-    private Pane LibrarianMain;
+
 
     int usrId;
     private static final String DB_URL = "jdbc:mysql://localhost:3306/mydb";
@@ -52,15 +53,15 @@ public class ControllerMain {
      * - Initializes the `contentPane` with the welcome screen*/
     @FXML
     public void initialize() {
-        try {
-
+        try{
             Pane wellcome = loadPane("/proiect/fxml/Wellcome.fxml");
             LoginRegister = loadPane("/proiect/fxml/LoginRegister.fxml");
             RegisterAuth = loadPane("/proiect/fxml/RegisterAuth.fxml");
             UserMain=loadSpecialPane("/proiect/fxml/user/UserMain.fxml", ControllerUser.class);
-            LibrarianMain=loadSpecialPane("/proiect/fxml/librarian/LibrarianMain.fxml", ControllerLibrarian.class);
+
             contentPane.getChildren().setAll(wellcome);
-            
+
+
         } catch (IOException e) {
             System.out.println("Error loading FXML files");
             e.printStackTrace();
@@ -151,9 +152,6 @@ public class ControllerMain {
         if (controllerClass == ControllerUser.class) {
             controllerUser = loader.getController();
             controllerUser.setMainController(this);
-        } else if (controllerClass == ControllerLibrarian.class) {
-            controllerLibrarian = loader.getController();
-            controllerLibrarian.setMainController(this);
         }
 
         return pane;
@@ -382,7 +380,6 @@ public class ControllerMain {
 
     /**
      * Determines whether a user is a librarian based on their ID.
-     *
      * This method queries the database to check if the user with the given ID
      * has the librarian role. If the user is found and has the librarian role,
      * it returns true; otherwise, it returns false. If an exception occurs during

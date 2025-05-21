@@ -6,6 +6,11 @@ import java.sql.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Test class for database query execution functionality.
+ * This class tests various scenarios of SQL query execution against a MySQL database,
+ * including valid queries, queries with syntax errors, and queries for non-existent tables.
+ */
 class DatabaseExecuteQueryTest {
 
     private Connection connection;
@@ -30,6 +35,12 @@ class DatabaseExecuteQueryTest {
         }
     }
 
+    /**
+     * Tests execution of a valid SQL SELECT query.
+     * Verifies that the query returns a non-null result set with at least one row.
+     * 
+     * @throws SQLException if a database access error occurs
+     */
     @Test
     void testValidSelectQuery() throws SQLException {
         String validQuery = "SELECT * FROM user";
@@ -38,6 +49,10 @@ class DatabaseExecuteQueryTest {
         assertTrue(resultSet.next(), "Result set should contain at least one row");
     }
 
+    /**
+     * Tests execution of an SQL query with invalid syntax.
+     * Verifies that executing a query with syntax errors throws an SQLException.
+     */
     @Test
     void testInvalidSyntaxQuery() {
         String invalidQuery = "SELCT * FORM user"; // Intentionally misspelled
@@ -46,9 +61,13 @@ class DatabaseExecuteQueryTest {
         }, "Invalid SQL syntax should throw SQLException");
     }
 
+    /**
+     * Tests execution of an SQL query referencing a non-existent table.
+     * Verifies that executing a query for a table that doesn't exist throws an SQLException.
+     */
     @Test
     void testNonExistentTableQuery() {
-        String nonExistentQuery = "SELECT * FROM nonexistent_table";
+        String nonExistentQuery = "SELECT * FROM nonexistent_table"; //Table that doesn't exist
         assertThrows(SQLException.class, () -> {
             statement.executeQuery(nonExistentQuery);
         }, "Query for non-existent table should throw SQLException");

@@ -94,8 +94,8 @@ public class ControllerUser {
             Userpane.getChildren().add(Home);
         } catch (IOException e) {
             System.err.println("Initialization error: " + e.getMessage());
-            e.printStackTrace();
             showAlert("Critical error: Could not load application resources");
+            e.printStackTrace();
             Platform.exit();
         }
     }

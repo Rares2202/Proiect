@@ -303,6 +303,7 @@ public class ScrollPanel extends ScrollPane {
      * @return {@code true} if the index is valid and references a non-null entry, {@code false} otherwise
      */
     private boolean isValidCoverIndex(int index) {
+
         return index < coverUrls.size() && coverUrls.get(index) != null;
     }
 
@@ -332,6 +333,7 @@ public class ScrollPanel extends ScrollPane {
      *                This consumer receives the clicked cover's URL as its parameter.
      */
     public void setOnCoverClick(Consumer<String> handler) {
+
         this.onCoverClickHandler = handler;
     }
 
@@ -345,6 +347,7 @@ public class ScrollPanel extends ScrollPane {
      *                used to perform specific actions based on the click context.
      */
     public void setOnPlusButtonClick(Consumer<String> handler) {
+
         this.onPlusButtonClickHandler = handler;
     }
 
