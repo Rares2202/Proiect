@@ -87,8 +87,6 @@ class ControllerMainTest {
                 fail("Failed to initialize controller: " + e.getMessage());
             }
         });
-
-        // Wait for initialization to complete
         WaitForAsyncUtils.waitForFxEvents();
     }
 
