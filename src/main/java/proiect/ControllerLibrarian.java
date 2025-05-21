@@ -57,7 +57,7 @@ public class ControllerLibrarian{
      * Represents the password used for authentication in the application.
      * It is initialized with the default value "root".
      */
-    String pass = "root";
+    String pass = "simone";
 
     @FXML AnchorPane connectionFailed_menu;
     @FXML AnchorPane client_menu;

@@ -17,7 +17,7 @@ class DatabaseConnectionCloseTest {
     private Connection connection;
     private static final String URL = "jdbc:mysql://localhost:3306/mydb";
     private static final String USER = "root";
-    private static final String PASSWORD = "root";
+    private static final String PASSWORD = "simone";
 
     @BeforeEach
     void setUp() throws SQLException {

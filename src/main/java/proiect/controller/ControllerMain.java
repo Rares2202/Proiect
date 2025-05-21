@@ -34,7 +34,7 @@ public class ControllerMain {
     int usrId;
     private static final String DB_URL = "jdbc:mysql://localhost:3306/mydb";
     private static final String DB_USER = "root";
-    private static final String DB_PASSWORD = "root";
+    private static final String DB_PASSWORD = "simone";
     private final String[] buttonIds = {
             "register", "login", "inchide", "submit", "register1","login1"
     };

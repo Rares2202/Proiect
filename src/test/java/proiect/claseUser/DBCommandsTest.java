@@ -17,7 +17,7 @@ class DBCommandsTest {
 
     private static final String DB_URL = "jdbc:mysql://localhost:3306/mydb";
     private static final String DB_USER = "root";
-    private static final String DB_PASSWORD = "root";
+    private static final String DB_PASSWORD = "simone";
     private static final int TEST_USER_ID = 999;
     private static final String TEST_BOOK_TITLE = "Test Book Title";
     private static final String TEST_BOOK_AUTHOR = "Test Author";
