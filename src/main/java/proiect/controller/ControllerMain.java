@@ -254,40 +254,42 @@ public class ControllerMain {
         String username = userField.getText();
         PasswordField passField = (PasswordField) RegisterAuth.lookup("#password_reg");
         String password = String.valueOf(passField.getText());
-        Matcher matcher=null;
-        Pattern pattern = Pattern.compile(regex);
-        matcher = pattern.matcher(password);
         CheckBox librarian1 = (CheckBox) RegisterAuth.lookup("#librarian1");
         boolean isLibrarian = librarian1.isSelected();
-        int newUserId = registerUser(username, password, isLibrarian);
-        if(username.length()<6||password.length()<6)
-        {
+
+        // Validate inputs before registration
+        if(username.length() < 6 || password.length() < 6) {
             showAlert("Username or password too short.");
-
-            newUserId=-1;
             return;
-
         }
+
+        // Check password pattern
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(password);
+        if (!matcher.matches()) {
+            showAlert("Password doesn't match required pattern.");
+            return;
+        }
+
+        // Register user after validation
+        int newUserId = registerUser(username, password, isLibrarian);
+
         if (newUserId != -1) {
             usrId = newUserId;
-            showAlert("Registration successful!");
-        } else {
-            showAlert("Registration failed. Username might already exist.");
-            return;
-        }
-        if (newUserId != -1) {
-            if(isLibrarian){
-                    Stage librarianStage = new Stage();
+
+            if(isLibrarian) {
+                showAlert("Registration successful as librarian!");
+                Stage librarianStage = new Stage();
                 Stage currentStage = (Stage) contentPane.getScene().getWindow();
                 new LibrarianMain().start(librarianStage);
                 currentStage.close();
-            }
-            else {
-                usrId = newUserId;
+            } else {
                 showAlert("Registration successful!");
                 initializeUserController(newUserId);
                 contentPane.getChildren().setAll(UserMain);
             }
+        } else {
+            showAlert("Registration failed. Username might already exist.");
         }
     }
 

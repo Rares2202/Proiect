@@ -79,7 +79,7 @@ public class MainApp extends Application {
      */
     public static void main(String[] args) {
         //showImage("/proiect/css/plus.png","Title", 600, 600);
-        System.out.println("Pornire aplicatie.");
+
         launch(args);
     }
 }

@@ -13,6 +13,7 @@ public class Launcher {
      */
     public static void main(String[] args) {
         try {
+            System.out.println("Pornire aplicatie.");
             Application.launch(MainApp.class, args);
         } catch (Exception e) {
             System.err.println("Error launching application: " + e.getMessage());
