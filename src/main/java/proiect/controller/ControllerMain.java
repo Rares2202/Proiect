@@ -222,10 +222,11 @@ public class ControllerMain {
                 contentPane.getChildren().setAll(UserMain);
             }
         }
-        if(id==-1)
-        {
+        else {
             showAlert("Login failed. Wrong username or password.");
+            return;
         }
+
     }
 
 
@@ -262,7 +263,9 @@ public class ControllerMain {
         if(username.length()<6||password.length()<6)
         {
             showAlert("Username or password too short.");
+
             newUserId=-1;
+            return;
 
         }
         if (newUserId != -1) {
@@ -270,6 +273,7 @@ public class ControllerMain {
             showAlert("Registration successful!");
         } else {
             showAlert("Registration failed. Username might already exist.");
+            return;
         }
         if (newUserId != -1) {
             if(isLibrarian){
@@ -349,7 +353,7 @@ public class ControllerMain {
             try (PreparedStatement checkStmt = connection.prepareStatement(checkQuery,Statement.RETURN_GENERATED_KEYS)) {
                 checkStmt.setString(1, username);
                 ResultSet rs = checkStmt.executeQuery();
-                if (rs.next()) {
+                if (rs!=null) {
                     return -1;
                 }
             }
