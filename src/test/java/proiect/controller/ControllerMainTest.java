@@ -48,7 +48,7 @@ class ControllerMainTest {
     private Stage stage;
     private static final String DB_URL = "jdbc:mysql://localhost:3306/mydb";
     private static final String DB_USER = "root";
-    private static final String DB_PASSWORD = "root";
+    private static final String DB_PASSWORD = "simone";
 
     // Fields for capturing System.out and System.err
     private final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
@@ -443,8 +443,8 @@ class ControllerMainTest {
             String uniqueUsername = "tu" + System.currentTimeMillis();
 
             // Call the method to register a new user
-            // Note: We're using a very short username to avoid data truncation errors
-            int userId = (int) registerUserMethod.invoke(controller, uniqueUsername, "tp", TEST_IS_LIBRARIAN);
+            // Note: We need to use a username and password that meet the constraints (at least 6 characters and alphanumeric only)
+            int userId = (int) registerUserMethod.invoke(controller, uniqueUsername, "password123", TEST_IS_LIBRARIAN);
 
             // We can't reliably verify the return value in a test environment,
             // but we can verify that the method was called without exceptions

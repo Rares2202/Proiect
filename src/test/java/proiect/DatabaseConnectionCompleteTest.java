@@ -40,7 +40,7 @@ class DatabaseConnectionCompleteTest {
 
     private static final String URL_GOOD = "jdbc:mysql://localhost:3306/mydb";
     private static final String USER_GOOD = "root";
-    private static final String PASSWORD_GOOD = "root";
+    private static final String PASSWORD_GOOD = "simone";
 
     private static final String URL_BAD = "jdbc:mysql://localhost:3305/mydb";
     private static final String USER_BAD = "baduser";

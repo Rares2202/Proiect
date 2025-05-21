@@ -20,7 +20,7 @@ class MyReadsTest {
 
     private static final String DB_URL = "jdbc:mysql://localhost:3306/mydb";
     private static final String DB_USER = "root";
-    private static final String DB_PASSWORD = "root";
+    private static final String DB_PASSWORD = "simone";
     private static final int TEST_USER_ID = 999;
     private static final String TEST_BOOK_COVER = "test_cover.jpg";
     private static final String NON_EXISTENT_USER_ID = "9999";

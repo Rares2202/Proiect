@@ -20,7 +20,7 @@ class DatabaseConnectionTest {
      */
     private static final String URL_good = "jdbc:mysql://localhost:3306/mydb";
     private static final String USER_good = "root";
-    private static final String PASSWORD_good = "root";
+    private static final String PASSWORD_good = "simone";
 
     /**
      * Bad credentials

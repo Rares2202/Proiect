@@ -34,7 +34,7 @@ public class ControllerMain {
     int usrId;
     private static final String DB_URL = "jdbc:mysql://localhost:3306/mydb";
     private static final String DB_USER = "root";
-    private static final String DB_PASSWORD = "root";
+    private static final String DB_PASSWORD = "simone";
     private final String[] buttonIds = {
             "register", "login", "inchide", "submit", "register1","login1"
     };
@@ -348,13 +348,27 @@ public class ControllerMain {
     private int registerUser(String username, String password, boolean isLibrarian) {
         int userId = -1;
 
+        // Validate password constraints
+        if (username.length() < 6 || password.length() < 6) {
+            return -1; // Username or password too short
+        }
+
+        // Check if password matches the required pattern (alphanumeric only)
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(password);
+        if (!matcher.matches()) {
+            return -1; // Password doesn't match required pattern
+        }
+
         try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
-            String checkQuery = "SELECT idUser FROM User WHERE userName = ?";
+            String checkQuery = "SELECT idUser FROM user WHERE userName = ?";
             try (PreparedStatement checkStmt = connection.prepareStatement(checkQuery,Statement.RETURN_GENERATED_KEYS)) {
                 checkStmt.setString(1, username);
                 ResultSet rs = checkStmt.executeQuery();
-                if (rs!=null) {
-                    return -1;
+
+
+                if (rs.next()) {
+                    return -1; // User already exists
                 }
             }
             String insertQuery = "INSERT INTO User (userName, password, librarian) VALUES (?, ?, ?)";
