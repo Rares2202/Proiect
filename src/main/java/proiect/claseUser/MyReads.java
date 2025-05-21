@@ -39,7 +39,7 @@ public class MyReads {
     public void addBook(MyReads myReads) {
         String DB_URL = "jdbc:mysql://localhost:3306/mydb";
         String DB_USER = "root";
-        String DB_PASSWORD = "simone";
+        String DB_PASSWORD = "root";
         String query = "INSERT INTO myreads(user_idUser, coverCarte) VALUES (?, ?)";
         try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
 

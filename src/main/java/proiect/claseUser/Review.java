@@ -63,7 +63,7 @@ public class Review {
     public void trimiteReview(Review review) {
         String DB_URL = "jdbc:mysql://localhost:3306/mydb";
         String DB_USER = "root";
-        String DB_PASSWORD = "simone";
+        String DB_PASSWORD = "root";
 
         String insertQuery = "INSERT INTO review (reviewText, reviewRating, User_idUser, Carte_idCarte) VALUES (?, ?, ?, ?)";
         String updateQuery = "UPDATE review SET reviewText = ?, reviewRating = ? WHERE User_idUser = ? AND Carte_idCarte = ?";

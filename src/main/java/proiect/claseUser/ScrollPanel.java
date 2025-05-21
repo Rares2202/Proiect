@@ -26,7 +26,7 @@ public class ScrollPanel extends ScrollPane {
     private final int userId;
     private static final String DB_URL = "jdbc:mysql://localhost:3306/mydb";
     private static final String DB_USER = "root";
-    private static final String DB_PASSWORD = "simone";
+    private static final String DB_PASSWORD = "root";
     private static final Image DEFAULT_COVER_IMAGE = createDefaultCoverImage();
     // hashmap care pastreaza imaginile
     private static final Map<String, Image> imageCache = new HashMap<>();

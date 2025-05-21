@@ -101,7 +101,7 @@ public class Book {
 
         String DB_URL = "jdbc:mysql://localhost:3306/mydb";
         String DB_USER = "root";
-        String DB_PASSWORD = "simone";
+        String DB_PASSWORD = "root";
         String query = "SELECT idCarte, titluCarti, autorCarte, descriere, genCarte, numarCarte, coverCarte FROM carte WHERE coverCarte=?";
         try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
              PreparedStatement preparedStatement = connection.prepareStatement(query)) {
