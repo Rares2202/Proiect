@@ -9,6 +9,7 @@ import proiect.LibrarianMain;
 
 import javax.swing.*;
 import java.io.IOException;
+import java.net.ConnectException;
 import java.sql.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -32,7 +33,7 @@ public class ControllerMain {
     int usrId;
     private static final String DB_URL = "jdbc:mysql://localhost:3306/mydb";
     private static final String DB_USER = "root";
-    private static final String DB_PASSWORD = "root";
+    private static final String DB_PASSWORD = "simone";
     private final String[] buttonIds = {
             "register", "login", "inchide", "submit", "register1","login1"
     };
@@ -59,7 +60,9 @@ public class ControllerMain {
             UserMain=loadSpecialPane("/proiect/fxml/user/UserMain.fxml", ControllerUser.class);
             LibrarianMain=loadSpecialPane("/proiect/fxml/librarian/LibrarianMain.fxml", ControllerLibrarian.class);
             contentPane.getChildren().setAll(wellcome);
+            
         } catch (IOException e) {
+            System.out.println("Error loading FXML files");
             e.printStackTrace();
         }
 
@@ -184,6 +187,7 @@ public class ControllerMain {
      */
     @FXML
     private void login1() {
+
         contentPane.getChildren().setAll(LoginRegister);
     }
 
@@ -205,6 +209,7 @@ public class ControllerMain {
         PasswordField passField = (PasswordField) LoginRegister.lookup("#password_log");
         String password = String.valueOf(passField.getText());
          id = authenticateUser(username, password);
+
         if (id != -1) {
             if(isUserLibrarian(id))
             {
@@ -214,12 +219,13 @@ public class ControllerMain {
                 currentStage.close();
             }
             else {
-                showAlert("Login successful!");
+                //showAlert("Login successful!");
                 initializeUserController(id);
                 contentPane.getChildren().setAll(UserMain);
             }
         }
     }
+
 
     /**
      * Handles the registration process for a new user.
@@ -302,6 +308,7 @@ public class ControllerMain {
             }
 
         } catch (SQLException e) {
+            showAlert("Nu exista conexiune la baza de date");
             e.printStackTrace();
         }
         return userId;
@@ -317,7 +324,7 @@ public class ControllerMain {
      */
     private void showAlert(String message) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Pane Changed");
+        alert.setTitle("ERROR");
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();
@@ -433,6 +440,7 @@ public class ControllerMain {
             e.printStackTrace();
         }
     }
+
 
 
 }

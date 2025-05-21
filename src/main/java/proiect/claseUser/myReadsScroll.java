@@ -28,7 +28,7 @@ public class myReadsScroll extends ScrollPane {
     private final int userId;
     private static final String DB_URL = "jdbc:mysql://localhost:3306/mydb";
     private static final String DB_USER = "root";
-    private static final String DB_PASSWORD = "root";
+    private static final String DB_PASSWORD = "simone";
     private Consumer<String> onCoverClickHandler;
     private final List<String> selectedBooks = new ArrayList<>();
 

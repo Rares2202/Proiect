@@ -57,7 +57,7 @@ public class ControllerLibrarian{
      * Represents the password used for authentication in the application.
      * It is initialized with the default value "root".
      */
-    String pass = "root";
+    String pass = "simone";
 
     @FXML AnchorPane connectionFailed_menu;
     @FXML AnchorPane client_menu;
@@ -71,13 +71,15 @@ public class ControllerLibrarian{
     @FXML AnchorPane menu_increase;
     @FXML AnchorPane menu_decrease;
     @FXML AnchorPane popup_info;
+    @FXML AnchorPane popup_menu_review_user;
     public List<AnchorPane> listMenu = new ArrayList<>();
 
     //popups
     @FXML Label label_popup_info;
     @FXML Label label_popup_error;
-    enum popup_info_case {ADD_BOOK, REMOVE_BOOK, NEW_BOOK, DELETE_BOOK};
+    enum popup_info_case {ADD_BOOK, REMOVE_BOOK, NEW_BOOK, DELETE_BOOK, DELETE_USER, DELETE_REVIEWS, REMOVE_REVIEW};
     popup_info_case info_case;
+    public String deleteContext = "";
 
     //Meniu Clienti
     @FXML VBox list_search_clients;
@@ -93,6 +95,8 @@ public class ControllerLibrarian{
     @FXML Button btn_inventar_all;
     @FXML Button btn_inventar_clear;
     @FXML Button btn_add_book;
+    @FXML Button btn_delete_user;
+    @FXML Button btn_review;
     public String transaction_user_id = "";
     public String add_book_id = "";
     public ObservableList<ControllerItemBookReservedRow> list_books_reserved = FXCollections.observableArrayList();
@@ -104,13 +108,19 @@ public class ControllerLibrarian{
     @FXML VBox list_search_books;
     @FXML TextField textField_add_book;
 
+    //Popup meniu review
+    @FXML VBox vbox_list_review;
+    @FXML TextField review_search;
+    @FXML Button btn_clear_review;
+    @FXML Button btn_cancel_review;
+    public String review_user_id = "";
+
     //Popup meniu de tranzactie
     @FXML AnchorPane popup_menu_tranzactie;
     @FXML TableView<ObservableList<Label>> tableView_transaction;
     @FXML Button btn_confirma_tranzactie;
     @FXML Button btn_anuleaza_tranzactie;
 
-    //Meniu Carti
     //Meniu Carti
     @FXML VBox list_search_carti;
     @FXML TextField textField_bookTitle;
@@ -144,6 +154,7 @@ public class ControllerLibrarian{
     @FXML TextField genreBar;
     @FXML TextField numberBar;
     @FXML TextField coverBar;
+    @FXML TextField describeBar;
     @FXML Button bookAddBase;
     @FXML Button cancel;
 //
@@ -198,6 +209,7 @@ public class ControllerLibrarian{
         listMenu.add(popup_error);
         listMenu.add(menu_increase);
         listMenu.add(menu_decrease);
+        listMenu.add(popup_menu_review_user);
 
         //initailizare TableView pentru tranzactionarea imprumuturilor/retururilor
         ObservableList<TableColumn<ObservableList<Label>, ?>> rawCols = tableView_transaction.getColumns();
@@ -657,6 +669,168 @@ public class ControllerLibrarian{
     @FXML void AddBookToRezervari(MouseEvent mouseEvent) throws SQLException {
         initialize_popup_menu_add_book();
     }
+    @FXML void DeleteUser(MouseEvent mouseEvent) throws SQLException {
+        popup_menu_validation.setVisible(true);
+        ResultSet rs = connection.executeQuery("SELECT u.idUser, c.Carte_idCarte " +
+                "FROM user u, cartiimprumutate c " +
+                "WHERE u.idUser = " + transaction_user_id);
+        try{
+            String book_id = null;
+            if(rs.next()){
+                book_id = rs.getString("c.Carte_idCarte");
+            }
+            int reserved_book = connection.getQueryCount("SELECT * FROM cartiimprumutate WHERE User_idUser = " + transaction_user_id + " AND UPPER(status)='INVENTAR'");
+            if(reserved_book!=0){
+                show_popup_error("Utilizatorul are o carte rezervata!");
+            }
+            else{
+                connection.executeUpdate("DELETE FROM cartiimprumutate WHERE Carte_idCarte = " + book_id + " AND User_idUser = " + transaction_user_id);
+                connection.executeUpdate("DELETE FROM review WHERE User_idUser = " + transaction_user_id);
+                connection.executeUpdate("DELETE FROM user WHERE idUser = " + transaction_user_id);
+                update_list_clients("");
+                show_popup_info("Utilizatorul a fost sters cu succes!",popup_info_case.DELETE_USER);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        /*
+        ALTER TABLE cartiimprumutate
+        DROP FOREIGN KEY fk_CartiImprumutate_User;
+
+        ALTER TABLE cartiimprumutate
+        ADD CONSTRAINT fk_CartiImprumutate_User
+        FOREIGN KEY (User_idUser) REFERENCES user(idUser)
+        ON DELETE CASCADE;
+         */
+    }
+
+    //Meniu reviews
+    void initialize_menu_user_review(String userID) throws SQLException {
+        setOnlyMenu(popup_menu_review_user);
+
+        if(connection.getConnection()==null){
+            connection.setFailed(err_connection_null);
+            return;
+        }
+        vbox_list_review.getChildren().clear();
+        userID = transaction_user_id;
+        ResultSet rs = connection.executeQuery("SELECT r.idReview, r.reviewText, r.reviewRating, r.User_idUser, r.Carte_idCarte, c.idCarte, c.titluCarti\n" +
+                " FROM review r, carte c\n" +
+                " WHERE r.User_idUser = " + userID + " AND c.idCarte = r.Carte_idCarte;");
+        while(rs.next()){
+            String id_review = rs.getString("r.idReview");
+            String reviewText = rs.getString("reviewText");
+            String reviewRating = rs.getString("r.reviewRating");
+            String bookTitle = rs.getString("c.titluCarti");
+            String bookId = rs.getString("r.Carte_idCarte");
+
+            try{
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("fxml/ItemReviewRow.fxml"));
+                Node node = loader.load();
+                ControllerItemReviewRow controller = loader.getController();
+
+                System.out.println("Controller: " + controller);
+
+                controller.review_id = id_review;
+                controller.review_rating = reviewRating;
+                controller.book_id = bookId;
+
+                controller.setBook(String.format("#%s", id_review));
+                controller.setUser(String.format("%s(#%s) : %s/5", bookTitle, bookId, reviewRating));
+                controller.txt_review.setText(reviewText);
+
+                controller.mainController = this;
+                vbox_list_review.getChildren().add(node);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+    }
+    @FXML void ViewReviews(MouseEvent mouseEvent) throws SQLException {
+        if(popup_menu_review_user.isVisible()){
+            return;
+        }
+
+        if(connection.getConnection()==null){
+            connection.setFailed(err_connection_null);
+            return;
+        }
+       initialize_menu_user_review(transaction_user_id);
+        popup_menu_review_user.setVisible(true);
+        review_search.setOnKeyPressed(event -> {
+            if(event.getCode().equals(KeyCode.ENTER))
+                try{
+                    System.out.print("ENTER");
+                    update_user_review(review_search.getText());
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+        });
+        btn_cancel_review.setOnMouseClicked(event -> {
+            popup_menu_review_user.setVisible(false);
+            client_menu_details.setVisible(true);
+        });
+
+    }
+    void update_user_review(String text) throws SQLException {
+        if(connection.getConnection()==null)
+        {
+            connection.setFailed(err_connection_null);
+            return;
+        }
+        text=text.toUpperCase();
+        vbox_list_review.getChildren().clear();
+        String query = "SELECT r.idReview, r.reviewText, r.reviewRating, r.User_idUser, r.Carte_idCarte, c.idCarte, c.titluCarti " +
+                "FROM review r JOIN carte c ON r.Carte_idCarte = c.idCarte " +
+                "WHERE r.User_idUser = " + transaction_user_id;
+
+        if (!text.isEmpty()) {
+            query += " AND (UPPER(c.titluCarti) LIKE '%" + text + "%' OR UPPER(r.idReview) LIKE '%" + text + "%')";
+        }
+
+        query += " ORDER BY r.idReview LIMIT 100;";
+
+        ResultSet rs = connection.executeQuery(query);
+
+        while(rs.next()){
+            String id_review = rs.getString("r.idReview");
+            String reviewText = rs.getString("reviewText");
+            String reviewRating = rs.getString("r.reviewRating");
+            String bookTitle = rs.getString("c.titluCarti");
+            String bookId = rs.getString("r.Carte_idCarte");
+
+            try{
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("fxml/ItemReviewRow.fxml"));
+                Node node = loader.load();
+                ControllerItemReviewRow controller = loader.getController();
+
+                controller.review_id = id_review;
+                controller.review_rating = reviewRating;
+                controller.book_id = bookId;
+
+                controller.setBook(String.format("#%s", id_review));
+                controller.setUser(String.format("%s(#%s) : %s/5", bookTitle, bookId, reviewRating));
+
+                controller.txt_review.setText(reviewText);
+
+                controller.mainController = this;
+                vbox_list_review.getChildren().add(node);
+            } catch (Exception e) {
+                System.err.print("\nNu s-a putut genera client(FXML)");
+                e.printStackTrace();
+            }
+        }
+
+    }
+    @FXML void ClearAllReviews(MouseEvent mouseEvent) throws SQLException {
+        deleteContext = "all_reviews";
+        popup_menu_validation.setVisible(true);
+    }
+    public void remove_review(String id_review) throws SQLException {
+        deleteContext = "review";
+        popup_menu_validation.setVisible(true);
+    }
 
     /**
      * Initializes the popup menu for adding books.
@@ -746,7 +920,7 @@ public class ControllerLibrarian{
                 genre.setStyle(style);
                 genre.setLayoutX(400);
 
-                Label avalabile_books = new Label(""+(nr_books-nr_reserved_books));
+                Label avalabile_books = new Label(""+(nr_avalabile_books));
                 if(nr_user_books!=0)
                     avalabile_books.setText("exista deja");
 
@@ -1036,8 +1210,6 @@ public class ControllerLibrarian{
             return;
         }
 
-
-
         try {
             // Obtinem cantitatea curenta
             ResultSet rs = connection.executeQuery("SELECT numarCarte FROM carte WHERE idCarte = " + book_id);
@@ -1089,7 +1261,7 @@ public class ControllerLibrarian{
      * @param mouseEvent The mouse event triggered by interacting with the confirmation button.
      */
     // POPUP VALIDATION (Esti sigur?)
-    @FXML void AreYouSureYes(MouseEvent mouseEvent) {
+    @FXML void AreYouSureYes(MouseEvent mouseEvent) throws SQLException {
         //confirmare tranzactie imprumut/retur
         if(popup_menu_tranzactie.isVisible()) {
             try
@@ -1168,6 +1340,7 @@ public class ControllerLibrarian{
                 }
                 else {
                     connection.executeUpdate("DELETE FROM cartiimprumutate WHERE Carte_idCarte = " + book_id);
+                    connection.executeUpdate("DELETE FROM review WHERE Carte_idCarte = " + book_id);
                     connection.executeUpdate("DELETE FROM carte WHERE idCarte = " + book_id);
                     update_list_books("");
                     show_popup_info("Stoc sters cu succes!", popup_info_case.DELETE_BOOK);
@@ -1192,20 +1365,22 @@ public class ControllerLibrarian{
             String number = numberBar.getText();
             int numar = Integer.parseInt(number);
             String cover = coverBar.getText();
+            String descriere = describeBar.getText();
 
-            if(title.isEmpty() || author.isEmpty() || genre.isEmpty() || numar==0  ){ // || cover.isEmpty()
+            if(title.isEmpty() || author.isEmpty() || genre.isEmpty() || numar==0 || descriere.isEmpty()){ // || cover.isEmpty()
                 System.out.print("Trebuie ca toate campurile sa fie scrise");
             }
 
             try{
                 PreparedStatement prep = connection.getConnection().prepareStatement("INSERT INTO carte(" +
-                        "titluCarti, autorCarte, numarCarte, genCarte, coverCarte)" +
-                        "VALUES (?,?,?,?,?)",Statement.RETURN_GENERATED_KEYS);
+                        "titluCarti, autorCarte, numarCarte, genCarte, coverCarte, descriere)" +
+                        "VALUES (?,?,?,?,?,?)",Statement.RETURN_GENERATED_KEYS);
                 prep.setString(1, title);
                 prep.setString(2,author);
                 prep.setInt(3,numar);
                 prep.setString(4,genre);
                 prep.setString(5,cover);
+                prep.setString(6,descriere);
 
                 int insertrow = prep.executeUpdate();
                 if (insertrow > 0) {
@@ -1231,6 +1406,35 @@ public class ControllerLibrarian{
             catch (SQLException e) {
                 e.printStackTrace();
             }
+        }
+        //confrimare stergere review-uri
+        if(popup_menu_review_user.isVisible()){
+            if (deleteContext.equals("all_reviews")){
+                ResultSet rs = connection.executeQuery("SELECT * FROM review WHERE user_idUser = " + transaction_user_id);
+                try{
+                    while(rs.next()){
+                        connection.executeUpdate("DELETE FROM review WHERE user_idUser = " + transaction_user_id);
+                        update_user_review("");
+                        show_popup_info("Review-urile au fost sterse cu succes!", popup_info_case.DELETE_REVIEWS);
+                    }
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            else if(deleteContext.equals("review")){
+                ResultSet rs = connection.executeQuery("SELECT * FROM review WHERE user_idUser = " + transaction_user_id
+                                                    + " AND idReview = " + review_user_id);
+                try {
+                    if(rs.next()){
+                        connection.executeUpdate("DELETE FROM review WHERE idReview = " + review_user_id);
+                        update_user_review("");
+                        show_popup_info("Review-ul a fost sters cu succes!", popup_info_case.REMOVE_REVIEW);
+                    }
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        deleteContext = "";
         }
 
         popup_menu_validation.setVisible(false);
@@ -1301,6 +1505,23 @@ public class ControllerLibrarian{
             books_menu.setVisible(true);
             menu_decrease.setVisible(false);
             numberDown.setText("");
+        }
+        //mesaj confirmare stergere user
+        if(info_case==popup_info_case.DELETE_USER){
+            client_menu.setVisible(true);
+            client_menu_details.setVisible(false);
+        }
+        //mesaj confirmare stergere review-uri
+        if(info_case==popup_info_case.DELETE_REVIEWS){
+            popup_menu_review_user.setVisible(false);
+            client_menu_details.setVisible(false);
+            client_menu.setVisible(true);
+        }
+        //mesaj confirmare stergere review
+        if(info_case==popup_info_case.REMOVE_REVIEW){
+            popup_menu_review_user.setVisible(false);
+            client_menu_details.setVisible(false);
+            client_menu.setVisible(true);
         }
 
     }
@@ -1417,19 +1638,20 @@ public class ControllerLibrarian{
         //Top genuri
         pane_top_genre.getChildren().clear();
         //date
-        ResultSet rs_top_5_genres = connection.executeQuery("SELECT genCarte, COUNT(genCarte) AS nr_books\n" +
-                "FROM cartiimprumutate borrow, carte book\n" +
-                "WHERE book.idCarte = borrow.Carte_idCarte\n" +
-                "GROUP BY genCarte\n" +
-                "ORDER BY nr_books DESC LIMIT 5;");
+        ResultSet rs_top_5_genres = connection.executeQuery("SELECT g.genuri, SUM(up.number) AS numar\n" +
+                "FROM userpref up\n" +
+                "         JOIN genuri g ON up.preferinte_idpreferinte = g.idpreferinte\n" +
+                "GROUP BY g.genuri\n" +
+                "ORDER BY numar DESC\n" +
+                "LIMIT 5;");
         //legenda
         String[] labels_genres = new String[5];
         int[] nr_genres = new int[5];
         int index = 0;
         while(rs_top_5_genres.next())
         {
-            String gen_carte = rs_top_5_genres.getString("genCarte");
-            nr_genres[index] = rs_top_5_genres.getInt("nr_books");
+            String gen_carte = rs_top_5_genres.getString("genuri");
+            nr_genres[index] = rs_top_5_genres.getInt("numar");
             labels_genres[index] = String.format("%s - %d", gen_carte, nr_genres[index]);
             index++;
         }
