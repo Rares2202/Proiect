@@ -219,10 +219,14 @@ public class ControllerMain {
                 currentStage.close();
             }
             else {
-                //showAlert("Login successful!");
+               // showAlert("Login successful!");
                 initializeUserController(id);
                 contentPane.getChildren().setAll(UserMain);
             }
+        }
+        if(id==-1)
+        {
+            showAlert("Login failed. Wrong username or password.");
         }
     }
 
@@ -306,7 +310,6 @@ public class ControllerMain {
                     isLibrarian = resultSet.getBoolean("librarian");
                 }
             }
-
         } catch (SQLException e) {
             showAlert("Nu exista conexiune la baza de date");
             e.printStackTrace();
