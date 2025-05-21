@@ -185,6 +185,7 @@ public class ControllerMain {
      */
     @FXML
     private void login1() {
+
         contentPane.getChildren().setAll(LoginRegister);
     }
 
@@ -206,6 +207,7 @@ public class ControllerMain {
         PasswordField passField = (PasswordField) LoginRegister.lookup("#password_log");
         String password = String.valueOf(passField.getText());
          id = authenticateUser(username, password);
+
         if (id != -1) {
             if(isUserLibrarian(id))
             {
