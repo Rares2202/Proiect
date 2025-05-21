@@ -15,6 +15,16 @@ public class Book {
     private String genre;
     private String coverUrl;
 
+    /**
+     * Constructs a Book object with the specified details.
+     *
+     * @param id          the unique identifier of the book.
+     * @param title       the title of the book.
+     * @param author      the author of the book.
+     * @param description a brief description or summary of the book.
+     * @param genre       the genre or category of the book.
+     * @param coverUrl    the URL of the book's cover image.
+     */
     public Book(int id, String title, String author, String description,
                 String genre, String coverUrl) {
         this.id = id;
@@ -25,12 +35,60 @@ public class Book {
         this.coverUrl = coverUrl;
     }
 
-    public int getId() { return id; }
-    public String getTitle() { return title; }
-    public String getAuthor() { return author; }
-    public String getDescription() { return description; }
-    public String getGenre() { return genre; }
-    public String getCoverUrl() { return coverUrl; }
+
+    /**
+     * Retrieves the unique identifier of the book.
+     *
+     * @return the integer representing the ID of the book.
+     */
+    public int getId() {
+        return id;
+    }
+
+    /**
+     * Retrieves the title of the book.
+     *
+     * @return the string representing the title of the book.
+     */
+    public String getTitle() {
+        return title;
+    }
+
+    /**
+     * Retrieves the author of the book.
+     *
+     * @return the string representing the author of the book.
+     */
+    public String getAuthor() {
+        return author;
+    }
+
+    /**
+     * Retrieves the description of the book.
+     *
+     * @return the string representing the description of the book.
+     */
+    public String getDescription() {
+        return description;
+    }
+
+    /**
+     * Retrieves the genre of the book.
+     *
+     * @return the string representing the genre of the book.
+     */
+    public String getGenre() {
+        return genre;
+    }
+
+    /**
+     * Retrieves the cover URL of the book.
+     *
+     * @return the string representing the cover URL of the book.
+     */
+    public String getCoverUrl() {
+        return coverUrl;
+    }
 
     /**
      * Fetches book data from the database using the given cover URL and initializes the book instance with the retrieved values.

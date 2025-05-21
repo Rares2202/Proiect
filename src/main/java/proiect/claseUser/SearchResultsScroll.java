@@ -99,6 +99,7 @@ public class SearchResultsScroll extends ScrollPane {
      *                URL of the clicked book's cover image.
      */
     public void setOnCoverClick(Consumer<String> handler) {
+
         this.onCoverClickHandler = handler;
     }
 

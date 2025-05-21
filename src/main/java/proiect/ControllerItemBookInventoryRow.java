@@ -46,7 +46,6 @@ public class ControllerItemBookInventoryRow {
      */
     @FXML void initialize() {
         btn_add.setStyle("-fx-background-color: transparent;");
-        //btn_add.setStyle("-fx-background-radius: 0;");
         setDisabled();
         btn_add_icon.setVisible(false);
         selected = false;
@@ -194,4 +193,3 @@ public class ControllerItemBookInventoryRow {
             btn_add_icon.setFill(Color.RED);
     }
 }
-

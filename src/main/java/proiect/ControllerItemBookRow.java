@@ -18,7 +18,7 @@ import java.sql.*;
  * The class assumes a connection with a parent controller, ControllerLibrarian,
  * to handle library operations such as increasing or decreasing the number of books.
  */
-public class ControllerItemBookRow extends book {
+public class ControllerItemBookRow extends Book {
     public Label bookTitle;
     public Label authorBook;
     public Label genreBook;
